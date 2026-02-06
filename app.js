@@ -23,12 +23,7 @@ const PLAN_BY_DATE = {
   "2026-02-13": {
     title: "伊丽莎白港 -> Addo 半日自驾",
     subtitle: "到达、取车、补给、入园、半天巡游，一屏掌握",
-    mapEmbed: "https://www.google.com/maps?q=-33.9849,25.6173&z=9&output=embed",
-    routeActions: [
-      {
-        label: "一键打开全天路线",
-        href: "https://www.google.com/maps/dir/?api=1&origin=-33.9849,25.6173&destination=-33.4830,25.7499&travelmode=driving&waypoints=-33.9836,25.6659",
-      },
+    extraRouteActions: [
       {
         label: "查看营地开闭园时间",
         href: "https://www.google.com/maps/search/?api=1&query=Addo+Main+Camp+Gate+Hours",
@@ -188,19 +183,82 @@ function mapsSearchUrl(coords, label) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${coords} (${label})`)}`;
 }
 
+function isValidCoordPair(coords) {
+  if (typeof coords !== "string") return false;
+  const cleaned = coords.trim();
+  if (!cleaned) return false;
+
+  const parts = cleaned.split(",");
+  if (parts.length !== 2) return false;
+
+  const lat = Number(parts[0]);
+  const lng = Number(parts[1]);
+  return Number.isFinite(lat) && Number.isFinite(lng);
+}
+
+function extractRouteCoords(plan) {
+  const coords = [];
+  const seen = new Set();
+
+  plan.itinerary.forEach((item) => {
+    if (!isValidCoordPair(item.coords)) return;
+    const value = item.coords.trim();
+    if (seen.has(value)) return;
+    seen.add(value);
+    coords.push(value);
+  });
+
+  return coords;
+}
+
+function buildAutoMapData(plan) {
+  const coords = extractRouteCoords(plan);
+
+  if (coords.length === 0) {
+    return {
+      embedSrc: `https://www.google.com/maps?q=${encodeURIComponent(SOUTH_AFRICA_CENTER)}&z=5&output=embed`,
+      action: null,
+    };
+  }
+
+  if (coords.length === 1) {
+    const only = coords[0];
+    return {
+      embedSrc: `https://www.google.com/maps?q=${encodeURIComponent(only)}&z=12&output=embed`,
+      action: {
+        label: "打开当天地图",
+        href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(only)}`,
+      },
+    };
+  }
+
+  const origin = coords[0];
+  const destination = coords[coords.length - 1];
+  const waypoints = coords.slice(1, -1).join("|");
+  const base = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}&travelmode=driving`;
+  const href = waypoints ? `${base}&waypoints=${encodeURIComponent(waypoints)}` : base;
+
+  return {
+    embedSrc: `${href}&output=embed`,
+    action: {
+      label: "一键打开当天路线",
+      href,
+    },
+  };
+}
+
 function createPlaceholderPlan() {
   return {
     title: "南非行程（待补充）",
     subtitle: "这一天行程暂未填写，后续慢慢补充。",
-    mapEmbed: `https://www.google.com/maps?q=${SOUTH_AFRICA_CENTER}&z=5&output=embed`,
-    routeActions: [],
+    extraRouteActions: [],
     warnings: [],
     itinerary: Array.from({ length: 5 }, (_, index) => ({
       id: index + 1,
       time: "--:--",
       title: `待补充行程 ${index + 1}`,
       place: "待补充地点",
-      coords: SOUTH_AFRICA_CENTER,
+      coords: "",
       note: "留空（待后续补充）",
       subItems: [],
     })),
@@ -408,14 +466,18 @@ function renderHeader(dateStr, plan) {
   document.title = `南非旅行助手 · ${dateStr}`;
 }
 
-function renderRouteActions(plan) {
+function renderRouteActions(plan, autoAction) {
   const routeEl = document.getElementById("routeActions");
-  if (!plan.routeActions || plan.routeActions.length === 0) {
+  const actions = [];
+  if (autoAction) actions.push(autoAction);
+  if (Array.isArray(plan.extraRouteActions)) actions.push(...plan.extraRouteActions);
+
+  if (actions.length === 0) {
     routeEl.innerHTML = '<button class="btn" disabled>留空（待后续补充）</button>';
     return;
   }
 
-  routeEl.innerHTML = plan.routeActions
+  routeEl.innerHTML = actions
     .map(
       (action) =>
         `<a class="btn" href="${action.href}" target="_blank" rel="noopener">${escapeHtml(action.label)}</a>`
@@ -425,8 +487,9 @@ function renderRouteActions(plan) {
 
 function renderMap(plan) {
   const frame = document.getElementById("mapFrame");
-  frame.src = plan.mapEmbed;
-  renderRouteActions(plan);
+  const autoMap = buildAutoMapData(plan);
+  frame.src = autoMap.embedSrc;
+  renderRouteActions(plan, autoMap.action);
 }
 
 function renderTimeline(dateStr, plan) {
@@ -436,7 +499,7 @@ function renderTimeline(dateStr, plan) {
   plan.itinerary.forEach((item) => {
     const localDocAction = item.docKey ? buildLocalDocAction(item.docKey, item.docLabel) : "";
 
-    const mapButtons = item.coords
+    const mapButtons = isValidCoordPair(item.coords)
       ? `
         <a class="btn" href="${mapsSearchUrl(item.coords, item.place)}" target="_blank" rel="noopener">地图定位</a>
         <a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(item.coords)}" target="_blank" rel="noopener">导航到这里</a>
