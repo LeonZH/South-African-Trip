@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0a5d5a" />
+    <meta name="description" content="南非 2/13 伊丽莎白港与 Addo 国家公园一日行程 PWA" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icons/icon-192.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>南非旅行助手 · 2/13</title>
+  </head>
+  <body>
+    <header class="hero">
+      <p class="date">2026-02-13（周五）</p>
+      <h1>伊丽莎白港 -> Addo 半日自驾</h1>
+      <p class="subtitle">到达、取车、补给、入园、半天巡游，一屏掌握</p>
+      <button id="installBtn" hidden>安装到手机</button>
+    </header>
+
+    <main>
+      <section class="card">
+        <h2>地图总览</h2>
+        <div class="map-wrap">
+          <iframe
+            title="2/13 路线地图"
+            loading="lazy"
+            src="https://www.google.com/maps?q=-33.9849,25.6173&z=9&output=embed"
+          ></iframe>
+        </div>
+        <div class="actions" id="routeActions"></div>
+      </section>
+
+      <section class="card">
+        <h2>当天行程</h2>
+        <ol id="timeline" class="timeline"></ol>
+      </section>
+
+      <section class="card">
+        <h2>本地导入附件（隐私）</h2>
+        <p class="note">附件仅保存到当前手机浏览器本地，不上传到服务器。</p>
+        <div class="imports">
+          <label>机票 PDF <input type="file" id="flightInput" accept="application/pdf" /></label>
+          <label>租车 PDF <input type="file" id="hertzInput" accept="application/pdf" /></label>
+          <label>酒店 PDF <input type="file" id="hotelInput" accept="application/pdf" /></label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Addo 入园提醒（先看）</h2>
+        <ul id="warnings" class="warnings"></ul>
+      </section>
+
+      <section class="card">
+        <h2>行程资料</h2>
+        <ul id="docs" class="docs"></ul>
+      </section>
+    </main>
+
+    <footer>
+      <small>提示：路线、路况与封路以当天园区公告和现场工作人员指引为准。</small>
+    </footer>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "name": "南非旅行助手",
+  "short_name": "南非行程",
+  "description": "2026-02-13 伊丽莎白港与 Addo 国家公园行程",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f5f2e9",
+  "theme_color": "#0a5d5a",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

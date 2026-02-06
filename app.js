@@ -1,0 +1,248 @@
+const STORAGE_KEYS = {
+  flight: "sa_trip_doc_flight",
+  hertz: "sa_trip_doc_hertz",
+  hotel: "sa_trip_doc_hotel",
+};
+
+const importedDocs = {
+  flight: null,
+  hertz: null,
+  hotel: null,
+};
+
+const itinerary = [
+  {
+    time: "11:00",
+    title: "抵达伊丽莎白港（Gqeberha）机场",
+    place: "Chief Dawid Stuurman International Airport",
+    coords: "-33.9849,25.6173",
+    note: "下机后优先取行李，确认手机网络与离线地图。",
+    docKey: "flight",
+    docLabel: "机票资料（本地）",
+  },
+  {
+    time: "11:30",
+    title: "Hertz 取车",
+    place: "机场租车点",
+    coords: "-33.9849,25.6173",
+    note: "重点检查轮胎、备胎、油量、保险和紧急电话。",
+    docKey: "hertz",
+    docLabel: "租车资料（本地）",
+  },
+  {
+    time: "12:15",
+    title: "安全区域午餐 + 超市采购",
+    place: "Summerstrand / Walmer",
+    coords: "-33.9836,25.6659",
+    note: "建议在商圈内停留，白天行动，车内不留物品。",
+    links: [
+      {
+        label: "午餐推荐区域（Google Maps）",
+        href: "https://www.google.com/maps/search/?api=1&query=restaurants+Summerstrand+Gqeberha",
+      },
+      {
+        label: "超市推荐区域（Google Maps）",
+        href: "https://www.google.com/maps/search/?api=1&query=supermarket+Walmer+Gqeberha",
+      },
+    ],
+  },
+  {
+    time: "14:00",
+    title: "前往 Addo Main Rest Camp",
+    place: "Addo Elephant National Park Main Camp",
+    coords: "-33.4830,25.7499",
+    note: "车程约 1 小时 15 分；建议 15:30 前入园，避免赶关门。",
+    docKey: "hotel",
+    docLabel: "酒店资料（本地）",
+  },
+  {
+    time: "15:30-18:00",
+    title: "园内半天游览线路（自驾）",
+    place: "Main Camp -> Hapoor Loop -> Domkrag Dam -> Main Camp",
+    coords: "-33.4830,25.7499",
+    note: "傍晚是动物活动高峰，控制车速，预留返营地时间。",
+    links: [
+      {
+        label: "半天环线导航（Google Maps）",
+        href: "https://www.google.com/maps/dir/?api=1&origin=-33.4830,25.7499&destination=-33.4830,25.7499&travelmode=driving&waypoints=-33.4349,25.7429|-33.4308,25.7517",
+      },
+    ],
+  },
+];
+
+const warnings = [
+  "入园后先看 Main Camp 当日公告板：封路、施工、动物活动区会实时调整。",
+  "避免进入任何 4x4-only / No Entry 标识道路；普通轿车只走官方开放主路。",
+  "雨后不要走低洼积水路段；若遇临时封闭，立即原路返回并改走主环线。",
+  "严格遵守园区限速与关门时间，天黑前回到营地。",
+];
+
+function mapsSearchUrl(coords, label) {
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(coords + ` (${label})`)}`;
+}
+
+function readAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(reader.error || new Error("读取文件失败"));
+    reader.readAsDataURL(file);
+  });
+}
+
+async function onFileImport(docType, file) {
+  if (!file) return;
+  if (file.type !== "application/pdf") {
+    alert("请选择 PDF 文件");
+    return;
+  }
+  const dataUrl = await readAsDataUrl(file);
+  const payload = { name: file.name, dataUrl };
+  localStorage.setItem(STORAGE_KEYS[docType], JSON.stringify(payload));
+  importedDocs[docType] = payload;
+  renderDocs();
+  renderTimeline();
+}
+
+function loadImportedDocs() {
+  Object.entries(STORAGE_KEYS).forEach(([docType, key]) => {
+    const raw = localStorage.getItem(key);
+    if (!raw) return;
+    try {
+      importedDocs[docType] = JSON.parse(raw);
+    } catch {
+      localStorage.removeItem(key);
+      importedDocs[docType] = null;
+    }
+  });
+}
+
+function buildLocalDocLink(docType, label) {
+  const doc = importedDocs[docType];
+  if (!doc) {
+    return `<button class="btn" disabled>${label}（未导入）</button>`;
+  }
+  return `<a class="btn" href="${doc.dataUrl}" download="${doc.name}">${label}</a>`;
+}
+
+function renderTimeline() {
+  const timelineEl = document.getElementById("timeline");
+  timelineEl.innerHTML = "";
+  itinerary.forEach((item) => {
+    const mapActions = `
+      <a class="btn" href="${mapsSearchUrl(item.coords, item.place)}" target="_blank" rel="noopener">地图定位</a>
+      <a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(item.coords)}" target="_blank" rel="noopener">导航到这里</a>
+    `;
+
+    const customActions = item.links
+      ? item.links
+          .map((link) => `<a class="btn" href="${link.href}" target="_blank" rel="noopener">${link.label}</a>`)
+          .join("")
+      : "";
+
+    const localDocAction = item.docKey ? buildLocalDocLink(item.docKey, item.docLabel) : "";
+
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <div>
+        <span class="time">${item.time}</span>
+        <span class="place">${item.place}</span>
+      </div>
+      <div>${item.title}</div>
+      <p class="note">${item.note}</p>
+      <div class="item-actions">
+        ${mapActions}
+        ${customActions}
+        ${localDocAction}
+      </div>
+    `;
+    timelineEl.appendChild(li);
+  });
+}
+
+function buildWarnings() {
+  const warningEl = document.getElementById("warnings");
+  warningEl.innerHTML = "";
+  warnings.forEach((text) => {
+    const li = document.createElement("li");
+    li.textContent = text;
+    warningEl.appendChild(li);
+  });
+}
+
+function renderDocs() {
+  const docsEl = document.getElementById("docs");
+  docsEl.innerHTML = "";
+
+  const docDefs = [
+    { key: "flight", title: "2/13 航班资料" },
+    { key: "hertz", title: "Hertz 租车资料（2/13-2/21）" },
+    { key: "hotel", title: "Addo 酒店资料（2/13-2/15）" },
+  ];
+
+  docDefs.forEach((docDef) => {
+    const li = document.createElement("li");
+    const doc = importedDocs[docDef.key];
+    if (!doc) {
+      li.textContent = `${docDef.title}：未导入`;
+    } else {
+      li.innerHTML = `<a href="${doc.dataUrl}" download="${doc.name}">${docDef.title}：${doc.name}</a>`;
+    }
+    docsEl.appendChild(li);
+  });
+}
+
+function buildRouteActions() {
+  const routeEl = document.getElementById("routeActions");
+  const route =
+    "https://www.google.com/maps/dir/?api=1&origin=-33.9849,25.6173&destination=-33.4830,25.7499&travelmode=driving&waypoints=-33.9836,25.6659";
+
+  routeEl.innerHTML = `
+    <a class="btn" href="${route}" target="_blank" rel="noopener">一键打开全天路线</a>
+    <a class="btn" href="https://www.google.com/maps/search/?api=1&query=Addo+Main+Camp+Gate+Hours" target="_blank" rel="noopener">查看营地开闭园时间</a>
+  `;
+}
+
+function bindInputs() {
+  document.getElementById("flightInput").addEventListener("change", (event) => {
+    onFileImport("flight", event.target.files[0]).catch((error) => alert(error.message));
+  });
+  document.getElementById("hertzInput").addEventListener("change", (event) => {
+    onFileImport("hertz", event.target.files[0]).catch((error) => alert(error.message));
+  });
+  document.getElementById("hotelInput").addEventListener("change", (event) => {
+    onFileImport("hotel", event.target.files[0]).catch((error) => alert(error.message));
+  });
+}
+
+let deferredPrompt;
+const installBtn = document.getElementById("installBtn");
+
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  deferredPrompt = event;
+  installBtn.hidden = false;
+});
+
+installBtn.addEventListener("click", async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  installBtn.hidden = true;
+});
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch((err) => {
+      console.error("Service worker register failed", err);
+    });
+  });
+}
+
+loadImportedDocs();
+bindInputs();
+renderTimeline();
+buildWarnings();
+renderDocs();
+buildRouteActions();

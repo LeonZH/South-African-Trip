@@ -1,0 +1,4 @@
+*.pdf
+docs/
+private/
+.DS_Store
