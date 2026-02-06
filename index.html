@@ -12,18 +12,28 @@
   </head>
   <body>
     <header class="hero">
-      <p class="date">2026-02-13（周五）</p>
-      <h1>伊丽莎白港 -> Addo 半日自驾</h1>
-      <p class="subtitle">到达、取车、补给、入园、半天巡游，一屏掌握</p>
+      <p id="currentDateLabel" class="date">2026-02-13（周五）</p>
+      <h1 id="currentTitle">伊丽莎白港 -> Addo 半日自驾</h1>
+      <p id="currentSubtitle" class="subtitle">到达、取车、补给、入园、半天巡游，一屏掌握</p>
       <button id="installBtn" hidden>安装到手机</button>
     </header>
 
     <main>
       <section class="card">
+        <h2>日期切换</h2>
+        <div class="date-switcher">
+          <button id="prevDateBtn" class="btn" type="button">前一天</button>
+          <select id="dateSelect" aria-label="选择日期"></select>
+          <button id="nextDateBtn" class="btn" type="button">后一天</button>
+        </div>
+      </section>
+
+      <section class="card">
         <h2>地图总览</h2>
         <div class="map-wrap">
           <iframe
-            title="2/13 路线地图"
+            id="mapFrame"
+            title="当天路线地图"
             loading="lazy"
             src="https://www.google.com/maps?q=-33.9849,25.6173&z=9&output=embed"
           ></iframe>
@@ -47,7 +57,7 @@
       </section>
 
       <section class="card">
-        <h2>Addo 入园提醒（先看）</h2>
+        <h2>当天提醒</h2>
         <ul id="warnings" class="warnings"></ul>
       </section>
 
