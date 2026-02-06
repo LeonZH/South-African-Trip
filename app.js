@@ -2,7 +2,6 @@ const STORAGE_KEYS = {
   flight: "sa_trip_doc_flight",
   hertz: "sa_trip_doc_hertz",
   hotel: "sa_trip_doc_hotel",
-  eventSubItems: "sa_trip_event_subitems",
 };
 
 const importedDocs = {
@@ -10,8 +9,6 @@ const importedDocs = {
   hertz: null,
   hotel: null,
 };
-
-const eventSubItems = {};
 
 const itinerary = [
   {
@@ -23,6 +20,7 @@ const itinerary = [
     note: "下机后优先取行李，确认手机网络与离线地图。",
     docKey: "flight",
     docLabel: "机票资料（本地）",
+    subItems: [],
   },
   {
     id: 2,
@@ -33,22 +31,31 @@ const itinerary = [
     note: "重点检查轮胎、备胎、油量、保险和紧急电话。",
     docKey: "hertz",
     docLabel: "租车资料（本地）",
+    subItems: [],
   },
   {
     id: 3,
     time: "12:15",
-    title: "安全区域午餐 + 超市采购",
-    place: "Summerstrand / Walmer",
-    coords: "-33.9836,25.6659",
-    note: "建议在商圈内停留，白天行动，车内不留物品。",
-    defaultSubItems: [
+    title: "前往 Walmer Park Shopping Centre（采购 + 午餐）",
+    place: "Walmer Park Shopping Centre",
+    coords: "-33.9876,25.5564",
+    note: "地址：Main Rd, Walmer, Gqeberha, 6070, South Africa",
+    subItems: [
       {
-        name: "午餐推荐区域",
-        url: "https://www.google.com/maps/search/?api=1&query=restaurants+Summerstrand+Gqeberha",
+        name: "TODO：Woolworths Food 采购",
+        detail: "先补给饮用水、零食、车上应急用品。",
       },
       {
-        name: "超市推荐区域",
-        url: "https://www.google.com/maps/search/?api=1&query=supermarket+Walmer+Gqeberha",
+        name: "午餐餐厅：John Dory's Walmer Park",
+        detail: "强烈推荐：家庭氛围 & 多样化。",
+      },
+      {
+        name: "午餐餐厅：Mugg & Bean Walmer Park",
+        detail: "最稳妥的选择：西式简餐 & 咖啡。",
+      },
+      {
+        name: "午餐餐厅：Panarottis Walmer Park",
+        detail: "意式风味：披萨 & 意面。",
       },
     ],
   },
@@ -61,6 +68,7 @@ const itinerary = [
     note: "车程约 1 小时 15 分；建议 15:30 前入园，避免赶关门。",
     docKey: "hotel",
     docLabel: "酒店资料（本地）",
+    subItems: [],
   },
   {
     id: 5,
@@ -69,12 +77,7 @@ const itinerary = [
     place: "Main Camp -> Hapoor Loop -> Domkrag Dam -> Main Camp",
     coords: "-33.4830,25.7499",
     note: "傍晚是动物活动高峰，控制车速，预留返营地时间。",
-    defaultSubItems: [
-      {
-        name: "半天环线导航",
-        url: "https://www.google.com/maps/dir/?api=1&origin=-33.4830,25.7499&destination=-33.4830,25.7499&travelmode=driving&waypoints=-33.4349,25.7429|-33.4308,25.7517",
-      },
-    ],
+    subItems: [],
   },
 ];
 
@@ -96,15 +99,6 @@ function escapeHtml(str) {
 
 function mapsSearchUrl(coords, label) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(coords + ` (${label})`)}`;
-}
-
-function isValidHttpUrl(value) {
-  try {
-    const url = new URL(value);
-    return url.protocol === "http:" || url.protocol === "https:";
-  } catch {
-    return false;
-  }
 }
 
 function readAsDataUrl(file) {
@@ -140,14 +134,6 @@ function isIosStandalone() {
   );
 }
 
-function openExternalUrl(url) {
-  if (isIosStandalone()) {
-    window.location.href = url;
-  } else {
-    window.open(url, "_blank", "noopener");
-  }
-}
-
 function openLocalDoc(docType) {
   const doc = importedDocs[docType];
   if (!doc || !doc.dataUrl) {
@@ -172,93 +158,6 @@ function openLocalDoc(docType) {
   }
 }
 
-function ensureSubItems(eventId) {
-  if (!eventSubItems[eventId]) {
-    const event = itinerary.find((item) => item.id === eventId);
-    eventSubItems[eventId] = event?.defaultSubItems ? [...event.defaultSubItems] : [];
-  }
-  return eventSubItems[eventId];
-}
-
-function saveSubItems() {
-  localStorage.setItem(STORAGE_KEYS.eventSubItems, JSON.stringify(eventSubItems));
-}
-
-function loadSubItems() {
-  const raw = localStorage.getItem(STORAGE_KEYS.eventSubItems);
-  if (!raw) {
-    itinerary.forEach((item) => ensureSubItems(item.id));
-    return;
-  }
-
-  try {
-    const parsed = JSON.parse(raw);
-    itinerary.forEach((item) => {
-      const incoming = parsed?.[item.id];
-      if (Array.isArray(incoming)) {
-        eventSubItems[item.id] = incoming
-          .filter((row) => row && typeof row.name === "string" && typeof row.url === "string")
-          .map((row) => ({ name: row.name, url: row.url }));
-      } else {
-        ensureSubItems(item.id);
-      }
-    });
-  } catch {
-    itinerary.forEach((item) => ensureSubItems(item.id));
-  }
-}
-
-function addSubItem(eventId) {
-  const name = prompt("请输入小卡片名称（例如：午餐推荐区域）");
-  if (!name) return;
-
-  const url = prompt("请输入 Google Maps 链接（例如：https://maps.app.goo.gl/...）");
-  if (!url) return;
-
-  if (!isValidHttpUrl(url)) {
-    alert("链接格式无效，请填写 http/https 链接");
-    return;
-  }
-
-  const items = ensureSubItems(eventId);
-  items.push({ name: name.trim(), url: url.trim() });
-  saveSubItems();
-  renderTimeline();
-}
-
-function editSubItem(eventId, index) {
-  const items = ensureSubItems(eventId);
-  const current = items[index];
-  if (!current) return;
-
-  const nextName = prompt("修改小卡片名称", current.name);
-  if (!nextName) return;
-
-  const nextUrl = prompt("修改 Google Maps 链接", current.url);
-  if (!nextUrl) return;
-
-  if (!isValidHttpUrl(nextUrl)) {
-    alert("链接格式无效，请填写 http/https 链接");
-    return;
-  }
-
-  items[index] = { name: nextName.trim(), url: nextUrl.trim() };
-  saveSubItems();
-  renderTimeline();
-}
-
-function deleteSubItem(eventId, index) {
-  const items = ensureSubItems(eventId);
-  if (!items[index]) return;
-
-  const ok = confirm("确认删除这个小卡片？");
-  if (!ok) return;
-
-  items.splice(index, 1);
-  saveSubItems();
-  renderTimeline();
-}
-
 function buildLocalDocAction(docType, label) {
   const doc = importedDocs[docType];
   if (!doc) {
@@ -267,30 +166,28 @@ function buildLocalDocAction(docType, label) {
   return `<button class="btn local-doc-btn" data-doc-type="${docType}">${label}</button>`;
 }
 
-function buildSubItems(eventId) {
-  const items = ensureSubItems(eventId);
+function buildSubItems(subItems) {
+  if (!subItems || subItems.length === 0) {
+    return '<p class="mini-empty">留空（待后续补充）</p>';
+  }
 
-  const cards = items
-    .map((item, index) => {
+  return subItems
+    .map((item) => {
+      const openBtn = item.url
+        ? `<a class="btn" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">打开地图</a>`
+        : "";
+
+      const detail = item.detail ? `<p class="mini-detail">${escapeHtml(item.detail)}</p>` : "";
+
       return `
         <div class="mini-card">
           <div class="mini-title">${escapeHtml(item.name)}</div>
-          <div class="mini-actions">
-            <button class="btn mini-open" data-event-id="${eventId}" data-index="${index}">打开</button>
-            <button class="btn mini-edit" data-event-id="${eventId}" data-index="${index}">编辑</button>
-            <button class="btn mini-delete" data-event-id="${eventId}" data-index="${index}">删除</button>
-          </div>
+          ${detail}
+          ${openBtn}
         </div>
       `;
     })
     .join("");
-
-  return `
-    <div class="mini-list">
-      ${cards || '<p class="mini-empty">暂无小卡片，点击下方“添加小卡片”</p>'}
-    </div>
-    <button class="btn mini-add" data-event-id="${eventId}">+ 添加小卡片</button>
-  `;
 }
 
 function renderTimeline() {
@@ -316,7 +213,7 @@ function renderTimeline() {
         ${localDocAction}
       </div>
       <div class="subitems-wrap">
-        ${buildSubItems(item.id)}
+        ${buildSubItems(item.subItems)}
       </div>
     `;
     timelineEl.appendChild(li);
@@ -426,40 +323,6 @@ function bindActionClicks() {
       const docType = target.dataset.docType;
       if (!docType) return;
       openLocalDoc(docType);
-      return;
-    }
-
-    if (target.classList.contains("mini-add")) {
-      const eventId = Number(target.dataset.eventId);
-      if (!eventId) return;
-      addSubItem(eventId);
-      return;
-    }
-
-    if (target.classList.contains("mini-open")) {
-      const eventId = Number(target.dataset.eventId);
-      const index = Number(target.dataset.index);
-      const items = ensureSubItems(eventId);
-      const item = items[index];
-      if (item?.url) openExternalUrl(item.url);
-      return;
-    }
-
-    if (target.classList.contains("mini-edit")) {
-      const eventId = Number(target.dataset.eventId);
-      const index = Number(target.dataset.index);
-      if (!eventId && eventId !== 0) return;
-      if (Number.isNaN(index)) return;
-      editSubItem(eventId, index);
-      return;
-    }
-
-    if (target.classList.contains("mini-delete")) {
-      const eventId = Number(target.dataset.eventId);
-      const index = Number(target.dataset.index);
-      if (!eventId && eventId !== 0) return;
-      if (Number.isNaN(index)) return;
-      deleteSubItem(eventId, index);
     }
   });
 }
@@ -490,7 +353,6 @@ if ("serviceWorker" in navigator) {
 }
 
 loadImportedDocs();
-loadSubItems();
 bindInputs();
 bindActionClicks();
 renderTimeline();

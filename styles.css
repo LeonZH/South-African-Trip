@@ -247,3 +247,8 @@ button.btn:disabled {
     height: 320px;
   }
 }
+
+.mini-detail {
+  margin: 6px 0;
+  color: #41585c;
+}
