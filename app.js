@@ -90,15 +90,72 @@ function readAsDataUrl(file) {
   });
 }
 
+function dataUrlToBlob(dataUrl) {
+  const parts = dataUrl.split(",");
+  if (parts.length !== 2) throw new Error("文件数据格式错误");
+
+  const mimeMatch = parts[0].match(/data:(.*?);base64/);
+  const mime = mimeMatch ? mimeMatch[1] : "application/pdf";
+  const binaryString = atob(parts[1]);
+  const len = binaryString.length;
+  const bytes = new Uint8Array(len);
+
+  for (let i = 0; i < len; i += 1) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+
+  return new Blob([bytes], { type: mime });
+}
+
+function isIosStandalone() {
+  return (
+    /iPhone|iPad|iPod/i.test(navigator.userAgent) &&
+    window.matchMedia("(display-mode: standalone)").matches
+  );
+}
+
+function openLocalDoc(docType) {
+  const doc = importedDocs[docType];
+  if (!doc || !doc.dataUrl) {
+    alert("该附件尚未导入");
+    return;
+  }
+
+  try {
+    const blob = dataUrlToBlob(doc.dataUrl);
+    const blobUrl = URL.createObjectURL(blob);
+
+    if (isIosStandalone()) {
+      // iOS 主屏 PWA 下在同窗口打开更稳定
+      window.location.href = blobUrl;
+    } else {
+      window.open(blobUrl, "_blank", "noopener");
+    }
+
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
+  } catch (error) {
+    alert("打开文件失败，请重新导入该 PDF");
+    console.error(error);
+  }
+}
+
 async function onFileImport(docType, file) {
   if (!file) return;
   if (file.type !== "application/pdf") {
     alert("请选择 PDF 文件");
     return;
   }
+
   const dataUrl = await readAsDataUrl(file);
   const payload = { name: file.name, dataUrl };
-  localStorage.setItem(STORAGE_KEYS[docType], JSON.stringify(payload));
+
+  try {
+    localStorage.setItem(STORAGE_KEYS[docType], JSON.stringify(payload));
+  } catch (error) {
+    alert("文件过大或存储空间不足，请改用更小 PDF 或清理浏览器网站数据");
+    throw error;
+  }
+
   importedDocs[docType] = payload;
   renderDocs();
   renderTimeline();
@@ -108,6 +165,7 @@ function loadImportedDocs() {
   Object.entries(STORAGE_KEYS).forEach(([docType, key]) => {
     const raw = localStorage.getItem(key);
     if (!raw) return;
+
     try {
       importedDocs[docType] = JSON.parse(raw);
     } catch {
@@ -117,17 +175,18 @@ function loadImportedDocs() {
   });
 }
 
-function buildLocalDocLink(docType, label) {
+function buildLocalDocAction(docType, label) {
   const doc = importedDocs[docType];
   if (!doc) {
     return `<button class="btn" disabled>${label}（未导入）</button>`;
   }
-  return `<a class="btn" href="${doc.dataUrl}" download="${doc.name}">${label}</a>`;
+  return `<button class="btn local-doc-btn" data-doc-type="${docType}">${label}</button>`;
 }
 
 function renderTimeline() {
   const timelineEl = document.getElementById("timeline");
   timelineEl.innerHTML = "";
+
   itinerary.forEach((item) => {
     const mapActions = `
       <a class="btn" href="${mapsSearchUrl(item.coords, item.place)}" target="_blank" rel="noopener">地图定位</a>
@@ -140,7 +199,7 @@ function renderTimeline() {
           .join("")
       : "";
 
-    const localDocAction = item.docKey ? buildLocalDocLink(item.docKey, item.docLabel) : "";
+    const localDocAction = item.docKey ? buildLocalDocAction(item.docKey, item.docLabel) : "";
 
     const li = document.createElement("li");
     li.innerHTML = `
@@ -163,6 +222,7 @@ function renderTimeline() {
 function buildWarnings() {
   const warningEl = document.getElementById("warnings");
   warningEl.innerHTML = "";
+
   warnings.forEach((text) => {
     const li = document.createElement("li");
     li.textContent = text;
@@ -183,11 +243,13 @@ function renderDocs() {
   docDefs.forEach((docDef) => {
     const li = document.createElement("li");
     const doc = importedDocs[docDef.key];
+
     if (!doc) {
       li.textContent = `${docDef.title}：未导入`;
     } else {
-      li.innerHTML = `<a href="${doc.dataUrl}" download="${doc.name}">${docDef.title}：${doc.name}</a>`;
+      li.innerHTML = `<button class="btn local-doc-btn" data-doc-type="${docDef.key}">${docDef.title}：${doc.name}</button>`;
     }
+
     docsEl.appendChild(li);
   });
 }
@@ -212,6 +274,18 @@ function bindInputs() {
   });
   document.getElementById("hotelInput").addEventListener("change", (event) => {
     onFileImport("hotel", event.target.files[0]).catch((error) => alert(error.message));
+  });
+}
+
+function bindLocalDocClicks() {
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    if (!target.classList.contains("local-doc-btn")) return;
+
+    const docType = target.dataset.docType;
+    if (!docType) return;
+    openLocalDoc(docType);
   });
 }
 
@@ -242,6 +316,7 @@ if ("serviceWorker" in navigator) {
 
 loadImportedDocs();
 bindInputs();
+bindLocalDocClicks();
 renderTimeline();
 buildWarnings();
 renderDocs();
