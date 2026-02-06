@@ -101,6 +101,16 @@ button.btn {
   font-size: 0.9rem;
 }
 
+button.btn {
+  cursor: pointer;
+}
+
+button.btn.danger {
+  border-color: #7f3e31;
+  color: #7f3e31;
+  background: #f8e7e0;
+}
+
 .timeline {
   margin: 0;
   padding-left: 18px;
@@ -123,6 +133,47 @@ button.btn {
 .note {
   margin: 4px 0 0;
   color: #405157;
+}
+
+.editor-grid {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.editor-row {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.editor-index {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.editor-row label {
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.editor-row input {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 0.95rem;
 }
 
 .warnings {
@@ -152,21 +203,6 @@ small {
   color: #4d5f5b;
 }
 
-@media (min-width: 760px) {
-  main {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .card:first-child,
-  .card:nth-child(2) {
-    grid-column: span 2;
-  }
-
-  iframe {
-    height: 320px;
-  }
-}
-
 .imports {
   display: grid;
   gap: 10px;
@@ -190,4 +226,25 @@ button.btn:disabled {
   border-color: #9aa8a5;
   color: #6e7d79;
   background: #ebefee;
+  cursor: not-allowed;
+}
+
+@media (min-width: 760px) {
+  main {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .card:first-child,
+  .card:nth-child(2) {
+    grid-column: span 2;
+  }
+
+  iframe {
+    height: 320px;
+  }
+
+  .editor-row {
+    grid-template-columns: 28px 1fr 1fr;
+    align-items: end;
+  }
 }
