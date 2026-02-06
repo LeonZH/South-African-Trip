@@ -2,6 +2,7 @@ const STORAGE_KEYS = {
   flight: "sa_trip_doc_flight",
   hertz: "sa_trip_doc_hertz",
   hotel: "sa_trip_doc_hotel",
+  remarks: "sa_trip_event_remarks",
 };
 
 const importedDocs = {
@@ -9,6 +10,8 @@ const importedDocs = {
   hertz: null,
   hotel: null,
 };
+
+const eventRemarks = {};
 
 const itinerary = [
   {
@@ -158,6 +161,87 @@ function openLocalDoc(docType) {
   }
 }
 
+function ensureRemarks(eventId) {
+  if (!Array.isArray(eventRemarks[eventId])) {
+    eventRemarks[eventId] = [];
+  }
+  return eventRemarks[eventId];
+}
+
+function saveRemarks() {
+  localStorage.setItem(STORAGE_KEYS.remarks, JSON.stringify(eventRemarks));
+}
+
+function loadRemarks() {
+  const raw = localStorage.getItem(STORAGE_KEYS.remarks);
+  if (!raw) {
+    itinerary.forEach((item) => ensureRemarks(item.id));
+    return;
+  }
+
+  try {
+    const parsed = JSON.parse(raw);
+    itinerary.forEach((item) => {
+      const rows = parsed?.[item.id];
+      if (!Array.isArray(rows)) {
+        eventRemarks[item.id] = [];
+        return;
+      }
+
+      eventRemarks[item.id] = rows
+        .filter((row) => row && typeof row.id === "string" && typeof row.text === "string")
+        .map((row) => ({ id: row.id, text: row.text }));
+    });
+  } catch {
+    itinerary.forEach((item) => {
+      eventRemarks[item.id] = [];
+    });
+  }
+}
+
+function addRemark(eventId) {
+  const text = prompt("请输入备注内容");
+  if (!text || !text.trim()) return;
+
+  const rows = ensureRemarks(eventId);
+  rows.push({
+    id: `${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
+    text: text.trim(),
+  });
+  saveRemarks();
+  renderTimeline();
+}
+
+function editRemark(eventId, remarkId) {
+  const rows = ensureRemarks(eventId);
+  const target = rows.find((row) => row.id === remarkId);
+  if (!target) return;
+
+  const next = prompt("修改备注内容", target.text);
+  if (next === null) return;
+  if (!next.trim()) {
+    alert("备注不能为空；若不需要请使用删除。");
+    return;
+  }
+
+  target.text = next.trim();
+  saveRemarks();
+  renderTimeline();
+}
+
+function deleteRemark(eventId, remarkId) {
+  const rows = ensureRemarks(eventId);
+  const idx = rows.findIndex((row) => row.id === remarkId);
+  if (idx < 0) return;
+
+  const ok = confirm("确认删除这条备注？");
+  if (!ok) return;
+
+  rows.splice(idx, 1);
+  saveRemarks();
+  renderTimeline();
+}
+
 function buildLocalDocAction(docType, label) {
   const doc = importedDocs[docType];
   if (!doc) {
@@ -190,6 +274,33 @@ function buildSubItems(subItems) {
     .join("");
 }
 
+function buildRemarks(eventId) {
+  const rows = ensureRemarks(eventId);
+  const list = rows
+    .map(
+      (row) => `
+      <div class="remark-card">
+        <button class="remark-text" data-event-id="${eventId}" data-remark-id="${row.id}">${escapeHtml(row.text)}</button>
+        <div class="remark-actions">
+          <button class="btn remark-edit" data-event-id="${eventId}" data-remark-id="${row.id}">修改</button>
+          <button class="btn remark-delete" data-event-id="${eventId}" data-remark-id="${row.id}">删除</button>
+        </div>
+      </div>
+    `
+    )
+    .join("");
+
+  return `
+    <div class="remarks-head">
+      <span class="remarks-title">我的备注</span>
+      <button class="btn remark-add" data-event-id="${eventId}">+ 追加备注</button>
+    </div>
+    <div class="remarks-list">
+      ${list || '<p class="remark-empty">暂无备注，点击“追加备注”开始记录。</p>'}
+    </div>
+  `;
+}
+
 function renderTimeline() {
   const timelineEl = document.getElementById("timeline");
   timelineEl.innerHTML = "";
@@ -214,6 +325,9 @@ function renderTimeline() {
       </div>
       <div class="subitems-wrap">
         ${buildSubItems(item.subItems)}
+      </div>
+      <div class="remarks-wrap">
+        ${buildRemarks(item.id)}
       </div>
     `;
     timelineEl.appendChild(li);
@@ -323,6 +437,29 @@ function bindActionClicks() {
       const docType = target.dataset.docType;
       if (!docType) return;
       openLocalDoc(docType);
+      return;
+    }
+
+    if (target.classList.contains("remark-add")) {
+      const eventId = Number(target.dataset.eventId);
+      if (!eventId) return;
+      addRemark(eventId);
+      return;
+    }
+
+    if (target.classList.contains("remark-edit") || target.classList.contains("remark-text")) {
+      const eventId = Number(target.dataset.eventId);
+      const remarkId = target.dataset.remarkId;
+      if (!eventId || !remarkId) return;
+      editRemark(eventId, remarkId);
+      return;
+    }
+
+    if (target.classList.contains("remark-delete")) {
+      const eventId = Number(target.dataset.eventId);
+      const remarkId = target.dataset.remarkId;
+      if (!eventId || !remarkId) return;
+      deleteRemark(eventId, remarkId);
     }
   });
 }
@@ -353,6 +490,7 @@ if ("serviceWorker" in navigator) {
 }
 
 loadImportedDocs();
+loadRemarks();
 bindInputs();
 bindActionClicks();
 renderTimeline();

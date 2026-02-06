@@ -252,3 +252,57 @@ button.btn:disabled {
   margin: 6px 0;
   color: #41585c;
 }
+
+.remarks-wrap {
+  margin-top: 10px;
+  border-top: 1px dashed var(--border);
+  padding-top: 10px;
+}
+
+.remarks-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.remarks-title {
+  font-weight: 700;
+  color: #1f3b3c;
+}
+
+.remarks-list {
+  margin-top: 8px;
+  display: grid;
+  gap: 8px;
+}
+
+.remark-card {
+  border: 1px solid #d0d9d7;
+  border-radius: 10px;
+  background: #fcfffe;
+  padding: 8px;
+}
+
+.remark-text {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  color: #253a3f;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  padding: 0;
+  cursor: pointer;
+}
+
+.remark-actions {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+}
+
+.remark-empty {
+  margin: 0;
+  color: #637b78;
+}
