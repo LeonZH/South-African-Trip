@@ -161,9 +161,9 @@ function openLocalDoc(docType) {
   }
 }
 
-function ensureRemarks(eventId) {
-  if (!Array.isArray(eventRemarks[eventId])) {
-    eventRemarks[eventId] = [];
+function ensureRemarkText(eventId) {
+  if (typeof eventRemarks[eventId] !== "string") {
+    eventRemarks[eventId] = "";
   }
   return eventRemarks[eventId];
 }
@@ -175,71 +175,36 @@ function saveRemarks() {
 function loadRemarks() {
   const raw = localStorage.getItem(STORAGE_KEYS.remarks);
   if (!raw) {
-    itinerary.forEach((item) => ensureRemarks(item.id));
+    itinerary.forEach((item) => ensureRemarkText(item.id));
     return;
   }
 
   try {
     const parsed = JSON.parse(raw);
     itinerary.forEach((item) => {
-      const rows = parsed?.[item.id];
-      if (!Array.isArray(rows)) {
-        eventRemarks[item.id] = [];
+      const value = parsed?.[item.id];
+      if (typeof value === "string") {
+        eventRemarks[item.id] = value;
         return;
       }
 
-      eventRemarks[item.id] = rows
-        .filter((row) => row && typeof row.id === "string" && typeof row.text === "string")
-        .map((row) => ({ id: row.id, text: row.text }));
+      // Backward compatibility: migrate old list-style remarks to single block text.
+      if (Array.isArray(value)) {
+        eventRemarks[item.id] = value
+          .filter((row) => row && typeof row.text === "string")
+          .map((row) => row.text.trim())
+          .filter(Boolean)
+          .join("\n");
+        return;
+      }
+
+      eventRemarks[item.id] = "";
     });
   } catch {
     itinerary.forEach((item) => {
-      eventRemarks[item.id] = [];
+      eventRemarks[item.id] = "";
     });
   }
-}
-
-function addRemark(eventId) {
-  const text = prompt("请输入备注内容");
-  if (!text || !text.trim()) return;
-
-  const rows = ensureRemarks(eventId);
-  rows.push({
-    id: `${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
-    text: text.trim(),
-  });
-  saveRemarks();
-  renderTimeline();
-}
-
-function editRemark(eventId, remarkId) {
-  const rows = ensureRemarks(eventId);
-  const target = rows.find((row) => row.id === remarkId);
-  if (!target) return;
-
-  const next = prompt("修改备注内容", target.text);
-  if (next === null) return;
-  if (!next.trim()) {
-    alert("备注不能为空；若不需要请使用删除。");
-    return;
-  }
-
-  target.text = next.trim();
-  saveRemarks();
-  renderTimeline();
-}
-
-function deleteRemark(eventId, remarkId) {
-  const rows = ensureRemarks(eventId);
-  const idx = rows.findIndex((row) => row.id === remarkId);
-  if (idx < 0) return;
-
-  const ok = confirm("确认删除这条备注？");
-  if (!ok) return;
-
-  rows.splice(idx, 1);
-  saveRemarks();
-  renderTimeline();
 }
 
 function buildLocalDocAction(docType, label) {
@@ -275,28 +240,15 @@ function buildSubItems(subItems) {
 }
 
 function buildRemarks(eventId) {
-  const rows = ensureRemarks(eventId);
-  const list = rows
-    .map(
-      (row) => `
-      <div class="remark-card">
-        <button class="remark-text" data-event-id="${eventId}" data-remark-id="${row.id}">${escapeHtml(row.text)}</button>
-        <div class="remark-actions">
-          <button class="btn remark-edit" data-event-id="${eventId}" data-remark-id="${row.id}">修改</button>
-          <button class="btn remark-delete" data-event-id="${eventId}" data-remark-id="${row.id}">删除</button>
-        </div>
-      </div>
-    `
-    )
-    .join("");
+  const text = ensureRemarkText(eventId);
 
   return `
     <div class="remarks-head">
-      <span class="remarks-title">我的备注</span>
-      <button class="btn remark-add" data-event-id="${eventId}">+ 追加备注</button>
+      <span class="remarks-title">备注</span>
     </div>
-    <div class="remarks-list">
-      ${list || '<p class="remark-empty">暂无备注，点击“追加备注”开始记录。</p>'}
+    <div class="remark-editor" contenteditable="true" role="textbox" aria-multiline="true" data-event-id="${eventId}" data-placeholder="点击这里输入备注">${escapeHtml(text)}</div>
+    <div class="remark-hint">
+      点击备注区域即可编辑，输入会自动保存在本地。
     </div>
   `;
 }
@@ -437,29 +389,36 @@ function bindActionClicks() {
       const docType = target.dataset.docType;
       if (!docType) return;
       openLocalDoc(docType);
-      return;
     }
+  });
+}
 
-    if (target.classList.contains("remark-add")) {
-      const eventId = Number(target.dataset.eventId);
-      if (!eventId) return;
-      addRemark(eventId);
-      return;
-    }
+function bindRemarkEditing() {
+  document.addEventListener("input", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    if (!target.classList.contains("remark-editor")) return;
 
-    if (target.classList.contains("remark-edit") || target.classList.contains("remark-text")) {
-      const eventId = Number(target.dataset.eventId);
-      const remarkId = target.dataset.remarkId;
-      if (!eventId || !remarkId) return;
-      editRemark(eventId, remarkId);
-      return;
-    }
+    const eventId = Number(target.dataset.eventId);
+    if (!eventId) return;
 
-    if (target.classList.contains("remark-delete")) {
-      const eventId = Number(target.dataset.eventId);
-      const remarkId = target.dataset.remarkId;
-      if (!eventId || !remarkId) return;
-      deleteRemark(eventId, remarkId);
+    const text = target.innerText.replace(/\r\n?/g, "\n");
+    eventRemarks[eventId] = text;
+    saveRemarks();
+  });
+
+  document.addEventListener("focusout", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    if (!target.classList.contains("remark-editor")) return;
+
+    const eventId = Number(target.dataset.eventId);
+    if (!eventId) return;
+
+    if (!target.innerText.trim()) {
+      target.textContent = "";
+      eventRemarks[eventId] = "";
+      saveRemarks();
     }
   });
 }
@@ -493,6 +452,7 @@ loadImportedDocs();
 loadRemarks();
 bindInputs();
 bindActionClicks();
+bindRemarkEditing();
 renderTimeline();
 buildWarnings();
 renderDocs();

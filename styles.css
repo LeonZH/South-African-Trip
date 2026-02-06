@@ -260,10 +260,7 @@ button.btn:disabled {
 }
 
 .remarks-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  margin-bottom: 8px;
 }
 
 .remarks-title {
@@ -271,38 +268,31 @@ button.btn:disabled {
   color: #1f3b3c;
 }
 
-.remarks-list {
-  margin-top: 8px;
-  display: grid;
-  gap: 8px;
-}
-
-.remark-card {
+.remark-editor {
+  min-height: 86px;
   border: 1px solid #d0d9d7;
   border-radius: 10px;
   background: #fcfffe;
-  padding: 8px;
-}
-
-.remark-text {
-  width: 100%;
-  text-align: left;
-  border: 0;
-  background: transparent;
+  padding: 10px;
   color: #253a3f;
   font-size: 0.95rem;
-  line-height: 1.4;
-  padding: 0;
-  cursor: pointer;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  outline: none;
 }
 
-.remark-actions {
-  margin-top: 8px;
-  display: flex;
-  gap: 8px;
+.remark-editor:focus {
+  border-color: #0a5d5a;
+  box-shadow: 0 0 0 2px rgba(10, 93, 90, 0.14);
 }
 
-.remark-empty {
-  margin: 0;
-  color: #637b78;
+.remark-editor:empty::before {
+  content: attr(data-placeholder);
+  color: #7a8f8b;
+}
+
+.remark-hint {
+  margin-top: 6px;
+  font-size: 0.82rem;
+  color: #627a76;
 }
