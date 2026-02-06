@@ -251,6 +251,7 @@ button.btn:disabled {
 .mini-detail {
   margin: 6px 0;
   color: #41585c;
+  white-space: pre-line;
 }
 
 .remarks-wrap {
