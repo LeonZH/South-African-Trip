@@ -12,22 +12,20 @@
   </head>
   <body>
     <header class="hero">
-      <p id="currentDateLabel" class="date">2026-02-13（周五）</p>
+      <div class="hero-top">
+        <p id="currentDateLabel" class="date">2026-02-13（周五）</p>
+        <div class="date-switcher hero-date-switcher">
+          <button id="prevDateBtn" class="btn btn-ghost" type="button" aria-label="前一天">◀</button>
+          <select id="dateSelect" aria-label="选择日期"></select>
+          <button id="nextDateBtn" class="btn btn-ghost" type="button" aria-label="后一天">▶</button>
+        </div>
+      </div>
       <h1 id="currentTitle">伊丽莎白港 -> Addo 半日自驾</h1>
       <p id="currentSubtitle" class="subtitle">到达、取车、补给、入园、半天巡游，一屏掌握</p>
       <button id="installBtn" hidden>安装到手机</button>
     </header>
 
     <main>
-      <section class="card">
-        <h2>日期切换</h2>
-        <div class="date-switcher">
-          <button id="prevDateBtn" class="btn" type="button">前一天</button>
-          <select id="dateSelect" aria-label="选择日期"></select>
-          <button id="nextDateBtn" class="btn" type="button">后一天</button>
-        </div>
-      </section>
-
       <section class="card">
         <h2>地图总览</h2>
         <div class="map-wrap">

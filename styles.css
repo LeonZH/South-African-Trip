@@ -26,6 +26,13 @@ body {
   color: #fff;
 }
 
+.hero-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
 .date {
   margin: 0;
   opacity: 0.9;
@@ -122,6 +129,31 @@ button.btn {
   color: var(--ink);
   padding: 0 10px;
   font-size: 0.95rem;
+}
+
+.hero-date-switcher {
+  grid-template-columns: auto 130px auto;
+}
+
+.hero-date-switcher select {
+  min-height: 34px;
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font-size: 0.88rem;
+}
+
+.hero-date-switcher select option {
+  color: #1d2c30;
+}
+
+.btn-ghost {
+  min-width: 34px;
+  min-height: 34px;
+  padding: 0 8px;
+  border-color: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
 }
 
 .timeline {
@@ -260,13 +292,24 @@ button.btn:disabled {
     grid-template-columns: 1fr 1fr;
   }
 
-  .card:nth-child(2),
-  .card:nth-child(3) {
+  .card:nth-child(1),
+  .card:nth-child(2) {
     grid-column: span 2;
   }
 
   iframe {
     height: 320px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-date-switcher {
+    grid-template-columns: auto 1fr auto;
   }
 }
 
