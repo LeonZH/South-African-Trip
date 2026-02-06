@@ -82,7 +82,8 @@ iframe {
 }
 
 .actions,
-.item-actions {
+.item-actions,
+.mini-actions {
   margin-top: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -105,19 +106,31 @@ button.btn {
   cursor: pointer;
 }
 
-button.btn.danger {
-  border-color: #7f3e31;
-  color: #7f3e31;
-  background: #f8e7e0;
-}
-
 .timeline {
   margin: 0;
-  padding-left: 18px;
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  gap: 12px;
 }
 
-.timeline li {
-  margin-bottom: 12px;
+.event-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  background: #fff;
+}
+
+.event-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: baseline;
+}
+
+.event-index {
+  font-weight: 700;
+  color: var(--accent);
 }
 
 .time {
@@ -126,54 +139,45 @@ button.btn.danger {
 }
 
 .place {
-  margin-left: 4px;
   font-weight: 600;
+}
+
+.event-title {
+  margin-top: 4px;
+  font-size: 1.22rem;
+  font-weight: 700;
 }
 
 .note {
-  margin: 4px 0 0;
+  margin: 6px 0 0;
   color: #405157;
 }
 
-.editor-grid {
-  display: grid;
-  gap: 10px;
+.subitems-wrap {
   margin-top: 10px;
+  border-top: 1px dashed var(--border);
+  padding-top: 10px;
 }
 
-.editor-row {
+.mini-list {
   display: grid;
   gap: 8px;
-  padding: 10px;
-  border: 1px solid var(--border);
+}
+
+.mini-card {
+  border: 1px solid #c6ddd9;
   border-radius: 10px;
-  background: #fff;
-}
-
-.editor-index {
-  width: 24px;
-  height: 24px;
-  border-radius: 999px;
-  background: var(--accent-soft);
-  color: var(--accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 0.9rem;
-}
-
-.editor-row label {
-  display: grid;
-  gap: 6px;
-  font-weight: 600;
-}
-
-.editor-row input {
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  background: #f7fffd;
   padding: 8px;
-  font-size: 0.95rem;
+}
+
+.mini-title {
+  font-weight: 700;
+}
+
+.mini-empty {
+  margin: 0;
+  color: #637b78;
 }
 
 .warnings {
@@ -241,10 +245,5 @@ button.btn:disabled {
 
   iframe {
     height: 320px;
-  }
-
-  .editor-row {
-    grid-template-columns: 28px 1fr 1fr;
-    align-items: end;
   }
 }

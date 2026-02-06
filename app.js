@@ -2,7 +2,7 @@ const STORAGE_KEYS = {
   flight: "sa_trip_doc_flight",
   hertz: "sa_trip_doc_hertz",
   hotel: "sa_trip_doc_hotel",
-  customMaps: "sa_trip_custom_maps",
+  eventSubItems: "sa_trip_event_subitems",
 };
 
 const importedDocs = {
@@ -11,7 +11,7 @@ const importedDocs = {
   hotel: null,
 };
 
-const customMaps = {};
+const eventSubItems = {};
 
 const itinerary = [
   {
@@ -41,6 +41,16 @@ const itinerary = [
     place: "Summerstrand / Walmer",
     coords: "-33.9836,25.6659",
     note: "建议在商圈内停留，白天行动，车内不留物品。",
+    defaultSubItems: [
+      {
+        name: "午餐推荐区域",
+        url: "https://www.google.com/maps/search/?api=1&query=restaurants+Summerstrand+Gqeberha",
+      },
+      {
+        name: "超市推荐区域",
+        url: "https://www.google.com/maps/search/?api=1&query=supermarket+Walmer+Gqeberha",
+      },
+    ],
   },
   {
     id: 4,
@@ -59,6 +69,12 @@ const itinerary = [
     place: "Main Camp -> Hapoor Loop -> Domkrag Dam -> Main Camp",
     coords: "-33.4830,25.7499",
     note: "傍晚是动物活动高峰，控制车速，预留返营地时间。",
+    defaultSubItems: [
+      {
+        name: "半天环线导航",
+        url: "https://www.google.com/maps/dir/?api=1&origin=-33.4830,25.7499&destination=-33.4830,25.7499&travelmode=driving&waypoints=-33.4349,25.7429|-33.4308,25.7517",
+      },
+    ],
   },
 ];
 
@@ -69,8 +85,26 @@ const warnings = [
   "严格遵守园区限速与关门时间，天黑前回到营地。",
 ];
 
+function escapeHtml(str) {
+  return String(str)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
 function mapsSearchUrl(coords, label) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(coords + ` (${label})`)}`;
+}
+
+function isValidHttpUrl(value) {
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
 }
 
 function readAsDataUrl(file) {
@@ -131,146 +165,98 @@ function openLocalDoc(docType) {
       window.open(blobUrl, "_blank", "noopener");
     }
 
-    setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
   } catch (error) {
     alert("打开文件失败，请重新导入该 PDF");
     console.error(error);
   }
 }
 
-function isGoogleMapUrl(value) {
-  try {
-    const url = new URL(value);
-    if (!["http:", "https:"].includes(url.protocol)) return false;
-
-    const host = url.hostname.toLowerCase();
-    if (host === "maps.app.goo.gl") return true;
-    if (host === "goo.gl") return true;
-    if (host.endsWith("google.com") || host.endsWith("google.co.za")) return true;
-    return false;
-  } catch {
-    return false;
+function ensureSubItems(eventId) {
+  if (!eventSubItems[eventId]) {
+    const event = itinerary.find((item) => item.id === eventId);
+    eventSubItems[eventId] = event?.defaultSubItems ? [...event.defaultSubItems] : [];
   }
+  return eventSubItems[eventId];
 }
 
-function loadCustomMaps() {
-  const raw = localStorage.getItem(STORAGE_KEYS.customMaps);
-  if (!raw) return;
-
-  try {
-    const parsed = JSON.parse(raw);
-    if (parsed && typeof parsed === "object") {
-      itinerary.forEach((item) => {
-        const row = parsed[item.id];
-        if (!row) return;
-        customMaps[item.id] = {
-          name: typeof row.name === "string" ? row.name : "",
-          url: typeof row.url === "string" ? row.url : "",
-        };
-      });
-    }
-  } catch {
-    localStorage.removeItem(STORAGE_KEYS.customMaps);
-  }
+function saveSubItems() {
+  localStorage.setItem(STORAGE_KEYS.eventSubItems, JSON.stringify(eventSubItems));
 }
 
-function saveCustomMapsFromInputs() {
-  const next = {};
-
-  for (const item of itinerary) {
-    const nameInput = document.getElementById(`customName-${item.id}`);
-    const urlInput = document.getElementById(`customUrl-${item.id}`);
-
-    const name = nameInput ? nameInput.value.trim() : "";
-    const url = urlInput ? urlInput.value.trim() : "";
-
-    if (url && !isGoogleMapUrl(url)) {
-      alert(`第 ${item.id} 条链接格式无效，请填写 Google Maps 链接，例如 maps.app.goo.gl`);
-      if (urlInput) urlInput.focus();
-      return;
-    }
-
-    next[item.id] = { name, url };
-  }
-
-  localStorage.setItem(STORAGE_KEYS.customMaps, JSON.stringify(next));
-
-  Object.keys(customMaps).forEach((key) => delete customMaps[key]);
-  Object.entries(next).forEach(([id, value]) => {
-    customMaps[id] = value;
-  });
-
-  renderTimeline();
-  alert("已保存 1-5 目的地补充");
-}
-
-function clearCustomMaps() {
-  localStorage.removeItem(STORAGE_KEYS.customMaps);
-  Object.keys(customMaps).forEach((key) => delete customMaps[key]);
-  renderCustomMapEditor();
-  renderTimeline();
-}
-
-function renderCustomMapEditor() {
-  const root = document.getElementById("customMapEditor");
-  root.innerHTML = "";
-
-  itinerary.forEach((item) => {
-    const current = customMaps[item.id] || { name: "", url: "" };
-    const row = document.createElement("div");
-    row.className = "editor-row";
-
-    row.innerHTML = `
-      <div class="editor-index">${item.id}</div>
-      <label>
-        目的地名称
-        <input id="customName-${item.id}" type="text" value="${current.name.replace(/"/g, "&quot;")}" placeholder="例如：午餐推荐区域" />
-      </label>
-      <label>
-        Google Maps 链接
-        <input id="customUrl-${item.id}" type="url" value="${current.url.replace(/"/g, "&quot;")}" placeholder="https://maps.app.goo.gl/..." />
-      </label>
-    `;
-
-    root.appendChild(row);
-  });
-}
-
-async function onFileImport(docType, file) {
-  if (!file) return;
-  if (file.type !== "application/pdf") {
-    alert("请选择 PDF 文件");
+function loadSubItems() {
+  const raw = localStorage.getItem(STORAGE_KEYS.eventSubItems);
+  if (!raw) {
+    itinerary.forEach((item) => ensureSubItems(item.id));
     return;
   }
 
-  const dataUrl = await readAsDataUrl(file);
-  const payload = { name: file.name, dataUrl };
-
   try {
-    localStorage.setItem(STORAGE_KEYS[docType], JSON.stringify(payload));
-  } catch (error) {
-    alert("文件过大或存储空间不足，请改用更小 PDF 或清理浏览器网站数据");
-    throw error;
+    const parsed = JSON.parse(raw);
+    itinerary.forEach((item) => {
+      const incoming = parsed?.[item.id];
+      if (Array.isArray(incoming)) {
+        eventSubItems[item.id] = incoming
+          .filter((row) => row && typeof row.name === "string" && typeof row.url === "string")
+          .map((row) => ({ name: row.name, url: row.url }));
+      } else {
+        ensureSubItems(item.id);
+      }
+    });
+  } catch {
+    itinerary.forEach((item) => ensureSubItems(item.id));
+  }
+}
+
+function addSubItem(eventId) {
+  const name = prompt("请输入小卡片名称（例如：午餐推荐区域）");
+  if (!name) return;
+
+  const url = prompt("请输入 Google Maps 链接（例如：https://maps.app.goo.gl/...）");
+  if (!url) return;
+
+  if (!isValidHttpUrl(url)) {
+    alert("链接格式无效，请填写 http/https 链接");
+    return;
   }
 
-  importedDocs[docType] = payload;
-  renderDocs();
+  const items = ensureSubItems(eventId);
+  items.push({ name: name.trim(), url: url.trim() });
+  saveSubItems();
   renderTimeline();
 }
 
-function loadImportedDocs() {
-  Object.entries(STORAGE_KEYS).forEach(([docType, key]) => {
-    if (!["flight", "hertz", "hotel"].includes(docType)) return;
-    const raw = localStorage.getItem(key);
-    if (!raw) return;
+function editSubItem(eventId, index) {
+  const items = ensureSubItems(eventId);
+  const current = items[index];
+  if (!current) return;
 
-    try {
-      importedDocs[docType] = JSON.parse(raw);
-    } catch {
-      localStorage.removeItem(key);
-      importedDocs[docType] = null;
-    }
-  });
+  const nextName = prompt("修改小卡片名称", current.name);
+  if (!nextName) return;
+
+  const nextUrl = prompt("修改 Google Maps 链接", current.url);
+  if (!nextUrl) return;
+
+  if (!isValidHttpUrl(nextUrl)) {
+    alert("链接格式无效，请填写 http/https 链接");
+    return;
+  }
+
+  items[index] = { name: nextName.trim(), url: nextUrl.trim() };
+  saveSubItems();
+  renderTimeline();
+}
+
+function deleteSubItem(eventId, index) {
+  const items = ensureSubItems(eventId);
+  if (!items[index]) return;
+
+  const ok = confirm("确认删除这个小卡片？");
+  if (!ok) return;
+
+  items.splice(index, 1);
+  saveSubItems();
+  renderTimeline();
 }
 
 function buildLocalDocAction(docType, label) {
@@ -281,13 +267,30 @@ function buildLocalDocAction(docType, label) {
   return `<button class="btn local-doc-btn" data-doc-type="${docType}">${label}</button>`;
 }
 
-function buildCustomMapAction(itemId) {
-  const row = customMaps[itemId];
-  if (!row || !row.name || !row.url) {
-    return `<button class="btn" disabled>自定义目的地（待填写）</button>`;
-  }
+function buildSubItems(eventId) {
+  const items = ensureSubItems(eventId);
 
-  return `<button class="btn custom-map-btn" data-map-url="${row.url.replace(/"/g, "&quot;")}">${row.name}（Google Maps）</button>`;
+  const cards = items
+    .map((item, index) => {
+      return `
+        <div class="mini-card">
+          <div class="mini-title">${escapeHtml(item.name)}</div>
+          <div class="mini-actions">
+            <button class="btn mini-open" data-event-id="${eventId}" data-index="${index}">打开</button>
+            <button class="btn mini-edit" data-event-id="${eventId}" data-index="${index}">编辑</button>
+            <button class="btn mini-delete" data-event-id="${eventId}" data-index="${index}">删除</button>
+          </div>
+        </div>
+      `;
+    })
+    .join("");
+
+  return `
+    <div class="mini-list">
+      ${cards || '<p class="mini-empty">暂无小卡片，点击下方“添加小卡片”</p>'}
+    </div>
+    <button class="btn mini-add" data-event-id="${eventId}">+ 添加小卡片</button>
+  `;
 }
 
 function renderTimeline() {
@@ -295,26 +298,25 @@ function renderTimeline() {
   timelineEl.innerHTML = "";
 
   itinerary.forEach((item) => {
-    const mapActions = `
-      <a class="btn" href="${mapsSearchUrl(item.coords, item.place)}" target="_blank" rel="noopener">地图定位</a>
-      <a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(item.coords)}" target="_blank" rel="noopener">导航到这里</a>
-    `;
-
     const localDocAction = item.docKey ? buildLocalDocAction(item.docKey, item.docLabel) : "";
-    const customMapAction = buildCustomMapAction(item.id);
 
     const li = document.createElement("li");
+    li.className = "event-card";
     li.innerHTML = `
-      <div>
+      <div class="event-head">
+        <span class="event-index">${item.id}.</span>
         <span class="time">${item.time}</span>
         <span class="place">${item.place}</span>
       </div>
-      <div>${item.title}</div>
+      <div class="event-title">${item.title}</div>
       <p class="note">${item.note}</p>
       <div class="item-actions">
-        ${mapActions}
+        <a class="btn" href="${mapsSearchUrl(item.coords, item.place)}" target="_blank" rel="noopener">地图定位</a>
+        <a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(item.coords)}" target="_blank" rel="noopener">导航到这里</a>
         ${localDocAction}
-        ${customMapAction}
+      </div>
+      <div class="subitems-wrap">
+        ${buildSubItems(item.id)}
       </div>
     `;
     timelineEl.appendChild(li);
@@ -349,7 +351,7 @@ function renderDocs() {
     if (!doc) {
       li.textContent = `${docDef.title}：未导入`;
     } else {
-      li.innerHTML = `<button class="btn local-doc-btn" data-doc-type="${docDef.key}">${docDef.title}：${doc.name}</button>`;
+      li.innerHTML = `<button class="btn local-doc-btn" data-doc-type="${docDef.key}">${docDef.title}：${escapeHtml(doc.name)}</button>`;
     }
 
     docsEl.appendChild(li);
@@ -367,6 +369,42 @@ function buildRouteActions() {
   `;
 }
 
+async function onFileImport(docType, file) {
+  if (!file) return;
+  if (file.type !== "application/pdf") {
+    alert("请选择 PDF 文件");
+    return;
+  }
+
+  const dataUrl = await readAsDataUrl(file);
+  const payload = { name: file.name, dataUrl };
+
+  try {
+    localStorage.setItem(STORAGE_KEYS[docType], JSON.stringify(payload));
+  } catch (error) {
+    alert("文件过大或存储空间不足，请改用更小 PDF 或清理浏览器网站数据");
+    throw error;
+  }
+
+  importedDocs[docType] = payload;
+  renderDocs();
+  renderTimeline();
+}
+
+function loadImportedDocs() {
+  ["flight", "hertz", "hotel"].forEach((docType) => {
+    const raw = localStorage.getItem(STORAGE_KEYS[docType]);
+    if (!raw) return;
+
+    try {
+      importedDocs[docType] = JSON.parse(raw);
+    } catch {
+      localStorage.removeItem(STORAGE_KEYS[docType]);
+      importedDocs[docType] = null;
+    }
+  });
+}
+
 function bindInputs() {
   document.getElementById("flightInput").addEventListener("change", (event) => {
     onFileImport("flight", event.target.files[0]).catch((error) => alert(error.message));
@@ -377,9 +415,6 @@ function bindInputs() {
   document.getElementById("hotelInput").addEventListener("change", (event) => {
     onFileImport("hotel", event.target.files[0]).catch((error) => alert(error.message));
   });
-
-  document.getElementById("saveCustomMapsBtn").addEventListener("click", saveCustomMapsFromInputs);
-  document.getElementById("clearCustomMapsBtn").addEventListener("click", clearCustomMaps);
 }
 
 function bindActionClicks() {
@@ -394,10 +429,37 @@ function bindActionClicks() {
       return;
     }
 
-    if (target.classList.contains("custom-map-btn")) {
-      const url = target.dataset.mapUrl;
-      if (!url) return;
-      openExternalUrl(url);
+    if (target.classList.contains("mini-add")) {
+      const eventId = Number(target.dataset.eventId);
+      if (!eventId) return;
+      addSubItem(eventId);
+      return;
+    }
+
+    if (target.classList.contains("mini-open")) {
+      const eventId = Number(target.dataset.eventId);
+      const index = Number(target.dataset.index);
+      const items = ensureSubItems(eventId);
+      const item = items[index];
+      if (item?.url) openExternalUrl(item.url);
+      return;
+    }
+
+    if (target.classList.contains("mini-edit")) {
+      const eventId = Number(target.dataset.eventId);
+      const index = Number(target.dataset.index);
+      if (!eventId && eventId !== 0) return;
+      if (Number.isNaN(index)) return;
+      editSubItem(eventId, index);
+      return;
+    }
+
+    if (target.classList.contains("mini-delete")) {
+      const eventId = Number(target.dataset.eventId);
+      const index = Number(target.dataset.index);
+      if (!eventId && eventId !== 0) return;
+      if (Number.isNaN(index)) return;
+      deleteSubItem(eventId, index);
     }
   });
 }
@@ -428,10 +490,9 @@ if ("serviceWorker" in navigator) {
 }
 
 loadImportedDocs();
-loadCustomMaps();
+loadSubItems();
 bindInputs();
 bindActionClicks();
-renderCustomMapEditor();
 renderTimeline();
 buildWarnings();
 renderDocs();
