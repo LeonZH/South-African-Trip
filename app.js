@@ -460,7 +460,6 @@ function buildRemarks(dateStr, eventId) {
 }
 
 function renderHeader(dateStr, plan) {
-  document.getElementById("currentDateLabel").textContent = formatDateLabel(dateStr);
   document.getElementById("currentTitle").textContent = plan.title;
   document.getElementById("currentSubtitle").textContent = plan.subtitle;
   document.title = `南非旅行助手 · ${dateStr}`;
