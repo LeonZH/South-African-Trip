@@ -12,6 +12,13 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  width: 100%;
+  overflow-x: hidden;
+  touch-action: manipulation;
+}
+
 body {
   margin: 0;
   font-family: "Noto Sans SC", "PingFang SC", "Helvetica Neue", sans-serif;
@@ -24,6 +31,7 @@ body {
   padding: 20px 16px 12px;
   background: linear-gradient(160deg, #0a5d5a, #2d7a62 60%, #4e8f6e);
   color: #fff;
+  overflow: hidden;
 }
 
 .hero-top {
@@ -61,6 +69,7 @@ main {
   padding: 12px;
   display: grid;
   gap: 12px;
+  overflow-x: clip;
 }
 
 .card {

@@ -1010,6 +1010,34 @@ function bindRemarkEditing() {
   });
 }
 
+function bindIosNoZoom() {
+  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  if (!isIOS) return;
+
+  // Block pinch-zoom gestures inside iOS Safari/PWA.
+  document.addEventListener(
+    "gesturestart",
+    (event) => {
+      event.preventDefault();
+    },
+    { passive: false }
+  );
+
+  // Block double-tap zoom.
+  let lastTouchEnd = 0;
+  document.addEventListener(
+    "touchend",
+    (event) => {
+      const now = Date.now();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    },
+    { passive: false }
+  );
+}
+
 let deferredPrompt;
 const installBtn = document.getElementById("installBtn");
 
@@ -1041,6 +1069,7 @@ loadRemarks();
 bindDateSwitcher();
 bindActionClicks();
 bindRemarkEditing();
+bindIosNoZoom();
 renderDateOptions();
 
 const initialHashDate = window.location.hash.replace("#", "");
