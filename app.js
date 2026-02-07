@@ -976,6 +976,400 @@ const PLAN_BY_DATE = {
       },
     ],
   },
+  "2026-02-18": {
+    title: "Plett -> Swellendam 转场日（沿途精选 + 小镇收尾）",
+    subtitle: "沿途停靠 60-70% + 小镇散步 30-40%，15:00 左右入住最稳",
+    extraRouteActions: [
+      {
+        label: "Aan de Eike Guest House（地图）",
+        href: "https://www.google.com/maps/search/?api=1&query=Aan+de+Eike+Guest+House+Swellendam",
+      },
+      {
+        label: "Drostdy Museum（地图）",
+        href: "https://www.google.com/maps/search/?api=1&query=Drostdy+Museum+Swellendam",
+      },
+      {
+        label: "Dutch Reformed Church（地图）",
+        href: "https://www.google.com/maps/search/?api=1&query=Dutch+Reformed+Church+Swellendam",
+      },
+      {
+        label: "Swellendam 餐厅检索",
+        href: "https://www.google.com/maps/search/?api=1&query=restaurants+in+Swellendam",
+      },
+    ],
+    warnings: [
+      "今日重心：沿途精选停靠 60-70%，Swellendam 小镇轻量收尾 30-40%，不把中途休息升级成半日游。",
+      "酒店：Aan de Eike Guest House（C/O Swellengrebel St. & Hermanus Steyn St., Swellendam 6740）。",
+      "入住窗口 14:00-18:00，建议 14:30-15:30 抵达；如晚点直接联系 +27 28 514 1066。",
+      "次日退房 10:00-10:30；含早餐，提供免费停车与全区域免费 Wi-Fi。",
+      "路上服务区密度不高于国内高速常见水平：车上前置水、零食、湿巾，减少临停焦虑。",
+    ],
+    itinerary: [
+      {
+        id: 1,
+        time: "08:00-09:00",
+        title: "早餐 + 退房准备",
+        place: "Plettenberg Bay 住处",
+        coords: "-34.0527,23.3716",
+        note: "转场日先把节奏稳住：早餐吃扎实、行李分层装车，孩子路上即用物放前排可直接拿。",
+        subItems: [
+          {
+            name: "车载即用箱",
+            detail: "水、坚果、饼干、湿巾、纸巾、充电线集中放在前排，随停随取。",
+          },
+          {
+            name: "出门前 1 分钟检查",
+            detail: "证件、手机、车钥匙、房门钥匙/门禁码、导航目的地一次性确认。",
+          },
+        ],
+      },
+      {
+        id: 2,
+        time: "09:00-10:30",
+        title: "从 Plett 出发（N2 主线）",
+        place: "Plettenberg Bay -> Wilderness / Mossel Bay",
+        coords: "-33.9917,22.5791",
+        note: "今天策略是“精选停靠”，不做一路打卡拉满；把体力和时间留给下午入住与小镇散步。",
+        subItems: [
+          {
+            name: "主路线建议",
+            detail: "走 N2 主线，按实时路况微调；不为了小众点位绕远路。",
+          },
+          {
+            name: "沿途导航检索",
+            detail: "用于临时找加油站和洗手间，优先选择容易进出的站点。",
+            url: "https://www.google.com/maps/search/?api=1&query=petrol+station+on+N2+Western+Cape",
+          },
+        ],
+      },
+      {
+        id: 3,
+        time: "10:30-12:00",
+        title: "放电停靠（A/B 二选一，停 60-90 分钟）",
+        place: "Wilderness / Mossel Bay",
+        coords: "-34.1831,22.1461",
+        note: "核心是“休息 + 风景 + 洗手间 + 补水”。停够就走，避免把中途休息变成半日游。",
+        subItems: [
+          {
+            name: "A 方案：Wilderness 海边步道",
+            detail: "景观稳定、孩子可活动，适合轻量拉伸后继续上路。",
+            url: "https://www.google.com/maps/search/?api=1&query=Wilderness+Beach+Western+Cape",
+          },
+          {
+            name: "B 方案：Mossel Bay 轻量看海 + 补给",
+            detail: "城市化程度更高，补给和洗手间通常更好找。",
+            url: "https://www.google.com/maps/search/?api=1&query=Mossel+Bay+Waterfront",
+          },
+        ],
+      },
+      {
+        id: 4,
+        time: "12:00-13:00",
+        title: "午餐（停车方便 + 上菜快）",
+        place: "George / Mossel Bay",
+        coords: "-33.9628,22.4617",
+        note: "午餐只追求“快、稳、好停车”，避免在此段消耗下午入住窗口。",
+        subItems: [
+          {
+            name: "选店原则",
+            detail: "现场看停车便利和排队情况，减少步行切换和等位时间。",
+          },
+          {
+            name: "餐厅检索入口",
+            detail: "按你所在点位快速选店，不固定绑定单一餐厅。",
+            url: "https://www.google.com/maps/search/?api=1&query=family+restaurant+George+Western+Cape",
+          },
+        ],
+      },
+      {
+        id: 5,
+        time: "13:00-14:30",
+        title: "继续前往 Swellendam",
+        place: "N2 西向",
+        coords: "-34.0232,20.4417",
+        note: "目标 14:30-15:30 抵达，给堵车、加油、临时休息留出缓冲，不压线赶入住。",
+        subItems: [
+          {
+            name: "到店节奏",
+            detail: "预计 15:00 左右最舒适；若晚于 17:30，建议提前电话通知酒店。",
+          },
+        ],
+      },
+      {
+        id: 6,
+        time: "14:30-15:30",
+        title: "办理入住：Aan de Eike Guest House",
+        place: "Aan de Eike Guest House, Swellendam",
+        coords: "-34.0232,20.4417",
+        note: "先完成入住与停车，再把次日早餐/退房节奏确认好，转场日到这里就算任务完成。",
+        docKey: "hotel",
+        docLabel: "酒店资料（本地）",
+        subItems: [
+          {
+            name: "酒店地址",
+            detail: "C/O Swellengrebel St. & Hermanus Steyn St., Swellendam 6740",
+          },
+          {
+            name: "酒店电话",
+            detail: "+27 28 514 1066（路上晚点可直接沟通）。",
+          },
+          {
+            name: "入住与设施",
+            detail: "Check-in 14:00-18:00；Check-out 10:00-10:30；含早餐；免费停车；免费 Wi-Fi。",
+          },
+        ],
+      },
+      {
+        id: 7,
+        time: "16:00-17:30",
+        title: "Swellendam 轻量散步（历史核心环线）",
+        place: "Drostdy Museum -> 历史街区 -> Dutch Reformed Church",
+        coords: "-34.0228,20.4443",
+        note: "转场日不再加大运动量，按“出片 + 放松 + 顺路晚饭”思路慢走收尾。",
+        subItems: [
+          {
+            name: "第一站：Drostdy Museum（近）",
+            detail: "从住处步行可达，适合先拍建筑与庭院。",
+            url: "https://www.google.com/maps/search/?api=1&query=Drostdy+Museum+Swellendam",
+          },
+          {
+            name: "第二段：历史街区慢走",
+            detail: "看到顺眼街景就拍，不追求“走完所有路”。",
+          },
+          {
+            name: "第三站：Dutch Reformed Church",
+            detail: "作为地标收尾，周边晚餐选择也更集中。",
+            url: "https://www.google.com/maps/search/?api=1&query=Dutch+Reformed+Church+Swellendam",
+          },
+        ],
+      },
+      {
+        id: 8,
+        time: "18:10-19:30",
+        title: "晚餐（三选一：稳妥 / 氛围 / 轻松）",
+        place: "Swellendam 主街与历史核心区",
+        coords: "-34.0241,20.4461",
+        note: "按当时排队情况快速决策即可，不为单店久等；转场日晚餐以节奏舒适优先。",
+        subItems: [
+          {
+            name: "Field & Fork Country Kitchen（稳妥）",
+            detail: "整体口碑稳定，家庭就餐容错高。",
+            url: "https://www.google.com/maps/search/?api=1&query=Field+%26+Fork+Country+Kitchen+Swellendam",
+          },
+          {
+            name: "La Belle Alliance（氛围）",
+            detail: "在散步动线附近，适合“慢慢吃”的晚餐。",
+            url: "https://www.google.com/maps/search/?api=1&query=La+Belle+Alliance+Swellendam",
+          },
+          {
+            name: "Barrel and Blues / Woodpecker Pizzadeli（轻松）",
+            detail: "如果只想快速吃完回酒店，这类选择更轻便。",
+            url: "https://www.google.com/maps/search/?api=1&query=Woodpecker+Pizzadeli+Swellendam",
+          },
+        ],
+      },
+      {
+        id: 9,
+        time: "19:30-20:00",
+        title: "回酒店收尾 + 早点休息",
+        place: "Aan de Eike Guest House",
+        coords: "-34.0232,20.4417",
+        note: "今晚的高回报动作是早睡，为 2/19 的继续行程保留体力和专注度。",
+        subItems: [],
+      },
+    ],
+  },
+  "2026-02-19": {
+    title: "Swellendam -> Hermanus -> Clarence Drive -> Cape Town（海岸风景线）",
+    subtitle: "把转场开成风景纪录片：Hermanus 午餐步道 + R44 海岸线 + Waterfront 轻松收尾",
+    extraRouteActions: [
+      {
+        label: "Hermanus Cliff Path（地图）",
+        href: "https://www.google.com/maps/search/?api=1&query=Hermanus+Cliff+Path",
+      },
+      {
+        label: "Clarence Drive R44（地图）",
+        href: "https://www.google.com/maps/search/?api=1&query=Clarence+Drive+R44",
+      },
+      {
+        label: "Stony Point 企鹅栈道（地图）",
+        href: "https://www.google.com/maps/search/?api=1&query=Stony+Point+Nature+Reserve",
+      },
+      {
+        label: "Breakwater Lodge（地图）",
+        href: "https://www.google.com/maps/search/?api=1&query=Protea+Hotel+Breakwater+Lodge+Cape+Town",
+      },
+      {
+        label: "V&A Waterfront（地图）",
+        href: "https://www.google.com/maps/search/?api=1&query=V%26A+Waterfront+Cape+Town",
+      },
+    ],
+    warnings: [
+      "硬约束：Swellengrebel 住宿段建议 10:00 开始退房，10:30 出发最稳，不拖入午后路况。",
+      "Breakwater Lodge 15:00 后可入住；酒店位于 V&A Waterfront；停车约 25 ZAR/天；含早餐。",
+      "企鹅站（Betty's Bay）是加分项，不是必选项：若 16:00 仍在路上或明显疲劳，直接跳过。",
+      "今晚策略：不再开车找餐厅，晚餐在 Waterfront 步行范围内解决，降低切换成本。",
+      "抵达开普敦后先完成“停车-入住-放行李”，再去黄昏散步，体验会更完整。",
+    ],
+    itinerary: [
+      {
+        id: 1,
+        time: "10:00-10:30",
+        title: "退房 + 装车 + 出发前补给",
+        place: "Aan de Eike Guest House（Swellendam）",
+        coords: "-34.0232,20.4417",
+        note: "10:00 开始退房动作，10:30 准时离开；上车前把补水、洗手间、导航一次性处理完。",
+        subItems: [
+          {
+            name: "出发前 3 件事",
+            detail: "房卡/钥匙确认、行李固定、车内即用包放前排。",
+          },
+          {
+            name: "节奏目标",
+            detail: "按点出发是今天整条海岸线不赶路的基础。",
+          },
+        ],
+      },
+      {
+        id: 2,
+        time: "10:30-12:00",
+        title: "Swellendam -> Hermanus（移动回血段）",
+        place: "N2 -> Hermanus",
+        coords: "-34.4187,19.2345",
+        note: "这段以稳定推进为主：司机专注开车，乘客补觉/吃零食，减少后段疲劳。",
+        subItems: [
+          {
+            name: "路段特征",
+            detail: "Overberg 开阔农田 + 远山视野，适合轻松推进。",
+          },
+        ],
+      },
+      {
+        id: 3,
+        time: "12:00-13:30",
+        title: "Hermanus 午餐 + Cliff Path 轻量步行",
+        place: "Hermanus（Cliff Path 一带）",
+        coords: "-34.4246,19.2412",
+        note: "午餐后走 30-45 分钟海崖步道，重心是“舒服体验”，不是追距离。",
+        subItems: [
+          {
+            name: "午餐策略 A（推荐）",
+            detail: "简餐/三明治/沙拉 + 咖啡，把体力留给后段 R44 观景路。",
+          },
+          {
+            name: "午餐策略 B",
+            detail: "正常正餐可行，但尽量控制在 60 分钟内，避免后段赶路。",
+          },
+          {
+            name: "步道入口检索",
+            detail: "就近开走，走到舒服就回头。",
+            url: "https://www.google.com/maps/search/?api=1&query=Hermanus+Cliff+Path",
+          },
+        ],
+      },
+      {
+        id: 4,
+        time: "13:30-15:00",
+        title: "Hermanus -> Clarence Drive（R44）观景段",
+        place: "Clarence Drive R44",
+        coords: "-34.3362,18.9446",
+        note: "把这段当作“观景体验”而不是交通通道：见到观景位就短停，停够就走。",
+        subItems: [
+          {
+            name: "停车策略",
+            detail: "每个观景点控制 5-10 分钟，拍到就走，确保不挤压入住时段。",
+          },
+          {
+            name: "看点关键词",
+            detail: "峭壁、海湾弧线、礁石浪线、山体轮廓。",
+          },
+        ],
+      },
+      {
+        id: 5,
+        time: "15:00-15:45",
+        title: "Betty's Bay（Stony Point 企鹅栈道，可选）",
+        place: "Stony Point Nature Reserve",
+        coords: "-34.3696,18.8921",
+        note: "可选加分站：近距离看非洲企鹅、体力消耗低。若明显疲劳或偏晚，直接跳过。",
+        subItems: [
+          {
+            name: "适合停留时长",
+            detail: "30-45 分钟足够，避免把可选点变成主行程。",
+          },
+          {
+            name: "入口检索",
+            detail: "到点即停，按栈道单向浏览最省力。",
+            url: "https://www.google.com/maps/search/?api=1&query=Stony+Point+Nature+Reserve",
+          },
+        ],
+      },
+      {
+        id: 6,
+        time: "15:45-17:15",
+        title: "Betty's Bay -> Cape Town（V&A Waterfront）",
+        place: "Cape Town 城区",
+        coords: "-33.9037,18.4219",
+        note: "进城后车速可能明显下降，保持平稳心态；到达 Waterfront 后改步行模式最省心。",
+        subItems: [
+          {
+            name: "入城策略",
+            detail: "优先直达酒店停车，减少临时找位和二次绕行。",
+          },
+        ],
+      },
+      {
+        id: 7,
+        time: "17:15-18:30",
+        title: "入住 Breakwater Lodge + 放下行李",
+        place: "Protea Hotel Breakwater Lodge",
+        coords: "-33.9074,18.4169",
+        note: "先完成停车/入住/洗漱换衣，再进入 Waterfront 黄昏散步，体感会明显更轻松。",
+        docKey: "hotel",
+        docLabel: "酒店资料（本地）",
+        subItems: [
+          {
+            name: "入住关键点",
+            detail: "Check-in 15:00 后；停车约 25 ZAR/天；早餐已含。",
+          },
+          {
+            name: "酒店位置优势",
+            detail: "步行可达 Waterfront，今晚可以全程不再开车。",
+          },
+        ],
+      },
+      {
+        id: 8,
+        time: "18:30-20:00",
+        title: "V&A Waterfront 晚餐（步行范围内）",
+        place: "V&A Waterfront",
+        coords: "-33.9037,18.4219",
+        note: "第一晚以“稳 + 近 + 轻松”优先：就在港口周边就餐，不追单点，不增加交通切换。",
+        subItems: [
+          {
+            name: "选店原则",
+            detail: "优先有景观位、等位可控、孩子可快速收尾的餐厅。",
+          },
+          {
+            name: "餐厅检索入口",
+            detail: "在 Waterfront 范围内实时选店。",
+            url: "https://www.google.com/maps/search/?api=1&query=restaurants+in+V%26A+Waterfront+Cape+Town",
+          },
+        ],
+      },
+      {
+        id: 9,
+        time: "20:00-20:20",
+        title: "资料收尾：上传当日行程 + 核对后续机票",
+        place: "Breakwater Lodge",
+        coords: "-33.9074,18.4169",
+        note: "回房后把当天票据/截图导入“行程资料”，并顺手核对后续航段机票资料，次日会更轻松。",
+        docKey: "flight",
+        docLabel: "机票资料（本地）",
+        subItems: [],
+      },
+    ],
+  },
 };
 
 function parseDateParts(dateStr) {
