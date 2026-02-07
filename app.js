@@ -85,6 +85,26 @@ const PLAN_BY_DATE = {
             detail: "73 Gladiator St, Rhodesfield, Kempton Park",
             url: "https://www.google.com/maps/search/?api=1&query=73+Gladiator+St+Rhodesfield+Kempton+Park",
           },
+          {
+            name: "International Arrivals 到上车点路线（1-3）",
+            detail:
+              "1) 出关/取行李后走出到达大厅。2) 出门左转。3) 走到最近 pedestrian crossing（人行横道）。",
+          },
+          {
+            name: "International Arrivals 到上车点路线（4-7）",
+            detail:
+              "4) 按 “Public Transport” 指示。5) 穿过人行横道进入 Car Hire Foyer。6) 沿 Car Hire Foyer 穿过到室外 Shuttle pick-up point。7) 找有 “Premier Hotel O R Tambo” Logo 的车辆。",
+          },
+          {
+            name: "Terminal 方位补充",
+            detail:
+              "酒店说明 shuttle terminal 在 Intercontinental Hotel 后方；按 Public Transport -> Car Hire Foyer -> Shuttle pick-up point 线路走最稳。",
+          },
+          {
+            name: "找不到时直接问",
+            detail:
+              "Where is the shuttle pick-up point for Premier Hotel OR Tambo?",
+          },
         ],
       },
       {
