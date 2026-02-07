@@ -137,6 +137,143 @@ const PLAN_BY_DATE = {
       },
     ],
   },
+  "2026-02-14": {
+    title: "Addo 国家公园整日（早中晚三段）",
+    subtitle: "早上找热区，中午回血并锁定活动，下午黄金 90 分钟蹲守水源点",
+    extraRouteActions: [
+      {
+        label: "SANParks 官方地图入口",
+        href: "https://www.sanparks.org/parks/addo-elephant/travel/maps",
+      },
+      {
+        label: "Addo Visitors Map（PDF）",
+        href: "https://www.sanparks.org/wp-content/uploads/2025/02/Addo-Visitors-Map.pdf",
+      },
+    ],
+    warnings: [
+      "2 月参考门时间：Game Area（Residents）05:30-18:30；Park Entrance 常见为 07:00-18:00。以当天 gate 公告为准。",
+      "园内限速 40km/h，严禁下车/探身；仅在指定 Lookout 可下车且风险自负。",
+      "只走游客道路，NO ENTRY 不进；严禁喂食、无人机、摩托车与噪音扰动。",
+      "当天中午就把 Sundowner / Night Drive 订掉，别等傍晚碰运气。",
+    ],
+    itinerary: [
+      {
+        id: 1,
+        time: "05:30-08:30",
+        title: "日出前后黄金段：官方 Sunrise Drive / 或第一波自驾",
+        place: "Addo Main Camp Gate",
+        coords: "-33.4830,25.7499",
+        note: "把“05:30 自驾”改为门时间自适应：按当天 Gate Times 执行，不和门岗硬碰硬。",
+        subItems: [
+          {
+            name: "Gate Times 先确认",
+            detail: "先看当天公告板与 gate 规则，决定 Sunrise Drive 还是第一波自驾。",
+            url: "https://www.sanparks.org/wp-content/uploads/2025/02/Addo-Visitors-Map.pdf",
+          },
+          {
+            name: "Sunrise Drive 咨询/预订",
+            detail: "若名额允许，优先官方日出 drive；否则直接第一波入主游览区。",
+            url: "https://www.google.com/maps/search/?api=1&query=Addo+Main+Camp+Reception",
+          },
+        ],
+      },
+      {
+        id: 2,
+        time: "08:30-12:00",
+        title: "上午主线：环线扫面 -> 水源点蹲守 -> 小范围复绕",
+        place: "Hapoor / Domkrag / Gwarrie 一带",
+        coords: "-33.4349,25.7429",
+        note: "先跑环线建立热区地图，再锁定 1-2 个水源点每点停 15-30 分钟。",
+        subItems: [
+          {
+            name: "环线扫面（低车流期）",
+            detail: "先 Loop 再回主路，快速判断当日热点在哪片区域。",
+            url: "https://www.google.com/maps/search/?api=1&query=Addo+Elephant+National+Park+Loop+Road",
+          },
+          {
+            name: "Hapoor Dam 蹲守",
+            detail: "常被提到的象群高概率点，别频繁挪车。",
+            url: "https://www.google.com/maps/search/?api=1&query=Hapoor+Dam+Addo+Elephant+National+Park",
+          },
+          {
+            name: "Domkrag Dam / Gwarrie Pan 复绕",
+            detail: "靠近主营地区域，适合短线反复刷。",
+            url: "https://www.google.com/maps/search/?api=1&query=Domkrag+Dam+Addo+Elephant+National+Park",
+          },
+        ],
+      },
+      {
+        id: 3,
+        time: "12:00-15:00",
+        title: "中午回营地：午休 + 补给 + 锁定晚间活动",
+        place: "Addo Main Camp",
+        coords: "-33.4830,25.7499",
+        note: "中午不是空档，是“把下午和夜间成功率拉满”的操作窗口。",
+        subItems: [
+          {
+            name: "Reception 立即订活动",
+            detail: "把 Sundowner / Night Drive 直接订掉，避免临时无位。",
+            url: "https://www.google.com/maps/search/?api=1&query=Addo+Main+Camp+Reception",
+          },
+          {
+            name: "营地补给与体力管理",
+            detail: "午餐、补水、充电、整理夜间衣物，避免傍晚手忙脚乱。",
+            url: "https://www.google.com/maps/search/?api=1&query=Addo+Main+Camp+Shop",
+          },
+        ],
+      },
+      {
+        id: 4,
+        time: "15:00-19:00",
+        title: "下午黄金档：先找热点，再把最后 90 分钟留给水源点",
+        place: "Domkrag / Zuurkop / Algoa Bay 方向",
+        coords: "-33.4308,25.7517",
+        note: "真正“出片”的往往是日落前 90 分钟蹲守，而不是一直移动。",
+        subItems: [
+          {
+            name: "Lookout 观察点（指定可下车）",
+            detail: "Domkrag、Zuurkop、Kadouw、Spekboom、Algoa Bay（按规则短停）。",
+            url: "https://www.google.com/maps/search/?api=1&query=Zuurkop+Lookout+Addo+Elephant+National+Park",
+          },
+          {
+            name: "最后 90 分钟蹲守策略",
+            detail: "锁 1-2 个水源点，不追热点，熄火静等动物来水边。",
+            url: "https://www.google.com/maps/search/?api=1&query=Gwarrie+Pan+Addo+Elephant+National+Park",
+          },
+          {
+            name: "19:00 前回营地",
+            detail: "按 gate 实时规则回撤，避免卡点和夜间压力。",
+            url: "https://www.google.com/maps/search/?api=1&query=Addo+Main+Camp+Gate",
+          },
+        ],
+      },
+      {
+        id: 5,
+        time: "全天规则与资料",
+        title: "驾驶规则 + 地图资料（当天随时可点开）",
+        place: "Addo 官方信息",
+        coords: "-33.4830,25.7499",
+        note: "把“规则正确”放在“看得多”之前：合规才有持续体验。",
+        subItems: [
+          {
+            name: "Visitors Map（含 Gate Times）",
+            detail: "当天优先看这份，门时间和规则按园区最新公告执行。",
+            url: "https://www.sanparks.org/wp-content/uploads/2025/02/Addo-Visitors-Map.pdf",
+          },
+          {
+            name: "SANParks Maps 总入口",
+            detail: "Main Map、Recommended Routes、各营地平面图集中入口。",
+            url: "https://www.sanparks.org/parks/addo-elephant/travel/maps",
+          },
+          {
+            name: "Main Camp 地图检索",
+            detail: "快速定位 reception、shop、餐厅、加油与 drive 集合点。",
+            url: "https://www.google.com/maps/search/?api=1&query=Addo+Main+Camp+Map",
+          },
+        ],
+      },
+    ],
+  },
 };
 
 function parseDateParts(dateStr) {
