@@ -42,6 +42,7 @@ const PLAN_BY_DATE = {
     ],
     warnings: [
       "硬约束：06:10 抵达 JNB；酒店 14:00 后入住；半日团 13:00 开始（酒店接送）。",
+      "机场到酒店可用免费 Shuttle：约每 30 分钟一班，运行时段约 05:00-23:45（以酒店当日安排为准）。",
       "接送车可能 12:00-12:30 到；建议 12:00 前就在酒店大堂等候，午餐不要排太远。",
       "首日策略：白天、跟团、封闭空间活动优先；避免夜间外出闲逛和高暴露步行。",
       "贵重物品尽量留酒店，仅随身携带证件复印件、少量现金/卡、手机与防晒补水。",
@@ -53,16 +54,31 @@ const PLAN_BY_DATE = {
         title: "抵达 JNB + 出关 + 机场内早餐",
         place: "O.R. Tambo International Airport (JNB)",
         coords: "-26.1367,28.2410",
-        note: "先完成过关、取行李、流量卡/取现（如需），在机场内补充体力。",
-        subItems: [],
+        note: "先完成过关、取行李；随后按酒店指引步行到 Shuttle 乘车点，再前往酒店。",
+        subItems: [
+          {
+            name: "酒店 Shuttle 班次与识别",
+            detail:
+              "酒店免费接驳车约每 30 分钟一班，常见运行时段 05:00-23:45；车辆有 “Premier Hotel OR Tambo” 标识。",
+          },
+          {
+            name: "国际到达后步行指引",
+            detail:
+              "出到达口后按 “Public Transport” 方向，过最近人行横道到 Car Hire Foyer，穿过后到 Shuttle pick-up point。",
+          },
+          {
+            name: "Shuttle Terminal 位置",
+            detail: "位于 Intercontinental Hotel 后方区域，现场可向酒店人员确认。",
+          },
+        ],
       },
       {
         id: 2,
         time: "08:00-09:00",
-        title: "前往酒店寄存行李 + 确认接送细节",
+        title: "乘酒店 Shuttle 到店 + 寄存行李 + 确认接送细节",
         place: "Premier Hotel O.R. Tambo",
         coords: "-26.1398,28.2269",
-        note: "可先寄存行李并询问能否提前入住；确认接送车位置与集合时间。",
+        note: "出关后通过酒店 Shuttle 到店；先寄存行李并询问能否提前入住，确认中午团接送集合点。",
         subItems: [
           {
             name: "酒店定位",
@@ -86,7 +102,7 @@ const PLAN_BY_DATE = {
         title: "午餐（优先酒店内）",
         place: "Kubatana Restaurant",
         coords: "-26.1398,28.2269",
-        note: "建议稳妥餐食并在 12:15 前结束，减少接送前通勤不确定性。",
+        note: "按你的最新安排：到店后在酒店内午餐，并在 12:15 前结束，减少接送前通勤不确定性。",
         subItems: [
           {
             name: "Kubatana（推荐）",
