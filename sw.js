@@ -1,4 +1,4 @@
-const CACHE_NAME = "sa-trip-v19";
+const CACHE_NAME = "sa-trip-v20";
 const ASSETS = [
   "./",
   "./index.html",
@@ -8,6 +8,11 @@ const ASSETS = [
   "./icons/icon-192.svg",
   "./icons/icon-512.svg",
 ];
+
+function hasVersionParam(requestUrl) {
+  const url = new URL(requestUrl);
+  return url.searchParams.has("v") || url.searchParams.has("version");
+}
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)));
@@ -25,6 +30,22 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
+
+  // URL with explicit version query param should bypass stale cache.
+  if (hasVersionParam(event.request.url)) {
+    event.respondWith(
+      fetch(event.request, { cache: "reload" })
+        .then((response) => {
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseClone);
+          });
+          return response;
+        })
+        .catch(() => caches.match(event.request).then((cached) => cached || caches.match("./index.html")))
+    );
+    return;
+  }
 
   event.respondWith(
     caches.match(event.request).then((cached) => {
