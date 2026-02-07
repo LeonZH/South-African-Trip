@@ -17,7 +17,6 @@ const importedDocs = {
   hertz: null,
   hotel: null,
 };
-const MULTI_DOC_IMPORT_DATES = new Set(["2026-02-12", "2026-02-14", "2026-02-15"]);
 
 const remarksByDate = {};
 const itineraryDocsByDate = {};
@@ -581,6 +580,168 @@ const PLAN_BY_DATE = {
       },
     ],
   },
+  "2026-02-16": {
+    title: "Plettenberg Bay 抵达日 + 除夕（海景晚餐）",
+    subtitle: "Storms River -> Plett 约 65km / 50 分钟；海边放电 + 轻徒步 + 家庭庆祝晚宴",
+    extraRouteActions: [
+      {
+        label: "Airbnb 行程单入口",
+        href: "https://www.airbnb.com/trips",
+      },
+      {
+        label: "Emily Moon（Google Maps）",
+        href: "https://www.google.com/maps/search/?api=1&query=Emily+Moon+Restaurant+Plettenberg+Bay",
+      },
+      {
+        label: "The Lookout Deck（Google Maps）",
+        href: "https://www.google.com/maps/search/?api=1&query=The+Lookout+Deck+Plettenberg+Bay",
+      },
+    ],
+    warnings: [
+      "Airbnb：Plettenberg Bay 连住 2 晚（2/16-2/18），4 beds / 3 guests，房东 Louis Jones，确认码 HMRQHRT9EM。",
+      "收据未包含门锁与停车细节；到达前请在 Airbnb 行程单核对入住时间、钥匙/密码、停车说明。",
+      "2/16 是除夕，晚餐建议提前订位（Emily Moon / The Lookout Deck 旺季经常满位）。",
+      "Robberg Nature Reserve 有明确入园与关门时间限制；若到晚，改海滩日落方案更稳。",
+      "下午以轻强度活动为主，不把体力榨干，给晚间庆祝和次日行程留余量。",
+    ],
+    itinerary: [
+      {
+        id: 1,
+        time: "08:00-09:00",
+        title: "早餐 + 退房准备",
+        place: "Tsitsikamma / Storms River 一带",
+        coords: "-34.0232,23.8858",
+        note: "早餐走轻量：酸奶 + 水果 + 咖啡，把“正餐额度”留给中午和除夕晚餐。",
+        subItems: [
+          {
+            name: "打包顺序",
+            detail: "先收证件和电子设备，再收孩子常用物品，最后统一检查车钥匙与门锁。",
+          },
+          {
+            name: "车上即用包",
+            detail: "水、防晒、纸巾、薄外套放前排可拿到的位置，减少中途翻找。",
+          },
+        ],
+      },
+      {
+        id: 2,
+        time: "09:00-10:15",
+        title: "自驾前往 Plettenberg Bay（N2）",
+        place: "Storms River -> Plettenberg Bay",
+        coords: "-34.0527,23.3716",
+        note: "全程约 65km，通常 50 分钟上下；不赶路，看到合适风景点可短停 5-10 分钟拉伸。",
+        subItems: [
+          {
+            name: "路线建议",
+            detail: "N2 主线直达即可，保持中速巡航，避免为了抢时间压车。",
+          },
+          {
+            name: "导航入口",
+            detail: "直接导航到 Central Beach 作为进城第一站最顺手。",
+            url: "https://www.google.com/maps/search/?api=1&query=Central+Beach+Plettenberg+Bay",
+          },
+        ],
+      },
+      {
+        id: 3,
+        time: "10:30-11:30",
+        title: "到 Plett 后先找回城市手感",
+        place: "Central Beach / Lookout Beach",
+        coords: "-34.0578,23.3717",
+        note: "先到海边走走让孩子放电；顺手补水、防晒，再买除夕仪式感补给（饮料/零食/水果/小蛋糕）。",
+        subItems: [
+          {
+            name: "Central Beach",
+            detail: "动线短、停车和活动都方便，适合抵达日快速切换节奏。",
+            url: "https://www.google.com/maps/search/?api=1&query=Central+Beach+Plettenberg+Bay",
+          },
+          {
+            name: "Lookout Beach",
+            detail: "海景和沙滩体验都在线，可按体力在两处之间灵活切换。",
+            url: "https://www.google.com/maps/search/?api=1&query=Lookout+Beach+Plettenberg+Bay",
+          },
+          {
+            name: "补给点（示例）",
+            detail: "按顺路原则进超市采购，不为品牌绕路。",
+            url: "https://www.google.com/maps/search/?api=1&query=supermarket+Plettenberg+Bay",
+          },
+        ],
+      },
+      {
+        id: 4,
+        time: "12:00-13:15",
+        title: "午餐：The Lookout Deck（轻松海边款）",
+        place: "The Lookout Deck",
+        coords: "-34.0591,23.3734",
+        note: "海边就餐、换场成本低，适合家庭抵达日的一顿“无脑稳妥午餐”。",
+        subItems: [
+          {
+            name: "Google Maps",
+            detail: "建议出发前先看当日营业时间和实时拥挤度。",
+            url: "https://www.google.com/maps/search/?api=1&query=The+Lookout+Deck+Plettenberg+Bay",
+          },
+        ],
+      },
+      {
+        id: 5,
+        time: "13:30-15:00",
+        title: "办理入住 / 安顿 / 休息",
+        place: "Airbnb（Plettenberg Bay）",
+        coords: "-34.0527,23.3716",
+        note: "用确认码 HMRQHRT9EM 打开 Airbnb 行程单，快速确认入住时间、门锁方式和停车规则。",
+        subItems: [
+          {
+            name: "关键核对项",
+            detail: "check-in 时间、门锁/钥匙、停车位置、Wi-Fi、房东联络方式。",
+          },
+          {
+            name: "房源信息速记",
+            detail: "2/16-2/18 连住 2 晚，4 beds，3 guests，房东 Louis Jones。",
+          },
+        ],
+      },
+      {
+        id: 6,
+        time: "15:30-18:00",
+        title: "下午档：轻徒步 + 海景日落（两套方案）",
+        place: "Robberg Nature Reserve / Plett 海滩",
+        coords: "-34.1039,23.3723",
+        note: "原则是不透支体力。A 方案经典景观更强；B 方案更轻松，带娃容错更高。",
+        subItems: [
+          {
+            name: "方案 A：Robberg Nature Reserve（短线）",
+            detail: "只走到观景点即回撤，避免在除夕晚餐前过度消耗。",
+            url: "https://www.google.com/maps/search/?api=1&query=Robberg+Nature+Reserve",
+          },
+          {
+            name: "方案 B：海滩玩沙 + 日落",
+            detail: "直接在 Central / Lookout Beach 放松，体验更轻松。",
+            url: "https://www.google.com/maps/search/?api=1&query=Lookout+Beach+Plettenberg+Bay",
+          },
+        ],
+      },
+      {
+        id: 7,
+        time: "18:30-21:00",
+        title: "除夕晚餐（环境优先，提前订位）",
+        place: "Emily Moon / The Lookout Deck",
+        coords: "-34.0258,23.3746",
+        note: "今晚目标是“轻松过年 + 家庭仪式感”。用餐后不再加高强度活动，平稳收尾。",
+        subItems: [
+          {
+            name: "Emily Moon（仪式感/景观强）",
+            detail: "适合把除夕吃成正式家庭晚宴，建议提前订位。",
+            url: "https://www.google.com/maps/search/?api=1&query=Emily+Moon+Restaurant+Plettenberg+Bay",
+          },
+          {
+            name: "The Lookout Deck（海边放松款）",
+            detail: "更随意轻松，适合不想折腾的除夕晚餐。",
+            url: "https://www.google.com/maps/search/?api=1&query=The+Lookout+Deck+Plettenberg+Bay",
+          },
+        ],
+      },
+    ],
+  },
 };
 
 function parseDateParts(dateStr) {
@@ -890,7 +1051,7 @@ function saveRemarks() {
 function buildLocalDocAction(docType, label) {
   const doc = importedDocs[docType];
   if (!doc) {
-    return `<button class="btn" disabled>${label}（未导入）</button>`;
+    return "";
   }
   return `<button class="btn local-doc-btn" data-doc-type="${docType}">${label}</button>`;
 }
@@ -1028,23 +1189,12 @@ function renderImportPanel(dateStr) {
   const hintEl = document.getElementById("importHint");
   const panelEl = document.getElementById("importsPanel");
 
-  if (MULTI_DOC_IMPORT_DATES.has(dateStr)) {
-    titleEl.textContent = "行程资料导入（隐私）";
-    hintEl.textContent = "可上传当天其他资料（PDF/图片等），仅保存在本机浏览器。";
-    panelEl.innerHTML = `
-      <label>${dateStr} 行程资料（可多选）
-        <input type="file" id="itineraryDocsInput" multiple />
-      </label>
-    `;
-    return;
-  }
-
-  titleEl.textContent = "本地导入附件（隐私）";
-  hintEl.textContent = "附件仅保存到当前手机浏览器本地，不上传到服务器。";
+  titleEl.textContent = "行程资料导入（隐私）";
+  hintEl.textContent = `${dateStr} 可上传当天资料（PDF/图片等），仅保存在本机浏览器。`;
   panelEl.innerHTML = `
-    <label>机票 PDF <input type="file" id="flightInput" accept="application/pdf" /></label>
-    <label>租车 PDF <input type="file" id="hertzInput" accept="application/pdf" /></label>
-    <label>酒店 PDF <input type="file" id="hotelInput" accept="application/pdf" /></label>
+    <label>${dateStr} 行程资料（可多选）
+      <input type="file" id="itineraryDocsInput" multiple />
+    </label>
   `;
 }
 
@@ -1052,39 +1202,17 @@ function renderDocs(dateStr) {
   const docsEl = document.getElementById("docs");
   docsEl.innerHTML = "";
 
-  if (MULTI_DOC_IMPORT_DATES.has(dateStr)) {
-    const rows = ensureItineraryDocs(dateStr);
-    if (rows.length === 0) {
-      const li = document.createElement("li");
-      li.textContent = `${dateStr} 行程资料：未导入`;
-      docsEl.appendChild(li);
-      return;
-    }
-
-    rows.forEach((row) => {
-      const li = document.createElement("li");
-      li.innerHTML = `<button class="btn itinerary-doc-btn" data-doc-date="${dateStr}" data-doc-id="${row.id}">${escapeHtml(row.name)}</button>`;
-      docsEl.appendChild(li);
-    });
+  const rows = ensureItineraryDocs(dateStr);
+  if (rows.length === 0) {
+    const li = document.createElement("li");
+    li.textContent = `${dateStr} 行程资料：未导入`;
+    docsEl.appendChild(li);
     return;
   }
 
-  const docDefs = [
-    { key: "flight", title: "2/13 航班资料" },
-    { key: "hertz", title: "Hertz 租车资料（2/13-2/21）" },
-    { key: "hotel", title: "Addo 酒店资料（2/13-2/15）" },
-  ];
-
-  docDefs.forEach((docDef) => {
+  rows.forEach((row) => {
     const li = document.createElement("li");
-    const doc = importedDocs[docDef.key];
-
-    if (!doc) {
-      li.textContent = `${docDef.title}：未导入`;
-    } else {
-      li.innerHTML = `<button class="btn local-doc-btn" data-doc-type="${docDef.key}">${docDef.title}：${escapeHtml(doc.name)}</button>`;
-    }
-
+    li.innerHTML = `<button class="btn itinerary-doc-btn" data-doc-date="${dateStr}" data-doc-id="${row.id}">${escapeHtml(row.name)}</button>`;
     docsEl.appendChild(li);
   });
 }
@@ -1223,26 +1351,8 @@ function loadItineraryDocs() {
 }
 
 function bindInputs() {
-  const flightInput = document.getElementById("flightInput");
-  const hertzInput = document.getElementById("hertzInput");
-  const hotelInput = document.getElementById("hotelInput");
   const itineraryDocsInput = document.getElementById("itineraryDocsInput");
 
-  if (flightInput) {
-    flightInput.onchange = (event) => {
-      onFileImport("flight", event.target.files[0]).catch((error) => alert(error.message));
-    };
-  }
-  if (hertzInput) {
-    hertzInput.onchange = (event) => {
-      onFileImport("hertz", event.target.files[0]).catch((error) => alert(error.message));
-    };
-  }
-  if (hotelInput) {
-    hotelInput.onchange = (event) => {
-      onFileImport("hotel", event.target.files[0]).catch((error) => alert(error.message));
-    };
-  }
   if (itineraryDocsInput) {
     itineraryDocsInput.onchange = (event) => {
       onItineraryDocsImport(activeDate, event.target.files).catch((error) => alert(error.message));
