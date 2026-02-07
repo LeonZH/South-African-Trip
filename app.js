@@ -194,17 +194,26 @@ const PLAN_BY_DATE = {
     itinerary: [
       {
         id: 1,
-        time: "11:00",
-        title: "抵达伊丽莎白港（Gqeberha）机场",
-        place: "Chief Dawid Stuurman International Airport",
-        coords: "-33.9849,25.6173",
-        note: "下机后优先取行李，确认手机网络与离线地图。",
+        time: "08:00-09:45",
+        title: "乘机：JNB -> PLZ（FA632，Economy）",
+        place: "O.R. Tambo (JNB) -> Port Elizabeth (PLZ)",
+        coords: "",
+        note: "航班：FA632；起飞 08:00，预计到达 09:45。",
         docKey: "flight",
         docLabel: "机票资料（本地）",
         subItems: [],
       },
       {
         id: 2,
+        time: "09:45-11:00",
+        title: "抵达伊丽莎白港（Gqeberha）机场",
+        place: "Chief Dawid Stuurman International Airport",
+        coords: "-33.9849,25.6173",
+        note: "下机后优先取行李，确认手机网络与离线地图。",
+        subItems: [],
+      },
+      {
+        id: 3,
         time: "11:30",
         title: "Hertz 取车",
         place: "机场租车点",
@@ -215,7 +224,7 @@ const PLAN_BY_DATE = {
         subItems: [],
       },
       {
-        id: 3,
+        id: 4,
         time: "12:15",
         title: "前往 Walmer Park Shopping Centre（采购 + 午餐）",
         place: "Walmer Park Shopping Centre",
@@ -245,7 +254,7 @@ const PLAN_BY_DATE = {
         ],
       },
       {
-        id: 4,
+        id: 5,
         time: "14:00",
         title: "前往 Addo Main Rest Camp",
         place: "Addo Elephant National Park Main Camp",
@@ -262,7 +271,7 @@ const PLAN_BY_DATE = {
         ],
       },
       {
-        id: 5,
+        id: 6,
         time: "15:30-18:00",
         title: "园内半天游览线路（自驾）",
         place: "Main Camp -> Hapoor Loop -> Domkrag Dam -> Main Camp",
