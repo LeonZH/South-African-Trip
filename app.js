@@ -1419,6 +1419,429 @@ const PLAN_BY_DATE = {
       },
     ],
   },
+  "2026-02-20": {
+    title: "桌山 + Bo-Kaap（城市轻徒步日）",
+    subtitle: "上午冲桌山，下午彩色街拍照，晚餐回 V&A Waterfront 稳定收尾",
+    summaryText: "08:00 出门准备 -> 09:00 桌山三连查 -> 09:30 桌山缆车观景 -> 15:30 Bo-Kaap -> 18:00 Waterfront 晚餐",
+    extraRouteActions: [
+      {
+        label: "桌山实时状态与排队（官方）",
+        href: "https://www.tablemountain.net/",
+      },
+      {
+        label: "桌山购票（官方）",
+        href: "https://www.tablemountain.net/plan-your-visit/buy-tickets",
+      },
+      {
+        label: "桌山票价（官方）",
+        href: "https://www.tablemountain.net/plan-your-visit/ticket-prices/",
+      },
+      {
+        label: "Fast Track 说明（官方）",
+        href: "https://www.tablemountain.net/plan-your-visit/fast-track",
+      },
+      {
+        label: "Bo-Kaap 彩色街（地图）",
+        href: "https://www.google.com/maps/search/?api=1&query=Bo-Kaap+Cape+Town",
+      },
+      {
+        label: "Waterfront 餐厅检索",
+        href: "https://www.google.com/maps/search/?api=1&query=restaurants+in+V%26A+Waterfront+Cape+Town",
+      },
+    ],
+    warnings: [
+      "先做“桌山三连查”：开放状态 + Lower/Upper waiting times + webcam 能见度；出现小时级排队就切 Plan B。",
+      "桌山山顶风和能见度变化快：随身带防风外套、防晒、水和零食，别走远离主观景区的线路。",
+      "Bo-Kaap 建议只白天逛，天色变暗就回撤；拍照时避免长时间高举手机在路口停留。",
+      "带娃原则：风大时牵手，悬崖/边缘拍照不追极限角度，行程以节奏稳定优先。",
+      "Plan B 不降级：上午改 Kirstenbosch 或 Waterfront 室内项目，下午 Bo-Kaap 与晚餐安排不变。",
+    ],
+    itinerary: [
+      {
+        id: 1,
+        time: "08:00-09:00",
+        title: "早餐 + 出门准备",
+        place: "V&A Waterfront / 酒店",
+        coords: "-33.9074,18.4169",
+        note: "早餐吃饱，出门前把防风层、防晒、水和孩子零食一次性打包，避免现场反复翻包。",
+        subItems: [
+          {
+            name: "随身包清单",
+            detail: "薄羽绒或防风外套、防晒、饮水、小零食、充电宝。",
+          },
+          {
+            name: "支付策略",
+            detail: "刷卡为主，现金只带少量应急。",
+          },
+        ],
+      },
+      {
+        id: 2,
+        time: "09:00-09:10",
+        title: "桌山三连查（决定今天冲不冲）",
+        place: "出发前在线确认",
+        coords: "",
+        note: "先看开放状态与排队时长，再看 webcam 能见度；若已小时级等待，立刻切 Plan B，不把好心情押在排队上。",
+        subItems: [
+          {
+            name: "检查项 1",
+            detail: "Open/Closed、首末班、Lower/Upper waiting times。",
+            url: "https://www.tablemountain.net/",
+          },
+          {
+            name: "检查项 2",
+            detail: "桌布云与山顶可见度。",
+            url: "https://www.tablemountain.net/",
+          },
+          {
+            name: "检查项 3",
+            detail: "若等待时间爆表，上午切换 Kirstenbosch 或 Waterfront 室内保底。",
+          },
+        ],
+      },
+      {
+        id: 3,
+        time: "09:30-12:00",
+        title: "桌山缆车上山 + 山顶平缓观景段",
+        place: "Table Mountain Aerial Cableway",
+        coords: "-33.9628,18.4039",
+        note: "到下站先洗手间再排队；上山后只走轻松观景段，避免临时升级成全家徒步挑战。",
+        subItems: [
+          {
+            name: "购票入口",
+            detail: "优先在线购票，现场排队波动大。",
+            url: "https://www.tablemountain.net/plan-your-visit/buy-tickets",
+          },
+          {
+            name: "Fast Track 提醒",
+            detail: "官方说明 Fast Track 仅在上下站售票处购买，不在线售卖。",
+            url: "https://www.tablemountain.net/plan-your-visit/fast-track",
+          },
+          {
+            name: "步行边界",
+            detail: "能见度或风力变差时，立刻缩短停留并回缆车站。",
+          },
+        ],
+      },
+      {
+        id: 4,
+        time: "12:30-14:00",
+        title: "午餐补给（就近省事 or Kloof Street）",
+        place: "桌山下站 / Kloof Street & Gardens",
+        coords: "-33.9288,18.4124",
+        note: "今天节奏不求多，午餐目标是快速回血。就近吃最稳，想吃得更好再去 Kloof Street。",
+        subItems: [
+          {
+            name: "选项 A（省时）",
+            detail: "下山后在下站周边官方餐饮点快速解决。",
+            url: "https://www.tablemountain.net/come-explore/food-and-beverage",
+          },
+          {
+            name: "选项 B（更好吃）",
+            detail: "去 Kloof Street/Gardens，热门店建议先订位。",
+            url: "https://www.kloofstreethouse.co.za/reservations/",
+          },
+        ],
+      },
+      {
+        id: 5,
+        time: "14:00-15:20",
+        title: "机动时段（Plan B / 回酒店短休）",
+        place: "Kirstenbosch 或 V&A Waterfront",
+        coords: "-33.9875,18.4327",
+        note: "如果上午没上桌山，这里直接执行 Plan B；若上午顺利完成，就回酒店休整给下午和晚餐留体力。",
+        subItems: [
+          {
+            name: "Plan B 1",
+            detail: "Kirstenbosch 植物园，风大天气下体验更稳。",
+            url: "https://www.google.com/maps/search/?api=1&query=Kirstenbosch+National+Botanical+Garden",
+          },
+          {
+            name: "Plan B 2",
+            detail: "Waterfront 室内项目，完全不受风影响。",
+            url: "https://www.google.com/maps/search/?api=1&query=V%26A+Waterfront+Cape+Town",
+          },
+        ],
+      },
+      {
+        id: 6,
+        time: "15:30-17:00",
+        title: "Bo-Kaap 彩色街区慢走拍照",
+        place: "Bo-Kaap",
+        coords: "-33.9187,18.4128",
+        note: "挑 2-3 条彩色街拍照就够，不追求全区打卡；保持移动和节奏，避免在单点久留。",
+        subItems: [
+          {
+            name: "拍照策略",
+            detail: "先取景再拍，不边走边长时间举手机录像。",
+          },
+          {
+            name: "体力策略",
+            detail: "坡多时宁可少走几条街，也不要把晚餐前体力透支。",
+          },
+        ],
+      },
+      {
+        id: 7,
+        time: "17:00-18:00",
+        title: "回 Waterfront 短休 + 整理照片",
+        place: "Breakwater Lodge / V&A Waterfront",
+        coords: "-33.9074,18.4169",
+        note: "把步行模式切回休息模式，先喝水、补防晒、整理随身物品，晚餐体验会更顺。",
+        subItems: [],
+      },
+      {
+        id: 8,
+        time: "18:00-20:00",
+        title: "Waterfront 晚餐（早吃早收工）",
+        place: "V&A Waterfront",
+        coords: "-33.9037,18.4219",
+        note: "18:00 左右开吃最稳，避免拖太晚；以“近、快、不折腾”为优先级。",
+        subItems: [
+          {
+            name: "选项 1",
+            detail: "Willoughby & Co（海鲜/寿司，热门，建议早点到）。",
+            url: "https://www.waterfront.co.za/food-and-drinks/willoughby-co/",
+          },
+          {
+            name: "选项 2",
+            detail: "Den Anker（比利时风格，家庭友好）。",
+            url: "https://www.tripadvisor.com/Restaurant_Review-g312659-d1145847-Reviews-Den_Anker-Cape_Town_Central_Western_Cape.html",
+          },
+        ],
+      },
+      {
+        id: 9,
+        time: "20:00-20:30",
+        title: "收尾动作：为 2/21 退房+好望角日做预备",
+        place: "Breakwater Lodge",
+        coords: "-33.9074,18.4169",
+        note: "今晚只做两件事：确认明早退房动线、把护照和贵重物品单独放好，次日能显著降压。",
+        subItems: [
+          {
+            name: "明日硬约束",
+            detail: "11:00 退房、19:40 起飞，16:30 前必须启动回机场回撤。",
+          },
+        ],
+      },
+    ],
+  },
+  "2026-02-21": {
+    title: "好望角日 + 晚飞约堡（退房还车版）",
+    subtitle: "早出发看海角主线，下午硬回撤，机场加油还车不赌运气",
+    summaryText:
+      "07:30 早餐打包 -> 08:30 退房出发 -> 11:10 Cape Point/好望角 -> 16:00 回撤 -> 17:15 Engen 加油 -> 17:30 Hertz 还车 -> 19:40 起飞",
+    extraRouteActions: [
+      {
+        label: "Chapman's Peak 过路费",
+        href: "https://www.chapmanspeakdrive.co.za/tariff/standard.html",
+      },
+      {
+        label: "SANParks 门票与支付规则",
+        href: "https://www.sanparks.org/parks/table-mountain/rates-entry-fees",
+      },
+      {
+        label: "SANParks 闸口开放时间",
+        href: "https://www.sanparks.org/parks/table-mountain/travel/entrance-gates",
+      },
+      {
+        label: "Cape Point 访客说明",
+        href: "https://capepoint.co.za/visitus/",
+      },
+      {
+        label: "Engen Airport Convenience（加油）",
+        href: "https://www.engen.co.za/store-details?loc=Engen+Airport+Convenience+Centre&locationid=033c0181-9668-4098-9d94-c95b7ac069e7",
+      },
+      {
+        label: "Hertz Cape Town Airport（还车）",
+        href: "https://www.hertz.co.za/car-rental-locations/cape-town-airport/",
+      },
+    ],
+    warnings: [
+      "硬约束：11:00 退房、19:40 起飞；今日原则是早出发、早回撤，最晚 16:30 开始往机场方向走。",
+      "Cape Point 与 Boulders 入口按 SANParks 规则执行无现金支付，默认刷卡；Cape Point 常见按车一次结算。",
+      "只在正规观景停车位停靠，车内不留任何可见物品；拍完即走，不在偏僻路肩久留。",
+      "海角风大且有野生动物，严禁喂食；孩子全程手牵手，不走野路，不靠近悬崖边缘。",
+      "今天体验上限由“回机场缓冲”决定：17:15 前到机场区域，17:30 前完成加油更稳。",
+    ],
+    itinerary: [
+      {
+        id: 1,
+        time: "07:30-08:30",
+        title: "早餐 + 打包 + 车内清空可见物品",
+        place: "Breakwater Lodge",
+        coords: "-33.9074,18.4169",
+        note: "早餐吃饱并一次性整理贵重物品；护照、钱包、手机、相机、充电宝全部随身。",
+        subItems: [
+          {
+            name: "重点检查",
+            detail: "后备箱和后排不留可见背包、电脑包、相机包。",
+          },
+          {
+            name: "今日时间闸门",
+            detail: "16:30 回撤、17:15 到机场区域、19:40 起飞。",
+          },
+        ],
+      },
+      {
+        id: 2,
+        time: "08:30-09:00",
+        title: "退房 + 装车出发",
+        place: "Breakwater Lodge -> 开普半岛方向",
+        coords: "-33.9074,18.4169",
+        note: "退房后不回头补东西，直接进入半岛动线；今天每个可选站都可跳过，主线只保留高价值点。",
+        docKey: "hotel",
+        docLabel: "酒店资料（本地）",
+        subItems: [],
+      },
+      {
+        id: 3,
+        time: "09:00-09:30",
+        title: "Hout Bay（可选短停）",
+        place: "Hout Bay",
+        coords: "-34.0436,18.3516",
+        note: "只做 20-30 分钟短停：上洗手间、买咖啡、让全家进入状态；若出发偏晚可直接跳过。",
+        subItems: [
+          {
+            name: "跳过条件",
+            detail: "若 09:20 后仍未到 Hout Bay，直接进入 Chapman's Peak 路段。",
+          },
+        ],
+      },
+      {
+        id: 4,
+        time: "09:40-10:10",
+        title: "Chapman's Peak Drive 观景公路",
+        place: "Chapman's Peak Drive",
+        coords: "-34.0783,18.3586",
+        note: "选择 1 个正规观景位短停 10 分钟即可；目标是拍到代表性海景，不做多点反复停靠。",
+        subItems: [
+          {
+            name: "费用参考",
+            detail: "小车标准过路费以官方现场为准（常见为 R66）。",
+            url: "https://www.chapmanspeakdrive.co.za/tariff/standard.html",
+          },
+          {
+            name: "停车原则",
+            detail: "只停官方观景位，不在偏僻路肩临停。",
+          },
+        ],
+      },
+      {
+        id: 5,
+        time: "10:20-10:40",
+        title: "Noordhoek 短休补给",
+        place: "Noordhoek",
+        coords: "-34.0999,18.3576",
+        note: "完成洗手间和零食补给，给 11:10-14:00 的海角主菜段做准备。",
+        subItems: [],
+      },
+      {
+        id: 6,
+        time: "11:10-14:00",
+        title: "Cape Point + 好望角主游玩",
+        place: "Cape Point / Cape of Good Hope",
+        coords: "-34.2489,18.4742",
+        note: "先走灯塔方向再去好望角标志点，保持主线路线，不在体力和风力不友好区域逗留。",
+        subItems: [
+          {
+            name: "入园支付",
+            detail: "入口无现金，刷卡支付；按现场与官方规则执行。",
+            url: "https://www.sanparks.org/parks/table-mountain/rates-entry-fees",
+          },
+          {
+            name: "闸口时间",
+            detail: "出入园时间按月份变化，避免卡着关门离场。",
+            url: "https://www.sanparks.org/parks/table-mountain/travel/entrance-gates",
+          },
+          {
+            name: "午餐策略",
+            detail: "优先园内 Two Oceans Restaurant 或自备简餐，减少折返。",
+          },
+        ],
+      },
+      {
+        id: 7,
+        time: "14:30-15:30",
+        title: "Boulders 企鹅站（可选甜点）",
+        place: "Boulders Beach",
+        coords: "-34.1965,18.4516",
+        note: "若 15:00 前仍在 Cape Point 深处或孩子明显疲劳，直接跳过此站，优先保证回撤时间。",
+        subItems: [
+          {
+            name: "适合停留",
+            detail: "30-45 分钟足够，拍到企鹅后即回撤。",
+          },
+        ],
+      },
+      {
+        id: 8,
+        time: "16:00-17:00",
+        title: "硬回撤：往 CPT 机场方向走",
+        place: "开普半岛 -> Cape Town International Airport",
+        coords: "-33.9700,18.6021",
+        note: "16:30 是最晚回撤线，不再临时加点。路况不确定时，优先保证还车与值机缓冲。",
+        subItems: [
+          {
+            name: "今日策略",
+            detail: "不追求“刚好”，只追求“宽松”。",
+          },
+        ],
+      },
+      {
+        id: 9,
+        time: "17:15-17:30",
+        title: "Engen 机场站加满油 + 拍照留证据",
+        place: "Engen Airport Convenience Centre",
+        coords: "-33.9720,18.6036",
+        note: "加到跳枪即停，拿收据并拍油表满格 + 车牌与加油站背景，随后直接去 Hertz 还车区。",
+        subItems: [
+          {
+            name: "四步动作",
+            detail: "跳枪即停、拿收据、拍两张证据照、确认油品不加错。",
+          },
+          {
+            name: "24 小时站点",
+            detail: "适合晚航班前的稳态加油。",
+            url: "https://www.engen.co.za/store-details?loc=Engen+Airport+Convenience+Centre&locationid=033c0181-9668-4098-9d94-c95b7ac069e7",
+          },
+        ],
+      },
+      {
+        id: 10,
+        time: "17:30-17:45",
+        title: "进入 Car Rental Returns -> Hertz 还车",
+        place: "Hertz Cape Town International Airport (Ring Rd)",
+        coords: "-33.9688,18.6017",
+        note: "路上优先跟“Car Rentals / Car Rental Returns”路牌；入场后按 Hertz 车道停放并完成油量/里程确认。",
+        docKey: "hertz",
+        docLabel: "租车资料（本地）",
+        subItems: [
+          {
+            name: "还车后动作",
+            detail: "确认无遗留行李，保存还车凭证截图。",
+            url: "https://www.hertz.co.za/car-rental-locations/cape-town-airport/",
+          },
+        ],
+      },
+      {
+        id: 11,
+        time: "17:45-19:10",
+        title: "进航站楼晚餐 + 值机安检",
+        place: "Cape Town International Airport (CPT)",
+        coords: "-33.9700,18.6021",
+        note: "在机场内解决晚餐最稳；优先完成值机和安检，再处理购物等可选动作。",
+        docKey: "flight",
+        docLabel: "机票资料（本地）",
+        subItems: [
+          {
+            name: "航班节点",
+            detail: "19:40 飞约堡，建议 17:15 前已到机场区域。",
+          },
+        ],
+      },
+    ],
+  },
 };
 
 function parseDateParts(dateStr) {
@@ -1570,6 +1993,9 @@ function getPlanForDate(dateStr) {
 }
 
 function getDailyHighlights(plan) {
+  if (typeof plan.summaryText === "string" && plan.summaryText.trim()) {
+    return plan.summaryText.trim();
+  }
   const rows = Array.isArray(plan.itinerary) ? plan.itinerary.slice(0, 3) : [];
   if (rows.length === 0) return "待补充";
 
