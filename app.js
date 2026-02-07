@@ -2,6 +2,7 @@ const STORAGE_KEYS = {
   flight: "sa_trip_doc_flight",
   hertz: "sa_trip_doc_hertz",
   hotel: "sa_trip_doc_hotel",
+  itineraryDocs: "sa_trip_itinerary_docs_by_date",
   remarks: "sa_trip_event_remarks",
 };
 
@@ -18,6 +19,7 @@ const importedDocs = {
 };
 
 const remarksByDate = {};
+const itineraryDocsByDate = {};
 
 const PLAN_BY_DATE = {
   "2026-02-13": {
@@ -470,6 +472,32 @@ function openLocalDoc(docType) {
   }
 }
 
+function openDataUrlDoc(dataUrl) {
+  if (!dataUrl) return;
+  try {
+    const blob = dataUrlToBlob(dataUrl);
+    const blobUrl = URL.createObjectURL(blob);
+
+    if (isIosStandalone()) {
+      window.location.href = blobUrl;
+    } else {
+      window.open(blobUrl, "_blank", "noopener");
+    }
+
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+  } catch (error) {
+    console.error(error);
+    alert("打开资料失败，请重新导入该文件。");
+  }
+}
+
+function ensureItineraryDocs(dateStr) {
+  if (!Array.isArray(itineraryDocsByDate[dateStr])) {
+    itineraryDocsByDate[dateStr] = [];
+  }
+  return itineraryDocsByDate[dateStr];
+}
+
 function ensureDateRemarks(dateStr) {
   if (!remarksByDate[dateStr] || typeof remarksByDate[dateStr] !== "object" || Array.isArray(remarksByDate[dateStr])) {
     remarksByDate[dateStr] = {};
@@ -690,9 +718,51 @@ function renderWarnings(plan) {
   });
 }
 
-function renderDocs() {
+function renderImportPanel(dateStr) {
+  const titleEl = document.getElementById("importTitle");
+  const hintEl = document.getElementById("importHint");
+  const panelEl = document.getElementById("importsPanel");
+
+  if (dateStr === "2026-02-14") {
+    titleEl.textContent = "行程资料导入（隐私）";
+    hintEl.textContent = "可上传当天其他资料（PDF/图片等），仅保存在本机浏览器。";
+    panelEl.innerHTML = `
+      <label>2/14 行程资料（可多选）
+        <input type="file" id="itineraryDocsInput" multiple />
+      </label>
+    `;
+    return;
+  }
+
+  titleEl.textContent = "本地导入附件（隐私）";
+  hintEl.textContent = "附件仅保存到当前手机浏览器本地，不上传到服务器。";
+  panelEl.innerHTML = `
+    <label>机票 PDF <input type="file" id="flightInput" accept="application/pdf" /></label>
+    <label>租车 PDF <input type="file" id="hertzInput" accept="application/pdf" /></label>
+    <label>酒店 PDF <input type="file" id="hotelInput" accept="application/pdf" /></label>
+  `;
+}
+
+function renderDocs(dateStr) {
   const docsEl = document.getElementById("docs");
   docsEl.innerHTML = "";
+
+  if (dateStr === "2026-02-14") {
+    const rows = ensureItineraryDocs(dateStr);
+    if (rows.length === 0) {
+      const li = document.createElement("li");
+      li.textContent = "2/14 行程资料：未导入";
+      docsEl.appendChild(li);
+      return;
+    }
+
+    rows.forEach((row) => {
+      const li = document.createElement("li");
+      li.innerHTML = `<button class="btn itinerary-doc-btn" data-doc-date="${dateStr}" data-doc-id="${row.id}">${escapeHtml(row.name)}</button>`;
+      docsEl.appendChild(li);
+    });
+    return;
+  }
 
   const docDefs = [
     { key: "flight", title: "2/13 航班资料" },
@@ -738,6 +808,9 @@ function renderActiveDate() {
   renderMap(plan);
   renderTimeline(activeDate, plan);
   renderWarnings(plan);
+  renderImportPanel(activeDate);
+  bindInputs();
+  renderDocs(activeDate);
   updateDateSwitcherState();
 }
 
@@ -772,7 +845,25 @@ async function onFileImport(docType, file) {
   }
 
   importedDocs[docType] = payload;
-  renderDocs();
+  renderDocs(activeDate);
+}
+
+async function onItineraryDocsImport(dateStr, files) {
+  if (!files || files.length === 0) return;
+
+  const bucket = ensureItineraryDocs(dateStr);
+  for (const file of Array.from(files)) {
+    const dataUrl = await readAsDataUrl(file);
+    bucket.push({
+      id: `${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
+      name: file.name,
+      type: file.type || "",
+      dataUrl,
+    });
+  }
+
+  saveItineraryDocs();
+  renderDocs(dateStr);
 }
 
 function loadImportedDocs() {
@@ -789,16 +880,70 @@ function loadImportedDocs() {
   });
 }
 
+function saveItineraryDocs() {
+  localStorage.setItem(STORAGE_KEYS.itineraryDocs, JSON.stringify(itineraryDocsByDate));
+}
+
+function loadItineraryDocs() {
+  const raw = localStorage.getItem(STORAGE_KEYS.itineraryDocs);
+  if (!raw) {
+    DATE_OPTIONS.forEach((dateStr) => {
+      itineraryDocsByDate[dateStr] = [];
+    });
+    return;
+  }
+
+  try {
+    const parsed = JSON.parse(raw);
+    DATE_OPTIONS.forEach((dateStr) => {
+      const incoming = parsed?.[dateStr];
+      if (!Array.isArray(incoming)) {
+        itineraryDocsByDate[dateStr] = [];
+        return;
+      }
+      itineraryDocsByDate[dateStr] = incoming
+        .filter((row) => row && typeof row.id === "string" && typeof row.name === "string" && typeof row.dataUrl === "string")
+        .map((row) => ({
+          id: row.id,
+          name: row.name,
+          type: typeof row.type === "string" ? row.type : "",
+          dataUrl: row.dataUrl,
+        }));
+    });
+  } catch {
+    DATE_OPTIONS.forEach((dateStr) => {
+      itineraryDocsByDate[dateStr] = [];
+    });
+  }
+}
+
 function bindInputs() {
-  document.getElementById("flightInput").addEventListener("change", (event) => {
-    onFileImport("flight", event.target.files[0]).catch((error) => alert(error.message));
-  });
-  document.getElementById("hertzInput").addEventListener("change", (event) => {
-    onFileImport("hertz", event.target.files[0]).catch((error) => alert(error.message));
-  });
-  document.getElementById("hotelInput").addEventListener("change", (event) => {
-    onFileImport("hotel", event.target.files[0]).catch((error) => alert(error.message));
-  });
+  const flightInput = document.getElementById("flightInput");
+  const hertzInput = document.getElementById("hertzInput");
+  const hotelInput = document.getElementById("hotelInput");
+  const itineraryDocsInput = document.getElementById("itineraryDocsInput");
+
+  if (flightInput) {
+    flightInput.onchange = (event) => {
+      onFileImport("flight", event.target.files[0]).catch((error) => alert(error.message));
+    };
+  }
+  if (hertzInput) {
+    hertzInput.onchange = (event) => {
+      onFileImport("hertz", event.target.files[0]).catch((error) => alert(error.message));
+    };
+  }
+  if (hotelInput) {
+    hotelInput.onchange = (event) => {
+      onFileImport("hotel", event.target.files[0]).catch((error) => alert(error.message));
+    };
+  }
+  if (itineraryDocsInput) {
+    itineraryDocsInput.onchange = (event) => {
+      onItineraryDocsImport(activeDate, event.target.files).catch((error) => alert(error.message));
+      event.target.value = "";
+    };
+  }
 }
 
 function bindDateSwitcher() {
@@ -835,6 +980,17 @@ function bindActionClicks() {
       const docType = target.dataset.docType;
       if (!docType) return;
       openLocalDoc(docType);
+      return;
+    }
+
+    if (target.classList.contains("itinerary-doc-btn")) {
+      const dateStr = target.dataset.docDate;
+      const docId = target.dataset.docId;
+      if (!dateStr || !docId) return;
+
+      const row = ensureItineraryDocs(dateStr).find((item) => item.id === docId);
+      if (!row) return;
+      openDataUrlDoc(row.dataUrl);
     }
   });
 }
@@ -880,13 +1036,12 @@ if ("serviceWorker" in navigator) {
 }
 
 loadImportedDocs();
+loadItineraryDocs();
 loadRemarks();
-bindInputs();
 bindDateSwitcher();
 bindActionClicks();
 bindRemarkEditing();
 renderDateOptions();
-renderDocs();
 
 const initialHashDate = window.location.hash.replace("#", "");
 if (DATE_OPTIONS.includes(initialHashDate)) {
