@@ -589,12 +589,28 @@ const PLAN_BY_DATE = {
         href: "https://www.airbnb.com/trips",
       },
       {
+        label: "The Lookout Deck（官网）",
+        href: "https://lookout.co.za/",
+      },
+      {
+        label: "Robberg Nature Reserve（官网）",
+        href: "https://www.capenature.co.za/reserves/robberg-nature-reserve",
+      },
+      {
         label: "Emily Moon（Google Maps）",
         href: "https://www.google.com/maps/search/?api=1&query=Emily+Moon+Restaurant+Plettenberg+Bay",
       },
       {
         label: "The Lookout Deck（Google Maps）",
         href: "https://www.google.com/maps/search/?api=1&query=The+Lookout+Deck+Plettenberg+Bay",
+      },
+      {
+        label: "The Lookout Deck（Dineplan）",
+        href: "https://www.dineplan.com/restaurants/the-lookout-deck",
+      },
+      {
+        label: "Emily Moon（Tripadvisor）",
+        href: "https://www.tripadvisor.com/Restaurant_Review-g312558-d3491929-Reviews-The_Fat_Fish-Plettenberg_Bay_Western_Cape.html",
       },
     ],
     warnings: [
@@ -680,6 +696,11 @@ const PLAN_BY_DATE = {
             detail: "建议出发前先看当日营业时间和实时拥挤度。",
             url: "https://www.google.com/maps/search/?api=1&query=The+Lookout+Deck+Plettenberg+Bay",
           },
+          {
+            name: "The Lookout Deck 官网",
+            detail: "查看菜单、营业信息和联系方式。",
+            url: "https://lookout.co.za/",
+          },
         ],
       },
       {
@@ -714,6 +735,11 @@ const PLAN_BY_DATE = {
             url: "https://www.google.com/maps/search/?api=1&query=Robberg+Nature+Reserve",
           },
           {
+            name: "Robberg Nature Reserve 官网",
+            detail: "查看保护区开放信息与入园说明。",
+            url: "https://www.capenature.co.za/reserves/robberg-nature-reserve",
+          },
+          {
             name: "方案 B：海滩玩沙 + 日落",
             detail: "直接在 Central / Lookout Beach 放松，体验更轻松。",
             url: "https://www.google.com/maps/search/?api=1&query=Lookout+Beach+Plettenberg+Bay",
@@ -730,12 +756,22 @@ const PLAN_BY_DATE = {
         subItems: [
           {
             name: "Emily Moon（仪式感/景观强）",
-            detail: "适合把除夕吃成正式家庭晚宴，建议提前订位。",
-            url: "https://www.google.com/maps/search/?api=1&query=Emily+Moon+Restaurant+Plettenberg+Bay",
+            detail: "适合把除夕吃成正式家庭晚宴；包含你提供的 Tripadvisor 链接。",
+            url: "https://www.tripadvisor.com/Restaurant_Review-g312558-d3491929-Reviews-The_Fat_Fish-Plettenberg_Bay_Western_Cape.html",
           },
           {
             name: "The Lookout Deck（海边放松款）",
-            detail: "更随意轻松，适合不想折腾的除夕晚餐。",
+            detail: "更随意轻松；包含你提供的 Dineplan 订位链接。",
+            url: "https://www.dineplan.com/restaurants/the-lookout-deck",
+          },
+          {
+            name: "Emily Moon（Google Maps）",
+            detail: "晚餐前用于导航定位。",
+            url: "https://www.google.com/maps/search/?api=1&query=Emily+Moon+Restaurant+Plettenberg+Bay",
+          },
+          {
+            name: "The Lookout Deck（Google Maps）",
+            detail: "晚餐前用于导航定位。",
             url: "https://www.google.com/maps/search/?api=1&query=The+Lookout+Deck+Plettenberg+Bay",
           },
         ],
@@ -1064,7 +1100,7 @@ function buildSubItems(subItems) {
   return subItems
     .map((item) => {
       const openBtn = item.url
-        ? `<a class="btn" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">打开地图</a>`
+        ? `<a class="btn" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">打开链接</a>`
         : "";
 
       const detail = item.detail ? `<p class="mini-detail">${escapeHtml(item.detail)}</p>` : "";
