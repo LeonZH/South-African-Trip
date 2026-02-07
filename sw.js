@@ -1,4 +1,4 @@
-const CACHE_NAME = "sa-trip-v22";
+const CACHE_NAME = "sa-trip-v23";
 const ASSETS = [
   "./",
   "./index.html",

@@ -778,6 +778,204 @@ const PLAN_BY_DATE = {
       },
     ],
   },
+  "2026-02-17": {
+    title: "初一：Plett 轻松上午 + Knysna 观景日落往返",
+    subtitle: "不重复 2/16 的 Robberg / Lookout Deck；下午双观景后在 Knysna 早晚餐，天黑前回 Plett",
+    extraRouteActions: [
+      {
+        label: "Keurbooms River / Lagoon（地图）",
+        href: "https://www.google.com/maps/search/?api=1&query=Keurbooms+River+Nature+Reserve",
+      },
+      {
+        label: "Knysna Heads（地图）",
+        href: "https://www.google.com/maps/search/?api=1&query=Knysna+Heads+Viewpoint",
+      },
+      {
+        label: "Brenton-on-Sea（地图）",
+        href: "https://www.google.com/maps/search/?api=1&query=Brenton-on-Sea+Beach",
+      },
+      {
+        label: "Drydock Food Co（官网）",
+        href: "https://www.drydock.co.za/?utm_source=chatgpt.com",
+      },
+      {
+        label: "34 South（官网）",
+        href: "https://www.34south.biz/?utm_source=chatgpt.com",
+      },
+      {
+        label: "Tapas & Oysters（官网）",
+        href: "https://tapasknysna.co.za/?utm_source=chatgpt.com",
+      },
+      {
+        label: "Tapas & Oysters（Tripadvisor）",
+        href: "https://www.tripadvisor.com/Restaurant_Review-g312664-d2703044-Reviews-Tapas_and_Oysters-Knysna_Western_Cape.html?utm_source=chatgpt.com",
+      },
+    ],
+    warnings: [
+      "2/17（周二，初一）主线：上午在 Plett 附近走轻松自然点，不重复 2/16 的 Robberg / Lookout Deck。",
+      "如果 2/16 因天气或到晚没去成 Robberg，可把上午主点替换为 Robberg 中短线（到观景点即回）。",
+      "Plett -> Knysna 单程约 30-40 分钟，建议 18:30 前从晚餐点离开，尽量在天黑前回到 Plett。",
+      "午餐与晚餐都优先“停车方便 + 上菜稳定 + 孩子友好”，不追网红排队。",
+      "车内固定准备：饮用水、湿巾、简餐零食、薄外套；海边风起时体感温度下降明显。",
+    ],
+    itinerary: [
+      {
+        id: 1,
+        time: "08:00-09:00",
+        title: "早餐（住处）",
+        place: "Plettenberg Bay 住处",
+        coords: "-34.0527,23.3716",
+        note: "吃扎实：蛋白质 + 水果 + 咖啡/茶。下午有往返车程，早餐不要过轻。",
+        subItems: [
+          {
+            name: "早餐结构",
+            detail: "蛋白质优先（蛋/酸奶/肉类）+ 水果 + 热饮，维持下午驾驶精力。",
+          },
+        ],
+      },
+      {
+        id: 2,
+        time: "09:15-11:30",
+        title: "上午轻松自然点：主点 1 个 + 短点 1 个",
+        place: "Keurbooms River / Lagoon 一带",
+        coords: "-34.0035,23.4454",
+        note: "默认不去 Robberg/Lookout Deck。主点推荐 Keurbooms 河口与泻湖散步，短点按停车便利现场选。",
+        subItems: [
+          {
+            name: "主点（推荐）：Keurbooms River / Lagoon",
+            detail: "轻松散步、看水鸟、吹风，亲子友好且不受严格入园时段约束。",
+            url: "https://www.google.com/maps/search/?api=1&query=Keurbooms+River+Nature+Reserve",
+          },
+          {
+            name: "短点：海滩/观景短走",
+            detail: "目标是拍“初一第一张家庭合照”，拍完就收，不恋战。",
+            url: "https://www.google.com/maps/search/?api=1&query=Keurbooms+Beach+Plettenberg+Bay",
+          },
+          {
+            name: "备选替换：Robberg 中短线",
+            detail: "仅当 2/16 因天气或时间未完成 Robberg 时启用，走到观景点即回。",
+            url: "https://www.capenature.co.za/reserves/robberg-nature-reserve",
+          },
+        ],
+      },
+      {
+        id: 3,
+        time: "11:45-13:00",
+        title: "午餐（不去 The Lookout Deck）",
+        place: "Plettenberg Bay 镇区",
+        coords: "-34.0515,23.3723",
+        note: "午餐以“停车方便 + 上菜快 + 孩子友好”为优先，保证下午出发丝滑。",
+        subItems: [
+          {
+            name: "选店原则",
+            detail: "不追网红，优先评价稳定的家庭餐或海鲜简餐。",
+          },
+          {
+            name: "镇区餐厅检索",
+            detail: "现场按停车情况快速决策，减少步行切换成本。",
+            url: "https://www.google.com/maps/search/?api=1&query=family+restaurant+Plettenberg+Bay",
+          },
+        ],
+      },
+      {
+        id: 4,
+        time: "13:00-14:15",
+        title: "午休 + 出发前准备",
+        place: "住处 / 车上",
+        coords: "-34.0527,23.3716",
+        note: "午休 20-30 分钟；出发前一次性把车上补给整理好，避免路上分心找东西。",
+        subItems: [
+          {
+            name: "出发前清单",
+            detail: "水、湿巾、零食、薄外套、充电线、纸巾全部前置到可直接拿取的位置。",
+          },
+        ],
+      },
+      {
+        id: 5,
+        time: "14:15-14:55",
+        title: "自驾：Plett -> Knysna",
+        place: "N2 东向",
+        coords: "-34.0363,23.0471",
+        note: "单程约半小时级别，进 Knysna 后适合下午观景 + 早晚餐。",
+        subItems: [
+          {
+            name: "驾驶策略",
+            detail: "稳定巡航，不抢灯不压车；把精力留给观景和晚餐。",
+          },
+        ],
+      },
+      {
+        id: 6,
+        time: "15:10-16:10",
+        title: "Knysna Heads（第一击：海口巨景）",
+        place: "Knysna Heads Viewpoint",
+        coords: "-34.0702,23.0777",
+        note: "停车后走到观景点即可，45-60 分钟足够。先拍家庭合照，再拍风景照。",
+        subItems: [
+          {
+            name: "观景点地图",
+            detail: "到点即拍，不把时间耗在等待“完美光线”。",
+            url: "https://www.google.com/maps/search/?api=1&query=Knysna+Heads+Viewpoint",
+          },
+        ],
+      },
+      {
+        id: 7,
+        time: "16:25-17:10",
+        title: "Brenton-on-Sea（第二击：更松弛海岸线）",
+        place: "Brenton-on-Sea",
+        coords: "-34.0751,23.0240",
+        note: "这段以放松节奏为主：孩子跑一跑，大人不赶时间，进入初一的舒服状态。",
+        subItems: [
+          {
+            name: "海岸短停点",
+            detail: "按停车便利和当时风况决定停留点，控制总时长避免晚餐后返程太晚。",
+            url: "https://www.google.com/maps/search/?api=1&query=Brenton-on-Sea+Beach",
+          },
+        ],
+      },
+      {
+        id: 8,
+        time: "17:15-18:30",
+        title: "Knysna 早晚餐（Waterfront 一带）",
+        place: "Knysna Waterfront",
+        coords: "-34.0369,23.0468",
+        note: "建议在 Knysna 吃完再回 Plett。优先有水景/露台/灯光舒服、孩子累了可快速撤退的店。",
+        subItems: [
+          {
+            name: "Drydock Food Co（推荐）",
+            detail: "景观 + 菜单覆盖面强，适合家庭“稳妥新年晚餐”。",
+            url: "https://www.drydock.co.za/?utm_source=chatgpt.com",
+          },
+          {
+            name: "34 South",
+            detail: "更轻松好吃不端着，生蚝与熟食选择灵活。",
+            url: "https://www.34south.biz/?utm_source=chatgpt.com",
+          },
+          {
+            name: "Tapas & Oysters（Tripadvisor）",
+            detail: "水边露台氛围强，小食分享很适合家庭。",
+            url: "https://www.tripadvisor.com/Restaurant_Review-g312664-d2703044-Reviews-Tapas_and_Oysters-Knysna_Western_Cape.html?utm_source=chatgpt.com",
+          },
+          {
+            name: "Tapas & Oysters（官网）",
+            detail: "查看菜单与营业信息。",
+            url: "https://tapasknysna.co.za/?utm_source=chatgpt.com",
+          },
+        ],
+      },
+      {
+        id: 9,
+        time: "18:30-19:15",
+        title: "返回 Plett",
+        place: "Knysna -> Plettenberg Bay",
+        coords: "-34.0527,23.3716",
+        note: "控制返程节奏，尽量在天黑前后完成入城；回住处后只做简单收尾，留体力给 2/18。",
+        subItems: [],
+      },
+    ],
+  },
 };
 
 function parseDateParts(dateStr) {
