@@ -8,7 +8,7 @@ const STORAGE_KEYS = {
 
 const DATE_START = "2026-02-12";
 const DATE_END = "2026-02-22";
-const DEFAULT_DATE = "2026-02-13";
+const DEFAULT_DATE = "2026-02-12";
 const SOUTH_AFRICA_CENTER = "-30.5595,22.9375";
 const WEEKDAY_CN = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
 
@@ -17,11 +17,129 @@ const importedDocs = {
   hertz: null,
   hotel: null,
 };
+const MULTI_DOC_IMPORT_DATES = new Set(["2026-02-12", "2026-02-14"]);
 
 const remarksByDate = {};
 const itineraryDocsByDate = {};
 
 const PLAN_BY_DATE = {
+  "2026-02-12": {
+    title: "约翰内斯堡抵达日（轻量、安全优先）",
+    subtitle: "落地缓冲 + 酒店接送半日团，减少变量，稳定开局",
+    extraRouteActions: [
+      {
+        label: "Premier Hotel O.R. Tambo",
+        href: "https://www.google.com/maps/search/?api=1&query=Premier+Hotel+O.R.+Tambo",
+      },
+      {
+        label: "Kubatana 餐厅（酒店内）",
+        href: "https://www.premierhotels.co.za/or-tambo-airport/restaurant",
+      },
+      {
+        label: "Emperors Palace（备选晚餐）",
+        href: "https://www.google.com/maps/search/?api=1&query=Emperors+Palace+Johannesburg",
+      },
+    ],
+    warnings: [
+      "硬约束：06:10 抵达 JNB；酒店 14:00 后入住；半日团 13:00 开始（酒店接送）。",
+      "接送车可能 12:00-12:30 到；建议 12:00 前就在酒店大堂等候，午餐不要排太远。",
+      "首日策略：白天、跟团、封闭空间活动优先；避免夜间外出闲逛和高暴露步行。",
+      "贵重物品尽量留酒店，仅随身携带证件复印件、少量现金/卡、手机与防晒补水。",
+    ],
+    itinerary: [
+      {
+        id: 1,
+        time: "06:10-08:00",
+        title: "抵达 JNB + 出关 + 机场内早餐",
+        place: "O.R. Tambo International Airport (JNB)",
+        coords: "-26.1367,28.2410",
+        note: "先完成过关、取行李、流量卡/取现（如需），在机场内补充体力。",
+        subItems: [],
+      },
+      {
+        id: 2,
+        time: "08:00-09:00",
+        title: "前往酒店寄存行李 + 确认接送细节",
+        place: "Premier Hotel O.R. Tambo",
+        coords: "-26.1398,28.2269",
+        note: "可先寄存行李并询问能否提前入住；确认接送车位置与集合时间。",
+        subItems: [
+          {
+            name: "酒店定位",
+            detail: "73 Gladiator St, Rhodesfield, Kempton Park",
+            url: "https://www.google.com/maps/search/?api=1&query=73+Gladiator+St+Rhodesfield+Kempton+Park",
+          },
+        ],
+      },
+      {
+        id: 3,
+        time: "09:00-11:30",
+        title: "低消耗休整：补觉/泳池边休息",
+        place: "Premier Hotel O.R. Tambo",
+        coords: "-26.1398,28.2269",
+        note: "把时差和夜航疲劳先处理掉，为下午半日团留体力。",
+        subItems: [],
+      },
+      {
+        id: 4,
+        time: "11:30-12:15",
+        title: "午餐（优先酒店内）",
+        place: "Kubatana Restaurant",
+        coords: "-26.1398,28.2269",
+        note: "建议稳妥餐食并在 12:15 前结束，减少接送前通勤不确定性。",
+        subItems: [
+          {
+            name: "Kubatana（推荐）",
+            detail: "最省心方案：就在酒店内，吃完直接回大堂等车。",
+            url: "https://www.premierhotels.co.za/or-tambo-airport/restaurant",
+          },
+          {
+            name: "Emperors Palace（备选）",
+            detail: "封闭式综合体，餐厅多；但会增加来回时间变量。",
+            url: "https://www.google.com/maps/search/?api=1&query=Emperors+Palace+Johannesburg",
+          },
+        ],
+      },
+      {
+        id: 5,
+        time: "12:00-13:00",
+        title: "提前在酒店大堂等接送车",
+        place: "Premier Hotel O.R. Tambo Lobby",
+        coords: "-26.1398,28.2269",
+        note: "预订提示会在开始前 30-60 分钟接人，建议 12:00 就位。",
+        subItems: [],
+      },
+      {
+        id: 6,
+        time: "13:00-18:00",
+        title: "半日团：Soweto + Apartheid Museum",
+        place: "Soweto / Apartheid Museum",
+        coords: "-26.2364,28.0107",
+        note: "跟团出行、门票与接送已含；时间会受路况影响。",
+        subItems: [
+          {
+            name: "索韦托区域定位",
+            detail: "用于团后回顾路线，不建议首日自行深度穿行。",
+            url: "https://www.google.com/maps/search/?api=1&query=Soweto+Johannesburg",
+          },
+          {
+            name: "Apartheid Museum",
+            detail: "行程核心站点之一，按导游节奏参观。",
+            url: "https://www.google.com/maps/search/?api=1&query=Apartheid+Museum+Johannesburg",
+          },
+        ],
+      },
+      {
+        id: 7,
+        time: "18:00-20:00",
+        title: "回酒店晚餐 + 早睡",
+        place: "Premier Hotel O.R. Tambo",
+        coords: "-26.1398,28.2269",
+        note: "首日以恢复体能为主，压低夜间活动风险，为次日安排留余量。",
+        subItems: [],
+      },
+    ],
+  },
   "2026-02-13": {
     title: "伊丽莎白港 -> Addo 半日自驾",
     subtitle: "到达、取车、补给、入园、半天巡游，一屏掌握",
@@ -723,11 +841,11 @@ function renderImportPanel(dateStr) {
   const hintEl = document.getElementById("importHint");
   const panelEl = document.getElementById("importsPanel");
 
-  if (dateStr === "2026-02-14") {
+  if (MULTI_DOC_IMPORT_DATES.has(dateStr)) {
     titleEl.textContent = "行程资料导入（隐私）";
     hintEl.textContent = "可上传当天其他资料（PDF/图片等），仅保存在本机浏览器。";
     panelEl.innerHTML = `
-      <label>2/14 行程资料（可多选）
+      <label>${dateStr} 行程资料（可多选）
         <input type="file" id="itineraryDocsInput" multiple />
       </label>
     `;
@@ -747,11 +865,11 @@ function renderDocs(dateStr) {
   const docsEl = document.getElementById("docs");
   docsEl.innerHTML = "";
 
-  if (dateStr === "2026-02-14") {
+  if (MULTI_DOC_IMPORT_DATES.has(dateStr)) {
     const rows = ensureItineraryDocs(dateStr);
     if (rows.length === 0) {
       const li = document.createElement("li");
-      li.textContent = "2/14 行程资料：未导入";
+      li.textContent = `${dateStr} 行程资料：未导入`;
       docsEl.appendChild(li);
       return;
     }
