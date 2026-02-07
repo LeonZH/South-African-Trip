@@ -331,6 +331,17 @@ small {
   background: #fff;
 }
 
+textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px;
+  background: #fff;
+  font: inherit;
+  color: var(--ink);
+  resize: vertical;
+}
+
 button.btn:disabled {
   border-color: #9aa8a5;
   color: #6e7d79;
@@ -345,6 +356,10 @@ button.btn:disabled {
 
   .card:nth-child(1),
   .card:nth-child(2) {
+    grid-column: span 2;
+  }
+
+  .summary-card {
     grid-column: span 2;
   }
 
@@ -411,4 +426,65 @@ button.btn:disabled {
   margin-top: 6px;
   font-size: 0.82rem;
   color: #627a76;
+}
+
+.summary-list {
+  list-style: none;
+  margin: 0;
+  padding-left: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.summary-list li {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  background: #fff;
+}
+
+.summary-row-title {
+  font-weight: 700;
+  color: #15484a;
+}
+
+.summary-row-detail {
+  margin: 6px 0 10px;
+  color: #405157;
+  white-space: pre-line;
+}
+
+.summary-remark-controls,
+.summary-places-import {
+  display: grid;
+  gap: 10px;
+}
+
+.summary-remark-controls label,
+.summary-places-import label {
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.summary-remark-controls select {
+  min-height: 40px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  padding: 0 10px;
+  font-size: 0.95rem;
+}
+
+.remark-preview {
+  margin-top: 12px;
+  border: 1px solid #c6ddd9;
+  border-radius: 10px;
+  background: #f7fffd;
+  padding: 10px;
+  color: #1d2c30;
+  white-space: pre-wrap;
+  max-height: 320px;
+  overflow: auto;
 }

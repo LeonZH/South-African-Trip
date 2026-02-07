@@ -4,6 +4,7 @@ const STORAGE_KEYS = {
   hotel: "sa_trip_doc_hotel",
   itineraryDocs: "sa_trip_itinerary_docs_by_date",
   remarks: "sa_trip_event_remarks",
+  mapPlacesSouthAfrica: "sa_trip_map_places_south_africa",
 };
 
 const DATE_START = "2026-02-12";
@@ -11,6 +12,52 @@ const DATE_END = "2026-02-22";
 const DEFAULT_DATE = "2026-02-12";
 const SOUTH_AFRICA_CENTER = "-30.5595,22.9375";
 const WEEKDAY_CN = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
+const SUMMARY_VIEW_KEY = "__summary__";
+const SUMMARY_HASH = "summary";
+const SOUTH_AFRICA_BOUNDS = {
+  latMin: -35.2,
+  latMax: -21.5,
+  lngMin: 16.0,
+  lngMax: 33.2,
+};
+const SOUTH_AFRICA_TEXT_HINTS = [
+  "south africa",
+  "南非",
+  "johannesburg",
+  "pretoria",
+  "cape town",
+  "durban",
+  "gqeberha",
+  "port elizabeth",
+  "plettenberg",
+  "knysna",
+  "stellenbosch",
+];
+const EMBASSY_CONTACTS = [
+  {
+    name: "中国驻南非大使馆（比勒陀利亚）",
+    address: "225 ATHLONE STREET, ARCADIA 0083, PRETORIA",
+    servicePhone: "+27-12-4316537",
+    emergencyPhone: "+27-10-4925583",
+    website: "http://za.china-embassy.gov.cn",
+  },
+  {
+    name: "中国驻约翰内斯堡总领馆",
+    servicePhone: "+27-76-1961019",
+    emergencyPhone: "+27-10-4986234",
+    website: "http://johannesburg.china-consulate.gov.cn",
+  },
+  {
+    name: "中国驻开普敦总领馆",
+    emergencyPhone: "+27-21-6747668",
+    website: "http://capetown.china-consulate.gov.cn",
+  },
+  {
+    name: "中国驻德班总领馆",
+    emergencyPhone: "+27-76-1742938",
+    website: "http://durban.china-consulate.gov.cn",
+  },
+];
 
 const importedDocs = {
   flight: null,
@@ -20,6 +67,8 @@ const importedDocs = {
 
 const remarksByDate = {};
 const itineraryDocsByDate = {};
+let mapPlacesSouthAfrica = [];
+let latestRemarksSummaryText = "";
 
 const PLAN_BY_DATE = {
   "2026-02-12": {
@@ -1400,11 +1449,24 @@ function buildDateRange(start, end) {
 }
 
 const DATE_OPTIONS = buildDateRange(DATE_START, DATE_END);
+const DATE_SELECT_OPTIONS = [SUMMARY_VIEW_KEY, ...DATE_OPTIONS];
 
 function formatDateLabel(dateStr) {
+  if (dateStr === SUMMARY_VIEW_KEY) return "汇总页面";
   const { year, month, day } = parseDateParts(dateStr);
   const dateObj = new Date(year, month - 1, day);
   return `${dateStr}（${WEEKDAY_CN[dateObj.getDay()]}）`;
+}
+
+function viewKeyToHash(viewKey) {
+  if (viewKey === SUMMARY_VIEW_KEY) return SUMMARY_HASH;
+  return viewKey;
+}
+
+function hashToViewKey(hashValue) {
+  if (hashValue === SUMMARY_HASH) return SUMMARY_VIEW_KEY;
+  if (DATE_OPTIONS.includes(hashValue)) return hashValue;
+  return "";
 }
 
 function escapeHtml(str) {
@@ -1505,6 +1567,262 @@ function createPlaceholderPlan() {
 function getPlanForDate(dateStr) {
   if (PLAN_BY_DATE[dateStr]) return PLAN_BY_DATE[dateStr];
   return createPlaceholderPlan();
+}
+
+function getDailyHighlights(plan) {
+  const rows = Array.isArray(plan.itinerary) ? plan.itinerary.slice(0, 3) : [];
+  if (rows.length === 0) return "待补充";
+
+  return rows
+    .map((row) => `${row.time} ${row.title}`)
+    .join(" -> ");
+}
+
+function getDateRangeFrom(startDate) {
+  const startIndex = DATE_OPTIONS.indexOf(startDate);
+  if (startIndex < 0) return [...DATE_OPTIONS];
+  return DATE_OPTIONS.slice(startIndex);
+}
+
+function getRemarkSummaryText(startDate) {
+  const dates = getDateRangeFrom(startDate);
+  const sections = [];
+
+  dates.forEach((dateStr) => {
+    const remarks = ensureDateRemarks(dateStr);
+    const plan = getPlanForDate(dateStr);
+    const rows = Object.entries(remarks)
+      .map(([eventId, text]) => ({ eventId, text: String(text || "").trim() }))
+      .filter((item) => item.text);
+
+    if (rows.length === 0) return;
+
+    const details = rows
+      .map((item) => {
+        const event = plan.itinerary.find((it) => String(it.id) === item.eventId);
+        const eventLabel = event ? `${event.time} ${event.title}` : `行程 ${item.eventId}`;
+        return `- ${eventLabel}\n${item.text}`;
+      })
+      .join("\n\n");
+
+    sections.push(`${dateStr}\n${details}`);
+  });
+
+  if (sections.length === 0) {
+    return "南非行程备注汇总\n\n当前范围内还没有备注内容。";
+  }
+
+  const now = new Date();
+  const timestamp = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")} ${String(
+    now.getHours()
+  ).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+
+  return `南非行程备注汇总\n生成时间：${timestamp}\n\n${sections.join("\n\n")}`;
+}
+
+async function copyText(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.style.position = "fixed";
+  textarea.style.left = "-9999px";
+  document.body.appendChild(textarea);
+  textarea.focus();
+  textarea.select();
+  document.execCommand("copy");
+  document.body.removeChild(textarea);
+}
+
+function normalizeNumber(value) {
+  if (typeof value === "number") return Number.isFinite(value) ? value : null;
+  if (typeof value !== "string") return null;
+  const n = Number(value.trim());
+  return Number.isFinite(n) ? n : null;
+}
+
+function parseCoordsFromUrl(url) {
+  if (!url || typeof url !== "string") return { lat: null, lng: null };
+
+  const patterns = [
+    /@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/,
+    /!3d(-?\d+(?:\.\d+)?)!4d(-?\d+(?:\.\d+)?)/,
+    /[?&]query=(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/,
+  ];
+
+  for (const pattern of patterns) {
+    const matched = url.match(pattern);
+    if (!matched) continue;
+    return { lat: normalizeNumber(matched[1]), lng: normalizeNumber(matched[2]) };
+  }
+
+  return { lat: null, lng: null };
+}
+
+function isSouthAfricaCoords(lat, lng) {
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return false;
+  return (
+    lat >= SOUTH_AFRICA_BOUNDS.latMin &&
+    lat <= SOUTH_AFRICA_BOUNDS.latMax &&
+    lng >= SOUTH_AFRICA_BOUNDS.lngMin &&
+    lng <= SOUTH_AFRICA_BOUNDS.lngMax
+  );
+}
+
+function hasSouthAfricaHint(text) {
+  const normalized = String(text || "").toLowerCase();
+  return SOUTH_AFRICA_TEXT_HINTS.some((hint) => normalized.includes(hint));
+}
+
+function normalizeMapPlace(input) {
+  const name = String(input.name || "").trim();
+  const address = String(input.address || "").trim();
+  const url = String(input.url || "").trim();
+
+  let lat = normalizeNumber(input.lat);
+  let lng = normalizeNumber(input.lng);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+    const fromUrl = parseCoordsFromUrl(url);
+    if (Number.isFinite(fromUrl.lat) && Number.isFinite(fromUrl.lng)) {
+      lat = fromUrl.lat;
+      lng = fromUrl.lng;
+    }
+  }
+
+  return {
+    name: name || "未命名地点",
+    address,
+    url,
+    lat: Number.isFinite(lat) ? lat : null,
+    lng: Number.isFinite(lng) ? lng : null,
+  };
+}
+
+function isSouthAfricaPlace(place) {
+  if (isSouthAfricaCoords(place.lat, place.lng)) return true;
+  return hasSouthAfricaHint(`${place.name} ${place.address} ${place.url}`);
+}
+
+function dedupeMapPlaces(places) {
+  const seen = new Set();
+  const output = [];
+
+  places.forEach((rawPlace) => {
+    const place = normalizeMapPlace(rawPlace);
+    if (!isSouthAfricaPlace(place)) return;
+
+    const coordKey = Number.isFinite(place.lat) && Number.isFinite(place.lng) ? `${place.lat.toFixed(6)},${place.lng.toFixed(6)}` : "";
+    const key = `${place.name.toLowerCase()}|${place.address.toLowerCase()}|${coordKey}|${place.url}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    output.push(place);
+  });
+
+  output.sort((a, b) => a.name.localeCompare(b.name, "zh-Hans-CN"));
+  return output;
+}
+
+function parsePlacesFromText(text) {
+  const rows = String(text || "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  return rows.map((line) => {
+    const urlMatch = line.match(/https?:\/\/\S+/i);
+    const url = urlMatch ? urlMatch[0] : "";
+    const name = url ? line.replace(url, "").replace(/[-|：:]\s*$/, "").trim() : line;
+    const coords = parseCoordsFromUrl(url);
+
+    return {
+      name: name || "未命名地点",
+      address: line,
+      url,
+      lat: coords.lat,
+      lng: coords.lng,
+    };
+  });
+}
+
+function pickString(obj, keys) {
+  for (const key of keys) {
+    if (typeof obj[key] === "string" && obj[key].trim()) {
+      return obj[key].trim();
+    }
+  }
+  return "";
+}
+
+function pickNumber(obj, keys) {
+  for (const key of keys) {
+    const n = normalizeNumber(obj[key]);
+    if (Number.isFinite(n)) return n;
+  }
+  return null;
+}
+
+function extractPlaceFromObject(obj) {
+  if (!obj || typeof obj !== "object" || Array.isArray(obj)) return null;
+
+  const name = pickString(obj, ["name", "title", "label", "placeName"]);
+  const address = pickString(obj, ["address", "formattedAddress", "vicinity", "description"]);
+  const url = pickString(obj, ["url", "mapsUrl", "googleMapsUri", "link"]);
+
+  let lat = pickNumber(obj, ["lat", "latitude"]);
+  let lng = pickNumber(obj, ["lng", "lon", "longitude"]);
+
+  if ((!Number.isFinite(lat) || !Number.isFinite(lng)) && obj.location && typeof obj.location === "object") {
+    lat = pickNumber(obj.location, ["lat", "latitude"]);
+    lng = pickNumber(obj.location, ["lng", "lon", "longitude"]);
+  }
+
+  if ((!Number.isFinite(lat) || !Number.isFinite(lng)) && obj.coordinates && typeof obj.coordinates === "object") {
+    lat = pickNumber(obj.coordinates, ["lat", "latitude"]);
+    lng = pickNumber(obj.coordinates, ["lng", "lon", "longitude"]);
+  }
+
+  if (!name && !address && !url && !Number.isFinite(lat) && !Number.isFinite(lng)) {
+    return null;
+  }
+
+  return {
+    name: name || "未命名地点",
+    address,
+    url,
+    lat,
+    lng,
+  };
+}
+
+function collectPlacesFromJson(value, collector) {
+  if (Array.isArray(value)) {
+    value.forEach((item) => collectPlacesFromJson(item, collector));
+    return;
+  }
+
+  if (!value || typeof value !== "object") return;
+
+  const place = extractPlaceFromObject(value);
+  if (place) collector.push(place);
+
+  Object.values(value).forEach((nested) => {
+    if (nested && typeof nested === "object") {
+      collectPlacesFromJson(nested, collector);
+    }
+  });
+}
+
+function mergeMapPlaces(incomingPlaces) {
+  mapPlacesSouthAfrica = dedupeMapPlaces([...mapPlacesSouthAfrica, ...incomingPlaces]);
+  localStorage.setItem(STORAGE_KEYS.mapPlacesSouthAfrica, JSON.stringify(mapPlacesSouthAfrica));
+}
+
+function clearMapPlaces() {
+  mapPlacesSouthAfrica = [];
+  localStorage.removeItem(STORAGE_KEYS.mapPlacesSouthAfrica);
 }
 
 let activeDate = DATE_OPTIONS.includes(DEFAULT_DATE) ? DEFAULT_DATE : DATE_OPTIONS[0];
@@ -1723,9 +2041,29 @@ function buildRemarks(dateStr, eventId) {
 }
 
 function renderHeader(dateStr, plan) {
-  document.getElementById("currentTitle").textContent = plan.title;
-  document.getElementById("currentSubtitle").textContent = plan.subtitle;
+  const titleEl = document.getElementById("currentTitle");
+  const subtitleEl = document.getElementById("currentSubtitle");
+
+  if (dateStr === SUMMARY_VIEW_KEY) {
+    titleEl.textContent = "南非行程汇总";
+    subtitleEl.textContent = "";
+    document.title = "南非旅行助手 · 汇总";
+    return;
+  }
+
+  titleEl.textContent = plan.title;
+  subtitleEl.textContent = plan.subtitle;
   document.title = `南非旅行助手 · ${dateStr}`;
+}
+
+function toggleViewCards(showSummary) {
+  document.querySelectorAll(".daily-card").forEach((card) => {
+    card.hidden = showSummary;
+  });
+
+  document.querySelectorAll(".summary-card").forEach((card) => {
+    card.hidden = !showSummary;
+  });
 }
 
 function renderRouteActions(plan, autoAction) {
@@ -1845,9 +2183,94 @@ function renderDocs(dateStr) {
   });
 }
 
+function renderSummaryItineraryCard() {
+  const listEl = document.getElementById("summaryItineraryList");
+  listEl.innerHTML = "";
+
+  DATE_OPTIONS.forEach((dateStr) => {
+    const plan = getPlanForDate(dateStr);
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <div class="summary-row-title">${formatDateLabel(dateStr)}</div>
+      <p class="summary-row-detail">${escapeHtml(getDailyHighlights(plan))}</p>
+    `;
+    listEl.appendChild(li);
+  });
+}
+
+function renderEmbassyCard() {
+  const listEl = document.getElementById("embassyContacts");
+  listEl.innerHTML = "";
+
+  EMBASSY_CONTACTS.forEach((row) => {
+    const li = document.createElement("li");
+    const lines = [
+      row.address ? `地址：${row.address}` : "",
+      row.servicePhone ? `业务电话：${row.servicePhone}` : "",
+      `领保应急：${row.emergencyPhone}`,
+    ]
+      .filter(Boolean)
+      .join("<br/>");
+
+    li.innerHTML = `
+      <div class="summary-row-title">${escapeHtml(row.name)}</div>
+      <p class="summary-row-detail">${lines}</p>
+      <a class="btn" href="${escapeHtml(row.website)}" target="_blank" rel="noopener">打开官网</a>
+    `;
+    listEl.appendChild(li);
+  });
+}
+
+function renderSummaryRemarkStartOptions() {
+  const selectEl = document.getElementById("summaryRemarkStartDate");
+  if (!selectEl) return;
+
+  selectEl.innerHTML = DATE_OPTIONS.map(
+    (dateStr) => `<option value="${dateStr}">${formatDateLabel(dateStr)}</option>`
+  ).join("");
+
+  if (!DATE_OPTIONS.includes(selectEl.value)) {
+    selectEl.value = DATE_OPTIONS[0];
+  }
+}
+
+function renderMapPlacesList() {
+  const statusEl = document.getElementById("mapPlacesStatus");
+  const listEl = document.getElementById("mapPlacesList");
+  if (!statusEl || !listEl) return;
+
+  listEl.innerHTML = "";
+  if (mapPlacesSouthAfrica.length === 0) {
+    statusEl.textContent = "尚未提取到南非地点";
+    return;
+  }
+
+  statusEl.textContent = `已提取 ${mapPlacesSouthAfrica.length} 个南非地点`;
+
+  mapPlacesSouthAfrica.forEach((place) => {
+    const location = Number.isFinite(place.lat) && Number.isFinite(place.lng) ? `${place.lat}, ${place.lng}` : "坐标未提供";
+    const mapUrl = place.url || (Number.isFinite(place.lat) && Number.isFinite(place.lng) ? mapsSearchUrl(`${place.lat},${place.lng}`, place.name) : "");
+
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <div class="summary-row-title">${escapeHtml(place.name)}</div>
+      <p class="summary-row-detail">${escapeHtml(place.address || "")}<br/>${escapeHtml(location)}</p>
+      ${mapUrl ? `<a class="btn" href="${escapeHtml(mapUrl)}" target="_blank" rel="noopener">打开地图</a>` : ""}
+    `;
+    listEl.appendChild(li);
+  });
+}
+
+function renderSummaryPage() {
+  renderSummaryItineraryCard();
+  renderEmbassyCard();
+  renderSummaryRemarkStartOptions();
+  renderMapPlacesList();
+}
+
 function renderDateOptions() {
   const dateSelect = document.getElementById("dateSelect");
-  dateSelect.innerHTML = DATE_OPTIONS.map(
+  dateSelect.innerHTML = DATE_SELECT_OPTIONS.map(
     (dateStr) => `<option value="${dateStr}">${formatDateLabel(dateStr)}</option>`
   ).join("");
 }
@@ -1857,13 +2280,22 @@ function updateDateSwitcherState() {
   const prevBtn = document.getElementById("prevDateBtn");
   const nextBtn = document.getElementById("nextDateBtn");
 
-  const index = DATE_OPTIONS.indexOf(activeDate);
+  const index = DATE_SELECT_OPTIONS.indexOf(activeDate);
   dateSelect.value = activeDate;
   prevBtn.disabled = index <= 0;
-  nextBtn.disabled = index >= DATE_OPTIONS.length - 1;
+  nextBtn.disabled = index >= DATE_SELECT_OPTIONS.length - 1;
 }
 
 function renderActiveDate() {
+  if (activeDate === SUMMARY_VIEW_KEY) {
+    toggleViewCards(true);
+    renderHeader(activeDate, null);
+    renderSummaryPage();
+    updateDateSwitcherState();
+    return;
+  }
+
+  toggleViewCards(false);
   const plan = getPlanForDate(activeDate);
   renderHeader(activeDate, plan);
   renderMap(plan);
@@ -1876,15 +2308,18 @@ function renderActiveDate() {
 }
 
 function setActiveDate(dateStr, syncHash = true) {
-  if (!DATE_OPTIONS.includes(dateStr)) return;
+  if (!DATE_SELECT_OPTIONS.includes(dateStr)) return;
   if (activeDate !== dateStr) {
     activeDate = dateStr;
   }
 
   renderActiveDate();
 
-  if (syncHash && window.location.hash !== `#${dateStr}`) {
-    window.location.hash = dateStr;
+  if (syncHash) {
+    const hashValue = viewKeyToHash(dateStr);
+    if (window.location.hash !== `#${hashValue}`) {
+      window.location.hash = hashValue;
+    }
   }
 }
 
@@ -1978,6 +2413,25 @@ function loadItineraryDocs() {
   }
 }
 
+function loadMapPlaces() {
+  const raw = localStorage.getItem(STORAGE_KEYS.mapPlacesSouthAfrica);
+  if (!raw) {
+    mapPlacesSouthAfrica = [];
+    return;
+  }
+
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) {
+      mapPlacesSouthAfrica = [];
+      return;
+    }
+    mapPlacesSouthAfrica = dedupeMapPlaces(parsed);
+  } catch {
+    mapPlacesSouthAfrica = [];
+  }
+}
+
 function bindInputs() {
   const itineraryDocsInput = document.getElementById("itineraryDocsInput");
 
@@ -1995,22 +2449,23 @@ function bindDateSwitcher() {
   });
 
   document.getElementById("prevDateBtn").addEventListener("click", () => {
-    const index = DATE_OPTIONS.indexOf(activeDate);
+    const index = DATE_SELECT_OPTIONS.indexOf(activeDate);
     if (index <= 0) return;
-    setActiveDate(DATE_OPTIONS[index - 1]);
+    setActiveDate(DATE_SELECT_OPTIONS[index - 1]);
   });
 
   document.getElementById("nextDateBtn").addEventListener("click", () => {
-    const index = DATE_OPTIONS.indexOf(activeDate);
-    if (index >= DATE_OPTIONS.length - 1) return;
-    setActiveDate(DATE_OPTIONS[index + 1]);
+    const index = DATE_SELECT_OPTIONS.indexOf(activeDate);
+    if (index >= DATE_SELECT_OPTIONS.length - 1) return;
+    setActiveDate(DATE_SELECT_OPTIONS[index + 1]);
   });
 
   window.addEventListener("hashchange", () => {
-    const hashDate = window.location.hash.replace("#", "");
-    if (!DATE_OPTIONS.includes(hashDate)) return;
-    if (hashDate === activeDate) return;
-    setActiveDate(hashDate, false);
+    const hashValue = window.location.hash.replace("#", "");
+    const viewKey = hashToViewKey(hashValue);
+    if (!viewKey) return;
+    if (viewKey === activeDate) return;
+    setActiveDate(viewKey, false);
   });
 }
 
@@ -2051,6 +2506,91 @@ function bindRemarkEditing() {
     ensureDateRemarks(dateStr)[eventId] = target.innerText.replace(/\r\n?/g, "\n");
     saveRemarks();
   });
+}
+
+function bindSummaryActions() {
+  const buildBtn = document.getElementById("buildRemarksSummaryBtn");
+  const shareBtn = document.getElementById("shareRemarksToNotesBtn");
+  const startDateSelect = document.getElementById("summaryRemarkStartDate");
+  const previewEl = document.getElementById("summaryRemarkPreview");
+  const placesFileInput = document.getElementById("mapPlacesJsonInput");
+  const placesTextInput = document.getElementById("mapPlacesTextInput");
+  const parseTextBtn = document.getElementById("parseMapPlacesTextBtn");
+  const clearPlacesBtn = document.getElementById("clearMapPlacesBtn");
+
+  if (buildBtn && startDateSelect && previewEl) {
+    buildBtn.addEventListener("click", () => {
+      const startDate = DATE_OPTIONS.includes(startDateSelect.value) ? startDateSelect.value : DATE_OPTIONS[0];
+      latestRemarksSummaryText = getRemarkSummaryText(startDate);
+      previewEl.textContent = latestRemarksSummaryText;
+    });
+  }
+
+  if (shareBtn && previewEl) {
+    shareBtn.addEventListener("click", async () => {
+      if (!latestRemarksSummaryText) {
+        latestRemarksSummaryText = previewEl.textContent.trim() || getRemarkSummaryText(DATE_OPTIONS[0]);
+        previewEl.textContent = latestRemarksSummaryText;
+      }
+
+      try {
+        if (navigator.share) {
+          await navigator.share({
+            title: "南非行程备注汇总",
+            text: latestRemarksSummaryText,
+          });
+          return;
+        }
+      } catch (error) {
+        console.error(error);
+      }
+
+      try {
+        await copyText(latestRemarksSummaryText);
+        alert("备注汇总已复制。iPhone 上可粘贴到“备忘录”保存。");
+      } catch (error) {
+        console.error(error);
+        alert("无法自动分享/复制，请手动复制预览内容。");
+      }
+    });
+  }
+
+  if (placesFileInput) {
+    placesFileInput.addEventListener("change", async (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      try {
+        const raw = await file.text();
+        const json = JSON.parse(raw);
+        const extracted = [];
+        collectPlacesFromJson(json, extracted);
+        mergeMapPlaces(extracted);
+        renderMapPlacesList();
+      } catch (error) {
+        console.error(error);
+        alert("JSON 解析失败，请确认是有效的 Google Takeout 导出文件。");
+      } finally {
+        event.target.value = "";
+      }
+    });
+  }
+
+  if (parseTextBtn && placesTextInput) {
+    parseTextBtn.addEventListener("click", () => {
+      const extracted = parsePlacesFromText(placesTextInput.value);
+      mergeMapPlaces(extracted);
+      renderMapPlacesList();
+    });
+  }
+
+  if (clearPlacesBtn && placesTextInput) {
+    clearPlacesBtn.addEventListener("click", () => {
+      clearMapPlaces();
+      placesTextInput.value = "";
+      renderMapPlacesList();
+    });
+  }
 }
 
 function bindIosNoZoom() {
@@ -2109,15 +2649,18 @@ if ("serviceWorker" in navigator) {
 loadImportedDocs();
 loadItineraryDocs();
 loadRemarks();
+loadMapPlaces();
 bindDateSwitcher();
 bindActionClicks();
 bindRemarkEditing();
+bindSummaryActions();
 bindIosNoZoom();
 renderDateOptions();
 
-const initialHashDate = window.location.hash.replace("#", "");
-if (DATE_OPTIONS.includes(initialHashDate)) {
-  activeDate = initialHashDate;
+const initialHash = window.location.hash.replace("#", "");
+const initialViewKey = hashToViewKey(initialHash);
+if (initialViewKey) {
+  activeDate = initialViewKey;
 }
 
 setActiveDate(activeDate);

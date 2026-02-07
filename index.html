@@ -10,7 +10,7 @@
     <meta name="description" content="南非旅行多日行程 PWA：每日卡片、地图导航、离线可用、附件本地保存。" />
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="icons/icon-192.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="styles.css?v=20260207-3" />
+    <link rel="stylesheet" href="styles.css?v=20260208-1" />
     <title>南非旅行助手 · 2026-02-12</title>
   </head>
   <body>
@@ -28,7 +28,7 @@
     </header>
 
     <main>
-      <section class="card">
+      <section id="dailyMapCard" class="card daily-card">
         <h2>地图总览</h2>
         <div class="map-wrap">
           <iframe
@@ -41,25 +41,70 @@
         <div class="actions" id="routeActions"></div>
       </section>
 
-      <section class="card">
+      <section id="dailyTimelineCard" class="card daily-card">
         <h2>当天行程</h2>
         <ol id="timeline" class="timeline"></ol>
       </section>
 
-      <section class="card">
+      <section id="dailyImportCard" class="card daily-card">
         <h2 id="importTitle">行程资料导入（隐私）</h2>
         <p id="importHint" class="note">可上传当天资料（PDF/图片等），仅保存在本机浏览器。</p>
         <div id="importsPanel" class="imports"></div>
       </section>
 
-      <section class="card">
+      <section id="dailyWarningsCard" class="card daily-card">
         <h2>当天提醒</h2>
         <ul id="warnings" class="warnings"></ul>
       </section>
 
-      <section class="card">
+      <section id="dailyDocsCard" class="card daily-card">
         <h2>行程资料</h2>
         <ul id="docs" class="docs"></ul>
+      </section>
+
+      <section id="summaryItineraryCard" class="card summary-card" hidden>
+        <h2>汇总：每天主要行程</h2>
+        <ul id="summaryItineraryList" class="summary-list"></ul>
+      </section>
+
+      <section id="summaryEmbassyCard" class="card summary-card" hidden>
+        <h2>中国驻南非使领馆联系方式</h2>
+        <ul id="embassyContacts" class="summary-list embassy-list"></ul>
+        <p class="note">联系方式可能变动，请以官方页面为准。</p>
+      </section>
+
+      <section id="summaryRemarksCard" class="card summary-card" hidden>
+        <h2>备注按天汇总（可保存到 iPhone 记事本）</h2>
+        <div class="summary-remark-controls">
+          <label for="summaryRemarkStartDate">从该日期开始提取后续备注</label>
+          <select id="summaryRemarkStartDate" aria-label="备注汇总起始日期"></select>
+          <div class="actions">
+            <button id="buildRemarksSummaryBtn" class="btn" type="button">生成按天汇总</button>
+            <button id="shareRemarksToNotesBtn" class="btn" type="button">保存到 iPhone 记事本</button>
+          </div>
+        </div>
+        <pre id="summaryRemarkPreview" class="remark-preview">点击“生成按天汇总”后显示内容</pre>
+      </section>
+
+      <section id="summaryPlacesCard" class="card summary-card" hidden>
+        <h2>Google Maps 南非关注地点</h2>
+        <p class="note">
+          受隐私权限限制，网页不能直接读取你的 Google 账号收藏。你可以导入 Google Takeout JSON 或粘贴地点链接文本来提取。
+        </p>
+        <div class="summary-places-import">
+          <label>导入 Google Takeout JSON
+            <input id="mapPlacesJsonInput" type="file" accept=".json,application/json" />
+          </label>
+          <label>或粘贴地点（每行一个，支持 Google Maps 链接）
+            <textarea id="mapPlacesTextInput" rows="5" placeholder="例如：The Blue Train Park https://maps.google.com/..."></textarea>
+          </label>
+          <div class="actions">
+            <button id="parseMapPlacesTextBtn" class="btn" type="button">提取南非地点</button>
+            <button id="clearMapPlacesBtn" class="btn" type="button">清空地点</button>
+          </div>
+        </div>
+        <p id="mapPlacesStatus" class="note">尚未提取地点</p>
+        <ul id="mapPlacesList" class="summary-list"></ul>
       </section>
     </main>
 
@@ -67,6 +112,6 @@
       <small>提示：路线、路况、开闭园时间与接送时刻以当天官方公告和现场人员指引为准。</small>
     </footer>
 
-    <script src="app.js?v=20260207-3" defer></script>
+    <script src="app.js?v=20260208-1" defer></script>
   </body>
 </html>
