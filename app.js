@@ -17,7 +17,7 @@ const importedDocs = {
   hertz: null,
   hotel: null,
 };
-const MULTI_DOC_IMPORT_DATES = new Set(["2026-02-12", "2026-02-14"]);
+const MULTI_DOC_IMPORT_DATES = new Set(["2026-02-12", "2026-02-14", "2026-02-15"]);
 
 const remarksByDate = {};
 const itineraryDocsByDate = {};
