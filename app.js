@@ -69,18 +69,22 @@ const PLAN_BY_DATE = {
           {
             name: "TODO：Woolworths Food 采购",
             detail: "先补给饮用水、零食、车上应急用品。",
+            url: "https://www.google.com/maps/search/?api=1&query=Woolworths+Food+Walmer+Park+Shopping+Centre+Gqeberha",
           },
           {
             name: "午餐餐厅：John Dory's Walmer Park",
             detail: "强烈推荐：家庭氛围 & 多样化。",
+            url: "https://www.google.com/maps/search/?api=1&query=John+Dory%27s+Walmer+Park+Gqeberha",
           },
           {
             name: "午餐餐厅：Mugg & Bean Walmer Park",
             detail: "最稳妥的选择：西式简餐 & 咖啡。",
+            url: "https://www.google.com/maps/search/?api=1&query=Mugg+%26+Bean+Walmer+Park+Gqeberha",
           },
           {
             name: "午餐餐厅：Panarottis Walmer Park",
             detail: "意式风味：披萨 & 意面。",
+            url: "https://www.google.com/maps/search/?api=1&query=Panarottis+Walmer+Park+Gqeberha",
           },
         ],
       },
