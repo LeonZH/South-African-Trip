@@ -439,6 +439,148 @@ const PLAN_BY_DATE = {
       },
     ],
   },
+  "2026-02-15": {
+    title: "Addo -> Tsitsikamma Storms River Mouth（海岸线王牌日）",
+    subtitle: "早上轻松收尾，中午上路，下午集中打卡吊桥/峡谷/海边步道/潮池",
+    extraRouteActions: [
+      {
+        label: "Garden Route / Tsitsikamma 地图入口",
+        href: "https://www.sanparks.org/parks/garden-route/travel/maps",
+      },
+      {
+        label: "Storms River Mouth Rest Camp 官方页",
+        href: "https://www.sanparks.org/parks/garden-route/camps/storms-river-mouth",
+      },
+    ],
+    warnings: [
+      "18 岁以上住客入园/出园需携带有效证件（护照/ID/驾照卡等）并可能被扫描。",
+      "如当天未到，预订通常只保留到次日 09:00；超时可能触发取消与费用规则。",
+      "Storms River Mouth 营地无 ATM，且加油点不在营地内；现金非必须，但银行卡务必随身。",
+      "当月 gate time 可能变动，下午尽量不要压线入园；取消/改期临近日期费用更高。",
+      "海边岩石湿滑且浪况变化快，只在允许区域活动，带娃优先保守路线。",
+    ],
+    itinerary: [
+      {
+        id: 1,
+        time: "07:00-08:30",
+        title: "早餐 + 出发前准备（轻松收尾）",
+        place: "Addo Main Camp",
+        coords: "-33.4830,25.7499",
+        note: "早餐直接在营地内解决，顺手补给饮水和零食，把车内收纳与证件检查一次完成。",
+        subItems: [
+          {
+            name: "1 分钟 checklist",
+            detail: "水、简单零食、垃圾袋、证件、银行卡、手机充电线全部就位。",
+          },
+          {
+            name: "营地内补给",
+            detail: "小店可补基础物资，离开前把白天路上要用的东西直接放驾驶位附近。",
+            url: "https://www.google.com/maps/search/?api=1&query=Addo+Main+Camp+Shop",
+          },
+        ],
+      },
+      {
+        id: 2,
+        time: "08:30-12:00",
+        title: "离开 Addo -> N2 前往 Storms River",
+        place: "Addo -> Paterson -> N2 -> Jeffreys Bay / Humansdorp -> Storms River",
+        coords: "-34.0506,24.9306",
+        note: "全程约 200+ 公里，通常 3-4 小时；按你从 Addo 出园门与当时路况会有浮动。",
+        subItems: [
+          {
+            name: "推荐主路线",
+            detail: "出园后接 R335 / R342（按出园门）到 Paterson，上 N2 后一路向西到 Storms River。",
+          },
+          {
+            name: "中途休息点（家庭友好）",
+            detail: "Jeffreys Bay 适合咖啡和洗手间；Storms River Village 可做入园前最后补给。",
+            url: "https://www.google.com/maps/search/?api=1&query=Jeffreys+Bay",
+          },
+        ],
+      },
+      {
+        id: 3,
+        time: "12:00-13:30",
+        title: "午餐（路上吃优先，抵达后可直接开玩）",
+        place: "Jeffreys Bay / Humansdorp（或营地 Cattle Baron）",
+        coords: "-34.0292,24.7691",
+        note: "策略二选一：路上简餐最省下午时间；若想看海景，可到营地后吃 Cattle Baron。",
+        subItems: [
+          {
+            name: "方案 A（推荐）",
+            detail: "在 Jeffreys Bay 或 Humansdorp 快速吃完，减少到营地后的切换成本。",
+          },
+          {
+            name: "方案 B（景观餐）",
+            detail: "抵达营地后直接去 Cattle Baron，海边位置好，餐后无缝衔接步道。",
+            url: "https://www.google.com/maps/search/?api=1&query=Cattle+Baron+Storms+River+Mouth",
+          },
+        ],
+      },
+      {
+        id: 4,
+        time: "13:30-14:30",
+        title: "入园 + 办理入住（Storms River Mouth Rest Camp）",
+        place: "Storms River Mouth Rest Camp Reception",
+        coords: "-34.0232,23.8858",
+        note: "你已预订，先完成入住与证件核验，再确认当天 gate time 与海况提示。",
+        subItems: [
+          {
+            name: "入住关键提醒",
+            detail: "18+ 住客证件需可出示；如到店过晚要尽早联系营地，避免被视为 no-show。",
+          },
+          {
+            name: "官方营地信息",
+            detail: "设施、餐饮、商店与安全提示以官方页为准。",
+            url: "https://www.sanparks.org/parks/garden-route/camps/storms-river-mouth",
+          },
+        ],
+      },
+      {
+        id: 5,
+        time: "14:30-18:30",
+        title: "海岸线王牌组合：吊桥 -> 峡谷 -> 海边步道 -> 潮池",
+        place: "Tsitsikamma Storms River Mouth Coastal Area",
+        coords: "-34.0227,23.9021",
+        note: "长途驾驶后不拼强度，按海况和体力动态调整，优先把经典点位稳稳拿下。",
+        subItems: [
+          {
+            name: "Suspension Bridge",
+            detail: "先冲吊桥，下午光线通常更好，拍照与观景都稳定。",
+            url: "https://www.google.com/maps/search/?api=1&query=Storms+River+Suspension+Bridge",
+          },
+          {
+            name: "Gorge View + Coast Walk",
+            detail: "沿主步道看河口峡谷与海岸线，湿滑路段慢行，不在非开放区域攀爬。",
+            url: "https://www.google.com/maps/search/?api=1&query=Storms+River+Mouth+Trail",
+          },
+          {
+            name: "Tidal Pool（视天气和海况）",
+            detail: "只在安全时段与允许区域停留，注意涨落潮与突发浪。",
+            url: "https://www.google.com/maps/search/?api=1&query=Storms+River+Mouth+Tidal+Pool",
+          },
+        ],
+      },
+      {
+        id: 6,
+        time: "18:30-20:30",
+        title: "晚餐 + 收尾（为次日留体力）",
+        place: "Storms River Mouth Rest Camp",
+        coords: "-34.0232,23.8858",
+        note: "优先就地吃晚餐并早休息，明早再安排更长线路；今天目标是高质量收官而非拼步数。",
+        subItems: [
+          {
+            name: "晚餐建议",
+            detail: "首选 Cattle Baron；若想更快回房休息，可用营地小店简餐方案。",
+          },
+          {
+            name: "夜间准备",
+            detail: "把次日用水、零食、防晒、轻外套和证件提前打包，早上能无脑出发。",
+          },
+        ],
+      },
+    ],
+  },
 };
 
 function parseDateParts(dateStr) {
