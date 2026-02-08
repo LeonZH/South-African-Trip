@@ -28,10 +28,63 @@ body {
 }
 
 .hero {
+  position: relative;
   padding: 20px 16px 12px;
   background: linear-gradient(160deg, #0a5d5a, #2d7a62 60%, #4e8f6e);
   color: #fff;
   overflow: hidden;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  top: -90px;
+  right: -40px;
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle, rgba(255, 214, 94, 0.34) 0%, rgba(255, 214, 94, 0) 70%);
+  pointer-events: none;
+}
+
+.hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.brand-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.24);
+  flex-shrink: 0;
+}
+
+.brand-copy {
+  min-width: 0;
+}
+
+.brand-kicker {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.brand-name {
+  margin: 2px 0 0;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 .hero-top {
@@ -47,7 +100,7 @@ body {
 }
 
 h1 {
-  margin: 8px 0;
+  margin: 10px 0 8px;
   font-size: 1.35rem;
 }
 
@@ -331,6 +384,14 @@ small {
   background: #fff;
 }
 
+.summary-remark-controls input[type="file"],
+.summary-places-import input[type="file"] {
+  border: 1px solid var(--border);
+  padding: 8px;
+  border-radius: 8px;
+  background: #fff;
+}
+
 textarea {
   width: 100%;
   border: 1px solid var(--border);
@@ -369,6 +430,10 @@ button.btn:disabled {
 }
 
 @media (max-width: 480px) {
+  .hero-brand {
+    justify-content: center;
+  }
+
   .hero-top {
     justify-content: center;
   }
@@ -441,6 +506,11 @@ button.btn:disabled {
   border-radius: 10px;
   padding: 10px;
   background: #fff;
+}
+
+.summary-ordered-list {
+  list-style: decimal;
+  padding-left: 20px;
 }
 
 .summary-row-title {

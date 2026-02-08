@@ -10,11 +10,20 @@
     <meta name="description" content="南非旅行多日行程 PWA：每日卡片、地图导航、离线可用、附件本地保存。" />
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="icons/icon-192.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="styles.css?v=20260208-2" />
+    <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="icons/icon-180.png" sizes="180x180" />
+    <link rel="stylesheet" href="styles.css?v=20260208-4" />
     <title>南非旅行助手 · 2026-02-12</title>
   </head>
   <body>
     <header class="hero">
+      <div class="hero-brand" aria-label="南非旅行助手品牌标识">
+        <img class="brand-logo" src="icons/icon-192.svg" alt="南非旅行助手 Logo" width="48" height="48" />
+        <div class="brand-copy">
+          <p class="brand-kicker">South Africa Trip</p>
+          <p class="brand-name">南非旅行助手</p>
+        </div>
+      </div>
       <div class="hero-top">
         <div class="date-switcher hero-date-switcher">
           <button id="prevDateBtn" class="date-nav" type="button" aria-label="前一天">◀</button>
@@ -73,6 +82,24 @@
         <p class="note">联系方式可能变动，请以官方页面为准。</p>
       </section>
 
+      <section id="summaryFuelCard" class="card summary-card" hidden>
+        <h2>在南非加油步骤（是否要给小费）</h2>
+        <ol id="fuelGuideList" class="summary-list summary-ordered-list"></ol>
+      </section>
+
+      <section id="summaryDocsCard" class="card summary-card" hidden>
+        <h2>旅程资料添加（支持多个附件）</h2>
+        <div class="summary-remark-controls">
+          <label for="summaryDocsDate">选择日期</label>
+          <select id="summaryDocsDate" aria-label="旅程资料日期"></select>
+          <label>上传资料（可多选）
+            <input id="summaryItineraryDocsInput" type="file" multiple />
+          </label>
+        </div>
+        <p id="summaryDocsStatus" class="note">尚未选择日期</p>
+        <ul id="summaryDocsList" class="summary-list"></ul>
+      </section>
+
       <section id="summaryRemarksCard" class="card summary-card" hidden>
         <h2>备注按天汇总（可保存到 iPhone 记事本）</h2>
         <div class="summary-remark-controls">
@@ -106,12 +133,17 @@
         <p id="mapPlacesStatus" class="note">尚未提取地点</p>
         <ul id="mapPlacesList" class="summary-list"></ul>
       </section>
+
+      <section id="summaryTipsCard" class="card summary-card" hidden>
+        <h2>南非是否有小费文化</h2>
+        <ul id="tipCultureList" class="summary-list"></ul>
+      </section>
     </main>
 
     <footer>
       <small>提示：路线、路况、开闭园时间与接送时刻以当天官方公告和现场人员指引为准。</small>
     </footer>
 
-    <script src="app.js?v=20260208-2" defer></script>
+    <script src="app.js?v=20260208-4" defer></script>
   </body>
 </html>
