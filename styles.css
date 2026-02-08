@@ -454,6 +454,27 @@ button.btn:disabled {
   white-space: pre-line;
 }
 
+.summary-row-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 6px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #0a5d5a;
+  background: #e8f8f5;
+  border: 1px solid #9ed5cb;
+}
+
+.summary-row-focus {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #0f5a57;
+}
+
 .summary-remark-controls,
 .summary-places-import {
   display: grid;

@@ -1842,6 +1842,163 @@ const PLAN_BY_DATE = {
       },
     ],
   },
+  "2026-02-22": {
+    title: "约翰内斯堡返程日（SQ479 国际段）",
+    subtitle: "赶飞机友好型：把变量清零，11:40 前到 JNB A 航站楼",
+    summaryBadge: "返程关键日",
+    summaryFocus: "返程闸门：10:30 退房｜11:40 前到 A 航站楼｜13:40 SQ479 起飞",
+    summaryText:
+      "07:30 早餐+收拾 -> 09:00 近场轻量活动 -> 10:30 退房 -> 11:10 动身去 A 航站楼 -> 11:40 前到达 -> 13:40 SQ479 起飞",
+    extraRouteActions: [
+      {
+        label: "Southern Sun OR Tambo（地图）",
+        href: "https://www.google.com/maps/search/?api=1&query=Southern+Sun+OR+Tambo+International+Airport",
+      },
+      {
+        label: "JNB Terminal A（地图）",
+        href: "https://www.google.com/maps/search/?api=1&query=OR+Tambo+International+Airport+Terminal+A",
+      },
+      {
+        label: "Singapore Airlines SQ479（航班查询）",
+        href: "https://www.singaporeair.com/",
+      },
+    ],
+    warnings: [
+      "硬约束：SQ479 于 13:40 从 JNB（OR Tambo A 航站楼）起飞；国际段建议至少提前 2 小时到达航站楼，目标 11:40 前到位。",
+      "酒店为 Southern Sun OR Tambo International Airport：2/21 入住、2/22 退房，退房时段 04:00-11:00，且订单含早餐。",
+      "今日不建议进市区：周日路况与安检排队波动大，优先在酒店周边或直接去航站楼。",
+      "最晚 11:30 到 A 航站楼；推荐 11:00-11:15 启动转场，宁可早到不压线。",
+      "若使用酒店 shuttle，前一晚务必确认班车点位、发车间隔及是否要预约，避免临场信息不完整。",
+    ],
+    itinerary: [
+      {
+        id: 1,
+        time: "07:30-09:00",
+        title: "酒店早餐 + 清场式收拾",
+        place: "Southern Sun OR Tambo International Airport",
+        coords: "-26.1373,28.2410",
+        note: "早餐已含在订单里，建议吃够蛋白质+碳水；核心目标是把变量清零，不把找物品这件事留到机场。",
+        docKey: "hotel",
+        docLabel: "酒店资料（本地）",
+        subItems: [
+          {
+            name: "早餐策略",
+            detail: "优先“能撑住排队和安检”的组合，减少机场内二次采购与排队。",
+          },
+          {
+            name: "收拾策略",
+            detail: "按“随身证件包 / 机舱保暖包 / 托运行李”三层打包，避免登机前重复翻箱。",
+          },
+        ],
+      },
+      {
+        id: 2,
+        time: "09:00-10:00",
+        title: "轻量活动（仅近场，不进市区）",
+        place: "酒店内 / 机场周边",
+        coords: "-26.1373,28.2410",
+        note: "根据体力二选一：酒店内休闲，或提前前往航站楼；今天不追景点，只追稳定。",
+        subItems: [
+          {
+            name: "A 方案：酒店内休闲",
+            detail: "咖啡、短走、孩子放电但不暴走，保持可随时回撤状态。",
+          },
+          {
+            name: "B 方案：提前去航站楼",
+            detail: "直接进入“等登机”节奏，换取更大时间缓冲。",
+          },
+        ],
+      },
+      {
+        id: 3,
+        time: "10:00-10:30",
+        title: "退房前最后一轮口令检查",
+        place: "酒店房间 / 大堂",
+        coords: "-26.1373,28.2410",
+        note: "按口令逐项过一遍：护照签证、值机信息、银行卡、充电器、转换插头、外套、药物、眼镜、耳机、行李牌与行李锁。",
+        subItems: [
+          {
+            name: "证件组",
+            detail: "护照、签证页、登机牌/值机确认、信用卡与少量现金。",
+          },
+          {
+            name: "机舱组",
+            detail: "孩子外套、药品、眼镜、耳机、充电器和转换插头。",
+          },
+        ],
+      },
+      {
+        id: 4,
+        time: "10:30-10:45",
+        title: "退房 + 行李处理",
+        place: "Southern Sun OR Tambo 前台",
+        coords: "-26.1373,28.2410",
+        note: "11:00 前完成退房最稳；若不立刻去机场，优先询问前台暂存行李与 shuttle 具体安排。",
+        subItems: [
+          {
+            name: "Shuttle 三问",
+            detail: "班车点位在哪里？大约多久一班？是否需要提前预约？",
+          },
+          {
+            name: "行李策略",
+            detail: "立即去机场就直接带走；若短暂停留则前台暂存，减少随身负担。",
+          },
+        ],
+      },
+      {
+        id: 5,
+        time: "10:45-11:10",
+        title: "早午餐补给（稳妥型 / 效率型）",
+        place: "酒店咖啡厅 / 航站楼餐饮区",
+        coords: "-26.1373,28.2410",
+        note: "今天餐饮只看执行效率：酒店吃更稳，航站楼吃更灵活但排队风险更高。",
+        subItems: [
+          {
+            name: "稳妥型",
+            detail: "在酒店或机场酒店咖啡厅快速吃完再动身，节奏可控。",
+          },
+          {
+            name: "效率型",
+            detail: "到 A 航站楼后再补给，但要预留排队不确定性。",
+          },
+        ],
+      },
+      {
+        id: 6,
+        time: "11:10-11:30",
+        title: "转场：前往 JNB A 航站楼",
+        place: "Southern Sun OR Tambo -> JNB Terminal A",
+        coords: "-26.1367,28.2410",
+        note: "目标不是“刚好 11:40 到”，而是“提前到并稳定进入值机流程”；11:00-11:15 动身最稳。",
+        subItems: [
+          {
+            name: "时间目标",
+            detail: "11:30 前到航站楼，11:40 视为最后稳态到达线。",
+          },
+        ],
+      },
+      {
+        id: 7,
+        time: "11:40-13:40",
+        title: "值机 + 安检 + 出境 + 登机（SQ479）",
+        place: "OR Tambo International Airport Terminal A",
+        coords: "-26.1367,28.2410",
+        note: "国际段排队波动更大，先确认登机口再安排用餐/购物；登机口若调整，以现场屏幕与航司信息为准。",
+        docKey: "flight",
+        docLabel: "机票资料（本地）",
+        subItems: [
+          {
+            name: "登机策略",
+            detail: "先完成值机与安检，再做可选动作，避免因临时改口影响节奏。",
+          },
+          {
+            name: "关键航班信息",
+            detail: "SQ479，13:40 起飞（JNB A 航站楼）。",
+          },
+        ],
+      },
+    ],
+  },
 };
 
 function parseDateParts(dateStr) {
@@ -2615,10 +2772,21 @@ function renderSummaryItineraryCard() {
 
   DATE_OPTIONS.forEach((dateStr) => {
     const plan = getPlanForDate(dateStr);
+    const badgeHtml =
+      typeof plan.summaryBadge === "string" && plan.summaryBadge.trim()
+        ? `<div class="summary-row-badge">${escapeHtml(plan.summaryBadge.trim())}</div>`
+        : "";
+    const focusHtml =
+      typeof plan.summaryFocus === "string" && plan.summaryFocus.trim()
+        ? `<p class="summary-row-focus">${escapeHtml(plan.summaryFocus.trim())}</p>`
+        : "";
+
     const li = document.createElement("li");
     li.innerHTML = `
+      ${badgeHtml}
       <div class="summary-row-title">${formatDateLabel(dateStr)}</div>
       <p class="summary-row-detail">${escapeHtml(getDailyHighlights(plan))}</p>
+      ${focusHtml}
     `;
     listEl.appendChild(li);
   });
