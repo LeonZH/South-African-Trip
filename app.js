@@ -2119,6 +2119,57 @@ function isValidCoordPair(coords) {
   return Number.isFinite(lat) && Number.isFinite(lng);
 }
 
+function parseCoordPair(coords) {
+  if (!isValidCoordPair(coords)) return null;
+  const [latRaw, lngRaw] = coords.split(",");
+  return {
+    lat: Number(latRaw),
+    lng: Number(lngRaw),
+  };
+}
+
+function buildGoogleEmbedUrl(query, zoom) {
+  return `https://www.google.com/maps?q=${encodeURIComponent(query)}&z=${zoom}&output=embed`;
+}
+
+function estimateOverviewZoom(span) {
+  if (span >= 25) return 4;
+  if (span >= 12) return 5;
+  if (span >= 6) return 6;
+  if (span >= 3) return 7;
+  if (span >= 1.5) return 8;
+  if (span >= 0.7) return 9;
+  return 10;
+}
+
+function buildRouteOverview(coords) {
+  const points = coords.map((item) => parseCoordPair(item)).filter(Boolean);
+  if (points.length === 0) {
+    return { query: SOUTH_AFRICA_CENTER, zoom: 5 };
+  }
+
+  let minLat = points[0].lat;
+  let maxLat = points[0].lat;
+  let minLng = points[0].lng;
+  let maxLng = points[0].lng;
+
+  points.forEach(({ lat, lng }) => {
+    if (lat < minLat) minLat = lat;
+    if (lat > maxLat) maxLat = lat;
+    if (lng < minLng) minLng = lng;
+    if (lng > maxLng) maxLng = lng;
+  });
+
+  const centerLat = (minLat + maxLat) / 2;
+  const centerLng = (minLng + maxLng) / 2;
+  const span = Math.max(maxLat - minLat, maxLng - minLng);
+
+  return {
+    query: `${centerLat.toFixed(4)},${centerLng.toFixed(4)}`,
+    zoom: estimateOverviewZoom(span),
+  };
+}
+
 function extractRouteCoords(plan) {
   const coords = [];
   const seen = new Set();
@@ -2139,7 +2190,7 @@ function buildAutoMapData(plan) {
 
   if (coords.length === 0) {
     return {
-      embedSrc: `https://www.google.com/maps?q=${encodeURIComponent(SOUTH_AFRICA_CENTER)}&z=5&output=embed`,
+      embedSrc: buildGoogleEmbedUrl(SOUTH_AFRICA_CENTER, 5),
       action: null,
     };
   }
@@ -2147,7 +2198,7 @@ function buildAutoMapData(plan) {
   if (coords.length === 1) {
     const only = coords[0];
     return {
-      embedSrc: `https://www.google.com/maps?q=${encodeURIComponent(only)}&z=12&output=embed`,
+      embedSrc: buildGoogleEmbedUrl(only, 12),
       action: {
         label: "打开当天地图",
         href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(only)}`,
@@ -2160,9 +2211,10 @@ function buildAutoMapData(plan) {
   const waypoints = coords.slice(1, -1).join("|");
   const base = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}&travelmode=driving`;
   const href = waypoints ? `${base}&waypoints=${encodeURIComponent(waypoints)}` : base;
+  const overview = buildRouteOverview(coords);
 
   return {
-    embedSrc: `${href}&output=embed`,
+    embedSrc: buildGoogleEmbedUrl(overview.query, overview.zoom),
     action: {
       label: "一键打开当天路线",
       href,
