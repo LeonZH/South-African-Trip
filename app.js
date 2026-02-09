@@ -58,6 +58,50 @@ const EMBASSY_CONTACTS = [
     website: "http://durban.china-consulate.gov.cn",
   },
 ];
+const FUEL_GUIDE_STEPS = [
+  {
+    title: "1) 停车并熄火",
+    detail: "南非大多数加油站由工作人员加油，通常不需要自己下枪操作。",
+  },
+  {
+    title: "2) 告知油号和金额",
+    detail: "直接说 Petrol 95/93 或 Diesel，并说明“加满”或指定金额。",
+  },
+  {
+    title: "3) 可请工作人员做基础服务",
+    detail: "常见会帮你擦前挡风玻璃、看胎压，属于常见服务流程。",
+  },
+  {
+    title: "4) 付款",
+    detail: "可现金或刷卡。刷卡前确认金额，留意是否有额外项目。",
+  },
+  {
+    title: "5) 是否要给小费",
+    detail: "有给小费文化。常见给法：约 R5-R20（按服务质量和现金情况调整）。不是法律强制，但很普遍。",
+  },
+];
+const TIP_CULTURE_ITEMS = [
+  {
+    title: "餐厅",
+    detail: "普遍给小费，常见区间约账单 10%-15%。",
+  },
+  {
+    title: "加油站工作人员",
+    detail: "通常会给小费，常见约 R5-R20。",
+  },
+  {
+    title: "酒店行李员/客房服务",
+    detail: "可按次给小费，常见约 R10-R30/次。",
+  },
+  {
+    title: "停车场看车员（Car Guard）",
+    detail: "很多地方常见，离开时可给少量小费，常见约 R5-R20。",
+  },
+  {
+    title: "是否强制",
+    detail: "大多属于社会习惯而非法律强制。按服务质量决定即可。",
+  },
+];
 
 const importedDocs = {
   flight: null,
@@ -2815,6 +2859,63 @@ function renderEmbassyCard() {
   });
 }
 
+function renderFuelGuideCard() {
+  const listEl = document.getElementById("fuelGuideList");
+  listEl.innerHTML = "";
+
+  FUEL_GUIDE_STEPS.forEach((row) => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <div class="summary-row-title">${escapeHtml(row.title)}</div>
+      <p class="summary-row-detail">${escapeHtml(row.detail)}</p>
+    `;
+    listEl.appendChild(li);
+  });
+}
+
+function renderSummaryDocsListByDate(dateStr) {
+  const statusEl = document.getElementById("summaryDocsStatus");
+  const listEl = document.getElementById("summaryDocsList");
+  if (!statusEl || !listEl) return;
+
+  listEl.innerHTML = "";
+  if (!DATE_OPTIONS.includes(dateStr)) {
+    statusEl.textContent = "请先选择日期";
+    return;
+  }
+
+  const rows = ensureItineraryDocs(dateStr);
+  statusEl.textContent = `${dateStr} 已添加 ${rows.length} 个附件（支持多选上传）`;
+
+  if (rows.length === 0) {
+    const li = document.createElement("li");
+    li.textContent = "暂无附件，点击上方上传可一次选多个文件。";
+    listEl.appendChild(li);
+    return;
+  }
+
+  rows.forEach((row) => {
+    const li = document.createElement("li");
+    li.innerHTML = `<button class="btn itinerary-doc-btn" data-doc-date="${dateStr}" data-doc-id="${row.id}">${escapeHtml(row.name)}</button>`;
+    listEl.appendChild(li);
+  });
+}
+
+function renderSummaryDocsOptions() {
+  const selectEl = document.getElementById("summaryDocsDate");
+  if (!selectEl) return;
+
+  selectEl.innerHTML = DATE_OPTIONS.map(
+    (dateStr) => `<option value="${dateStr}">${formatDateLabel(dateStr)}</option>`
+  ).join("");
+
+  if (!DATE_OPTIONS.includes(selectEl.value)) {
+    selectEl.value = DATE_OPTIONS[0];
+  }
+
+  renderSummaryDocsListByDate(selectEl.value);
+}
+
 function renderSummaryRemarkStartOptions() {
   const selectEl = document.getElementById("summaryRemarkStartDate");
   if (!selectEl) return;
@@ -2826,6 +2927,20 @@ function renderSummaryRemarkStartOptions() {
   if (!DATE_OPTIONS.includes(selectEl.value)) {
     selectEl.value = DATE_OPTIONS[0];
   }
+}
+
+function renderTipCultureCard() {
+  const listEl = document.getElementById("tipCultureList");
+  listEl.innerHTML = "";
+
+  TIP_CULTURE_ITEMS.forEach((row) => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <div class="summary-row-title">${escapeHtml(row.title)}</div>
+      <p class="summary-row-detail">${escapeHtml(row.detail)}</p>
+    `;
+    listEl.appendChild(li);
+  });
 }
 
 function renderMapPlacesList() {
@@ -2858,8 +2973,11 @@ function renderMapPlacesList() {
 function renderSummaryPage() {
   renderSummaryItineraryCard();
   renderEmbassyCard();
+  renderFuelGuideCard();
+  renderSummaryDocsOptions();
   renderSummaryRemarkStartOptions();
   renderMapPlacesList();
+  renderTipCultureCard();
 }
 
 function renderDateOptions() {
@@ -3107,6 +3225,8 @@ function bindSummaryActions() {
   const shareBtn = document.getElementById("shareRemarksToNotesBtn");
   const startDateSelect = document.getElementById("summaryRemarkStartDate");
   const previewEl = document.getElementById("summaryRemarkPreview");
+  const summaryDocsDateSelect = document.getElementById("summaryDocsDate");
+  const summaryDocsInput = document.getElementById("summaryItineraryDocsInput");
   const placesFileInput = document.getElementById("mapPlacesJsonInput");
   const placesTextInput = document.getElementById("mapPlacesTextInput");
   const parseTextBtn = document.getElementById("parseMapPlacesTextBtn");
@@ -3146,6 +3266,28 @@ function bindSummaryActions() {
         console.error(error);
         alert("无法自动分享/复制，请手动复制预览内容。");
       }
+    });
+  }
+
+  if (summaryDocsDateSelect) {
+    summaryDocsDateSelect.addEventListener("change", (event) => {
+      renderSummaryDocsListByDate(event.target.value);
+    });
+  }
+
+  if (summaryDocsInput && summaryDocsDateSelect) {
+    summaryDocsInput.addEventListener("change", (event) => {
+      const dateStr = DATE_OPTIONS.includes(summaryDocsDateSelect.value) ? summaryDocsDateSelect.value : DATE_OPTIONS[0];
+      onItineraryDocsImport(dateStr, event.target.files)
+        .then(() => {
+          renderSummaryDocsListByDate(dateStr);
+        })
+        .catch((error) => {
+          alert(error.message);
+        })
+        .finally(() => {
+          event.target.value = "";
+        });
     });
   }
 
