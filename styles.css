@@ -522,6 +522,16 @@ button.btn:disabled {
   color: #5f7376;
 }
 
+.summary-place-manual {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.summary-place-manual label {
+  font-weight: 600;
+}
+
 .summary-nearby-wrap {
   margin-top: 10px;
   border-top: 1px dashed var(--border);

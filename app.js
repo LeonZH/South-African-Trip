@@ -4,6 +4,7 @@ const STORAGE_KEYS = {
   hotel: "sa_trip_doc_hotel",
   itineraryDocs: "sa_trip_itinerary_docs_by_date",
   remarks: "sa_trip_event_remarks",
+  manualMapPlaces: "sa_trip_manual_map_places",
 };
 
 const DATE_START = "2026-02-12";
@@ -282,6 +283,7 @@ const importedDocs = {
 const remarksByDate = {};
 const itineraryDocsByDate = {};
 let mapPlacesSouthAfrica = [];
+let manualMapPlaces = [];
 let latestRemarksSummaryText = "";
 
 const PLAN_BY_DATE = {
@@ -2530,6 +2532,7 @@ function normalizeMapPlace(input) {
   const name = String(input.name || "").trim();
   const address = String(input.address || "").trim();
   const url = String(input.url || "").trim();
+  const source = String(input.source || "").trim();
 
   let lat = normalizeNumber(input.lat);
   let lng = normalizeNumber(input.lng);
@@ -2547,10 +2550,13 @@ function normalizeMapPlace(input) {
     url,
     lat: Number.isFinite(lat) ? lat : null,
     lng: Number.isFinite(lng) ? lng : null,
+    source: source || "takeout",
+    savedAt: typeof input.savedAt === "string" ? input.savedAt : "",
   };
 }
 
 function isSouthAfricaPlace(place) {
+  if (place.source === "manual") return true;
   if (isSouthAfricaCoords(place.lat, place.lng)) return true;
   return hasSouthAfricaHint(`${place.name} ${place.address} ${place.url}`);
 }
@@ -2697,6 +2703,77 @@ function buildNearbyPlacesHtml(rows) {
       <ul class="summary-nearby-list">${items}</ul>
     </div>
   `;
+}
+
+function parseManualPlacesFromText(text) {
+  const rows = String(text || "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  return rows.map((line, index) => {
+    const urlMatch = line.match(/https?:\/\/\S+/i);
+    const url = urlMatch ? urlMatch[0] : "";
+    const nameFromLine = url ? line.replace(url, "").replace(/[-|：:]\s*$/, "").trim() : line;
+    const coords = parseCoordsFromUrl(url);
+    const fallbackName = url ? `手动地点 ${index + 1}` : line.slice(0, 40);
+
+    return {
+      name: nameFromLine || fallbackName || `手动地点 ${index + 1}`,
+      address: line,
+      url,
+      lat: coords.lat,
+      lng: coords.lng,
+      source: "manual",
+      savedAt: new Date().toISOString(),
+    };
+  });
+}
+
+function saveManualMapPlaces() {
+  localStorage.setItem(STORAGE_KEYS.manualMapPlaces, JSON.stringify(manualMapPlaces));
+}
+
+function loadManualMapPlaces() {
+  const raw = localStorage.getItem(STORAGE_KEYS.manualMapPlaces);
+  if (!raw) {
+    manualMapPlaces = [];
+    return;
+  }
+
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) {
+      manualMapPlaces = [];
+      return;
+    }
+    manualMapPlaces = dedupeMapPlaces(parsed.map((row) => ({ ...row, source: "manual" }))).map((row) => ({
+      ...row,
+      source: "manual",
+    }));
+  } catch {
+    manualMapPlaces = [];
+  }
+}
+
+function addManualMapPlacesFromText(text) {
+  const extracted = parseManualPlacesFromText(text);
+  if (extracted.length === 0) {
+    return { added: 0, total: 0 };
+  }
+
+  const previousTotal = mapPlacesSouthAfrica.length;
+  manualMapPlaces = dedupeMapPlaces([...manualMapPlaces, ...extracted]).map((row) => ({
+    ...row,
+    source: "manual",
+  }));
+  saveManualMapPlaces();
+  mapPlacesSouthAfrica = dedupeMapPlaces([...GOOGLE_TAKEOUT_SAVED_PLACES, ...manualMapPlaces]);
+
+  return {
+    added: Math.max(0, mapPlacesSouthAfrica.length - previousTotal),
+    total: extracted.length,
+  };
 }
 
 let activeDate = DATE_OPTIONS.includes(DEFAULT_DATE) ? DEFAULT_DATE : DATE_OPTIONS[0];
@@ -3388,7 +3465,8 @@ function loadItineraryDocs() {
 }
 
 function loadMapPlaces() {
-  mapPlacesSouthAfrica = dedupeMapPlaces(GOOGLE_TAKEOUT_SAVED_PLACES);
+  loadManualMapPlaces();
+  mapPlacesSouthAfrica = dedupeMapPlaces([...GOOGLE_TAKEOUT_SAVED_PLACES, ...manualMapPlaces]);
 }
 
 function bindInputs() {
@@ -3474,6 +3552,9 @@ function bindSummaryActions() {
   const previewEl = document.getElementById("summaryRemarkPreview");
   const summaryDocsDateSelect = document.getElementById("summaryDocsDate");
   const summaryDocsInput = document.getElementById("summaryItineraryDocsInput");
+  const placesTextInput = document.getElementById("mapPlacesTextInput");
+  const parseTextBtn = document.getElementById("parseMapPlacesTextBtn");
+  const placesActionStatus = document.getElementById("mapPlacesActionStatus");
 
   if (buildBtn && startDateSelect && previewEl) {
     buildBtn.addEventListener("click", () => {
@@ -3531,6 +3612,29 @@ function bindSummaryActions() {
         .finally(() => {
           event.target.value = "";
         });
+    });
+  }
+
+  if (parseTextBtn && placesTextInput) {
+    parseTextBtn.addEventListener("click", () => {
+      const result = addManualMapPlacesFromText(placesTextInput.value);
+      if (result.total === 0) {
+        if (placesActionStatus) {
+          placesActionStatus.textContent = "未识别到可提取内容，请输入地点名称或 Google Maps 链接。";
+        }
+        return;
+      }
+
+      if (placesActionStatus) {
+        placesActionStatus.textContent =
+          result.added > 0
+            ? `提取成功：新增 ${result.added} 个地点`
+            : `已识别 ${result.total} 条，但都已存在`;
+      }
+
+      placesTextInput.value = "";
+      renderSummaryItineraryCard();
+      renderMapPlacesList();
     });
   }
 }
