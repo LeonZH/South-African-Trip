@@ -2767,7 +2767,6 @@ function extractGoogleMapsInfoFromUrl(url) {
 
 function parseManualPlacesFromText(text, options = {}) {
   const manualName = String(options.manualName || "").trim();
-  const manualAddress = String(options.manualAddress || "").trim();
   const rows = String(text || "")
     .split(/\r?\n/)
     .map((line) => line.trim())
@@ -2787,9 +2786,6 @@ function parseManualPlacesFromText(text, options = {}) {
 
     if (index === 0 && manualName) {
       name = manualName;
-    }
-    if (index === 0 && manualAddress) {
-      address = manualAddress;
     }
 
     return {
@@ -2833,15 +2829,14 @@ function loadManualMapPlaces() {
 
 function addManualMapPlacesFromText(text, options = {}) {
   const manualName = String(options.manualName || "").trim();
-  const manualAddress = String(options.manualAddress || "").trim();
-  const hasManualInput = Boolean(manualName || manualAddress);
+  const hasManualInput = Boolean(manualName);
 
   let extracted = parseManualPlacesFromText(text, options);
   if (extracted.length === 0 && hasManualInput) {
     extracted = [
       {
         name: manualName || "手动地点",
-        address: manualAddress,
+        address: "",
         url: "",
         lat: null,
         lng: null,
@@ -3652,7 +3647,6 @@ function bindSummaryActions() {
   const summaryDocsInput = document.getElementById("summaryItineraryDocsInput");
   const placesTextInput = document.getElementById("mapPlacesTextInput");
   const placeNameInput = document.getElementById("mapPlaceNameInput");
-  const placeAddressInput = document.getElementById("mapPlaceAddressInput");
   const parseTextBtn = document.getElementById("parseMapPlacesTextBtn");
   const placesActionStatus = document.getElementById("mapPlacesActionStatus");
 
@@ -3719,7 +3713,6 @@ function bindSummaryActions() {
     parseTextBtn.addEventListener("click", () => {
       const result = addManualMapPlacesFromText(placesTextInput.value, {
         manualName: placeNameInput?.value || "",
-        manualAddress: placeAddressInput?.value || "",
       });
       if (result.total === 0) {
         if (placesActionStatus) {
@@ -3739,15 +3732,14 @@ function bindSummaryActions() {
             : "";
         const unresolvedHint =
           result.unresolvedUrlCount > 0
-            ? `（${result.unresolvedUrlCount} 条短链接未解析，可填写地点名称/地址后再提取）`
+            ? `（${result.unresolvedUrlCount} 条短链接未解析，可填写地点名称后再提取）`
             : "";
-        const manualHint = result.manualOnlyFirst ? "（你填写的名称/地址已应用到第1条）" : "";
+        const manualHint = result.manualOnlyFirst ? "（你填写的地点名称已应用到第1条）" : "";
         placesActionStatus.textContent = `${baseText}${parsedHint}${unresolvedHint}${manualHint}`;
       }
 
       placesTextInput.value = "";
       if (placeNameInput) placeNameInput.value = "";
-      if (placeAddressInput) placeAddressInput.value = "";
       renderSummaryItineraryCard();
       renderMapPlacesList();
     });

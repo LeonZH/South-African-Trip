@@ -12,7 +12,7 @@
     <link rel="icon" href="icons/icon-192.svg" type="image/svg+xml" />
     <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192" />
     <link rel="apple-touch-icon" href="icons/icon-180.png" sizes="180x180" />
-    <link rel="stylesheet" href="styles.css?v=20260208-9" />
+    <link rel="stylesheet" href="styles.css?v=20260208-10" />
     <title>南非旅行助手 · 2026-02-12</title>
   </head>
   <body>
@@ -108,16 +108,12 @@
 
       <section id="summaryPlacesCard" class="card summary-card" hidden>
         <h2>Google Maps 南非关注地点</h2>
-        <p class="note">
-          已根据你提供的 Google Takeout 导出文件自动加载。你也可以粘贴 Google Maps 链接手动提取。
-        </p>
+        <p class="note">粘贴 Google Maps 链接手动提取。</p>
         <div class="summary-place-manual">
           <label for="mapPlacesTextInput">粘贴地点链接（每行一个）</label>
           <textarea id="mapPlacesTextInput" rows="3" placeholder="https://maps.app.goo.gl/xxxx"></textarea>
-          <label for="mapPlaceNameInput">地点名称（可选，单条链接时建议填写）</label>
+          <label for="mapPlaceNameInput">地点名称（可选）</label>
           <input id="mapPlaceNameInput" type="text" placeholder="例如：Robberg Nature Reserve" />
-          <label for="mapPlaceAddressInput">地点地址（可选）</label>
-          <input id="mapPlaceAddressInput" type="text" placeholder="例如：Robberg Rd, Plettenberg Bay" />
           <div class="actions">
             <button id="parseMapPlacesTextBtn" class="btn" type="button">提取地点</button>
           </div>
@@ -137,6 +133,6 @@
       <small>提示：路线、路况、开闭园时间与接送时刻以当天官方公告和现场人员指引为准。</small>
     </footer>
 
-    <script src="app.js?v=20260208-9" defer></script>
+    <script src="app.js?v=20260208-10" defer></script>
   </body>
 </html>
