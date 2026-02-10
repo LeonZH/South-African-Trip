@@ -2705,7 +2705,69 @@ function buildNearbyPlacesHtml(rows) {
   `;
 }
 
-function parseManualPlacesFromText(text) {
+function decodeUrlText(value) {
+  if (!value) return "";
+  const raw = String(value).replace(/\+/g, " ");
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    return raw;
+  }
+}
+
+function looksLikeCoordText(text) {
+  return /^-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?$/.test(String(text || "").trim());
+}
+
+function extractGoogleMapsInfoFromUrl(url) {
+  if (!url) {
+    return { name: "", address: "" };
+  }
+
+  let parsed;
+  try {
+    parsed = new URL(url);
+  } catch {
+    return { name: "", address: "" };
+  }
+
+  const pathname = parsed.pathname || "";
+  let name = "";
+  let address = "";
+
+  const placeMatch = pathname.match(/\/place\/([^/]+)/);
+  if (placeMatch) {
+    name = decodeUrlText(placeMatch[1]).trim();
+  }
+
+  const queryValue =
+    parsed.searchParams.get("q") ||
+    parsed.searchParams.get("query") ||
+    parsed.searchParams.get("destination") ||
+    "";
+  const decodedQuery = decodeUrlText(queryValue).trim();
+  if (decodedQuery && !looksLikeCoordText(decodedQuery)) {
+    if (!name) {
+      name = decodedQuery.split(",")[0].trim();
+    }
+    address = decodedQuery;
+  }
+
+  const searchPathMatch = pathname.match(/\/maps\/search\/(.+)/);
+  if (!name && searchPathMatch) {
+    const decodedPath = decodeUrlText(searchPathMatch[1]).trim();
+    if (decodedPath && !looksLikeCoordText(decodedPath)) {
+      name = decodedPath.split(",")[0].trim();
+      if (!address) address = decodedPath;
+    }
+  }
+
+  return { name, address };
+}
+
+function parseManualPlacesFromText(text, options = {}) {
+  const manualName = String(options.manualName || "").trim();
+  const manualAddress = String(options.manualAddress || "").trim();
   const rows = String(text || "")
     .split(/\r?\n/)
     .map((line) => line.trim())
@@ -2714,18 +2776,31 @@ function parseManualPlacesFromText(text) {
   return rows.map((line, index) => {
     const urlMatch = line.match(/https?:\/\/\S+/i);
     const url = urlMatch ? urlMatch[0] : "";
-    const nameFromLine = url ? line.replace(url, "").replace(/[-|：:]\s*$/, "").trim() : line;
+    const lineWithoutUrl = url ? line.replace(url, "").replace(/[-|：:]\s*$/, "").trim() : line;
+    const nameFromLine = lineWithoutUrl;
+    const inferred = extractGoogleMapsInfoFromUrl(url);
     const coords = parseCoordsFromUrl(url);
     const fallbackName = url ? `手动地点 ${index + 1}` : line.slice(0, 40);
 
+    let name = nameFromLine || inferred.name || fallbackName || `手动地点 ${index + 1}`;
+    let address = inferred.address || (url ? lineWithoutUrl : line) || "";
+
+    if (index === 0 && manualName) {
+      name = manualName;
+    }
+    if (index === 0 && manualAddress) {
+      address = manualAddress;
+    }
+
     return {
-      name: nameFromLine || fallbackName || `手动地点 ${index + 1}`,
-      address: line,
+      name,
+      address,
       url,
       lat: coords.lat,
       lng: coords.lng,
       source: "manual",
       savedAt: new Date().toISOString(),
+      autoResolved: Boolean(inferred.name || inferred.address),
     };
   });
 }
@@ -2756,10 +2831,29 @@ function loadManualMapPlaces() {
   }
 }
 
-function addManualMapPlacesFromText(text) {
-  const extracted = parseManualPlacesFromText(text);
+function addManualMapPlacesFromText(text, options = {}) {
+  const manualName = String(options.manualName || "").trim();
+  const manualAddress = String(options.manualAddress || "").trim();
+  const hasManualInput = Boolean(manualName || manualAddress);
+
+  let extracted = parseManualPlacesFromText(text, options);
+  if (extracted.length === 0 && hasManualInput) {
+    extracted = [
+      {
+        name: manualName || "手动地点",
+        address: manualAddress,
+        url: "",
+        lat: null,
+        lng: null,
+        source: "manual",
+        savedAt: new Date().toISOString(),
+        autoResolved: false,
+      },
+    ];
+  }
+
   if (extracted.length === 0) {
-    return { added: 0, total: 0 };
+    return { added: 0, total: 0, autoResolvedCount: 0, unresolvedUrlCount: 0, manualOnlyFirst: false };
   }
 
   const previousTotal = mapPlacesSouthAfrica.length;
@@ -2773,6 +2867,9 @@ function addManualMapPlacesFromText(text) {
   return {
     added: Math.max(0, mapPlacesSouthAfrica.length - previousTotal),
     total: extracted.length,
+    autoResolvedCount: extracted.filter((row) => row.autoResolved).length,
+    unresolvedUrlCount: extracted.filter((row) => row.url && !row.autoResolved && !row.address).length,
+    manualOnlyFirst: hasManualInput && extracted.length > 1,
   };
 }
 
@@ -3294,6 +3391,7 @@ function renderMapPlacesList() {
   rows.forEach((place) => {
     const location = Number.isFinite(place.lat) && Number.isFinite(place.lng) ? `${place.lat}, ${place.lng}` : "坐标未提供";
     const mapUrl = place.url || (Number.isFinite(place.lat) && Number.isFinite(place.lng) ? mapsSearchUrl(`${place.lat},${place.lng}`, place.name) : "");
+    const addressText = place.address ? place.address : "地址未提供（可在提取区手动填写）";
     const nearestHint =
       place.nearestDate && Number.isFinite(place.distanceKm)
         ? `最近日期：${formatDateLabel(place.nearestDate)}（约 ${Math.round(place.distanceKm)} km）`
@@ -3302,7 +3400,7 @@ function renderMapPlacesList() {
     const li = document.createElement("li");
     li.innerHTML = `
       <div class="summary-row-title">${escapeHtml(place.name)}</div>
-      <p class="summary-row-detail">${escapeHtml(place.address || "")}<br/>${escapeHtml(location)}<br/>${escapeHtml(nearestHint)}</p>
+      <p class="summary-row-detail">${escapeHtml(addressText)}<br/>${escapeHtml(location)}<br/>${escapeHtml(nearestHint)}</p>
       ${mapUrl ? `<a class="btn" href="${escapeHtml(mapUrl)}" target="_blank" rel="noopener">打开地图</a>` : ""}
     `;
     listEl.appendChild(li);
@@ -3553,6 +3651,8 @@ function bindSummaryActions() {
   const summaryDocsDateSelect = document.getElementById("summaryDocsDate");
   const summaryDocsInput = document.getElementById("summaryItineraryDocsInput");
   const placesTextInput = document.getElementById("mapPlacesTextInput");
+  const placeNameInput = document.getElementById("mapPlaceNameInput");
+  const placeAddressInput = document.getElementById("mapPlaceAddressInput");
   const parseTextBtn = document.getElementById("parseMapPlacesTextBtn");
   const placesActionStatus = document.getElementById("mapPlacesActionStatus");
 
@@ -3617,7 +3717,10 @@ function bindSummaryActions() {
 
   if (parseTextBtn && placesTextInput) {
     parseTextBtn.addEventListener("click", () => {
-      const result = addManualMapPlacesFromText(placesTextInput.value);
+      const result = addManualMapPlacesFromText(placesTextInput.value, {
+        manualName: placeNameInput?.value || "",
+        manualAddress: placeAddressInput?.value || "",
+      });
       if (result.total === 0) {
         if (placesActionStatus) {
           placesActionStatus.textContent = "未识别到可提取内容，请输入地点名称或 Google Maps 链接。";
@@ -3626,13 +3729,25 @@ function bindSummaryActions() {
       }
 
       if (placesActionStatus) {
-        placesActionStatus.textContent =
+        const baseText =
           result.added > 0
             ? `提取成功：新增 ${result.added} 个地点`
             : `已识别 ${result.total} 条，但都已存在`;
+        const parsedHint =
+          result.autoResolvedCount > 0
+            ? `（自动解析到 ${result.autoResolvedCount} 条名称/地址）`
+            : "";
+        const unresolvedHint =
+          result.unresolvedUrlCount > 0
+            ? `（${result.unresolvedUrlCount} 条短链接未解析，可填写地点名称/地址后再提取）`
+            : "";
+        const manualHint = result.manualOnlyFirst ? "（你填写的名称/地址已应用到第1条）" : "";
+        placesActionStatus.textContent = `${baseText}${parsedHint}${unresolvedHint}${manualHint}`;
       }
 
       placesTextInput.value = "";
+      if (placeNameInput) placeNameInput.value = "";
+      if (placeAddressInput) placeAddressInput.value = "";
       renderSummaryItineraryCard();
       renderMapPlacesList();
     });
