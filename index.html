@@ -12,7 +12,7 @@
     <link rel="icon" href="icons/icon-192.svg" type="image/svg+xml" />
     <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192" />
     <link rel="apple-touch-icon" href="icons/icon-180.png" sizes="180x180" />
-    <link rel="stylesheet" href="styles.css?v=20260208-5" />
+    <link rel="stylesheet" href="styles.css?v=20260208-6" />
     <title>南非旅行助手 · 2026-02-12</title>
   </head>
   <body>
@@ -109,21 +109,9 @@
       <section id="summaryPlacesCard" class="card summary-card" hidden>
         <h2>Google Maps 南非关注地点</h2>
         <p class="note">
-          受隐私权限限制，网页不能直接读取你的 Google 账号收藏。你可以导入 Google Takeout JSON 或粘贴地点链接文本来提取。
+          已根据你提供的 Google Takeout 导出文件自动加载。若某地点无法归类到某一天，会统一显示在这里。
         </p>
-        <div class="summary-places-import">
-          <label>导入 Google Takeout JSON
-            <input id="mapPlacesJsonInput" type="file" accept=".json,application/json" />
-          </label>
-          <label>或粘贴地点（每行一个，支持 Google Maps 链接）
-            <textarea id="mapPlacesTextInput" rows="5" placeholder="例如：The Blue Train Park https://maps.google.com/..."></textarea>
-          </label>
-          <div class="actions">
-            <button id="parseMapPlacesTextBtn" class="btn" type="button">提取南非地点</button>
-            <button id="clearMapPlacesBtn" class="btn" type="button">清空地点</button>
-          </div>
-        </div>
-        <p id="mapPlacesStatus" class="note">尚未提取地点</p>
+        <p id="mapPlacesStatus" class="note">正在加载地点</p>
         <ul id="mapPlacesList" class="summary-list"></ul>
       </section>
 
@@ -137,6 +125,6 @@
       <small>提示：路线、路况、开闭园时间与接送时刻以当天官方公告和现场人员指引为准。</small>
     </footer>
 
-    <script src="app.js?v=20260208-5" defer></script>
+    <script src="app.js?v=20260208-6" defer></script>
   </body>
 </html>

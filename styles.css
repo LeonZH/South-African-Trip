@@ -348,8 +348,7 @@ small {
   background: #fff;
 }
 
-.summary-remark-controls input[type="file"],
-.summary-places-import input[type="file"] {
+.summary-remark-controls input[type="file"] {
   border: 1px solid var(--border);
   padding: 8px;
   border-radius: 8px;
@@ -505,17 +504,73 @@ button.btn:disabled {
   color: #0f5a57;
 }
 
-.summary-remark-controls,
-.summary-places-import {
+.summary-remark-controls {
   display: grid;
   gap: 10px;
 }
 
-.summary-remark-controls label,
-.summary-places-import label {
+.summary-remark-controls label {
   display: grid;
   gap: 6px;
   font-weight: 600;
+}
+
+.summary-place-empty {
+  margin: 0;
+  padding: 8px 0 2px;
+  font-size: 0.88rem;
+  color: #5f7376;
+}
+
+.summary-nearby-wrap {
+  margin-top: 10px;
+  border-top: 1px dashed var(--border);
+  padding-top: 10px;
+}
+
+.summary-nearby-title {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #1f4f52;
+}
+
+.summary-nearby-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding-left: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.summary-nearby-item {
+  border: 1px solid #d9e7e4;
+  border-radius: 9px;
+  background: #fbfffe;
+  padding: 8px;
+}
+
+.summary-nearby-head {
+  display: flex;
+  gap: 6px;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.summary-nearby-name {
+  font-weight: 700;
+  color: #234548;
+}
+
+.summary-nearby-distance {
+  font-size: 0.8rem;
+  color: #577274;
+  white-space: nowrap;
+}
+
+.summary-nearby-address {
+  margin: 4px 0 8px;
+  font-size: 0.88rem;
+  color: #446063;
 }
 
 .summary-remark-controls select {

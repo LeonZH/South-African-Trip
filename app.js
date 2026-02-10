@@ -4,7 +4,6 @@ const STORAGE_KEYS = {
   hotel: "sa_trip_doc_hotel",
   itineraryDocs: "sa_trip_itinerary_docs_by_date",
   remarks: "sa_trip_event_remarks",
-  mapPlacesSouthAfrica: "sa_trip_map_places_south_africa",
 };
 
 const DATE_START = "2026-02-12";
@@ -100,6 +99,177 @@ const TIP_CULTURE_ITEMS = [
   {
     title: "是否强制",
     detail: "大多属于社会习惯而非法律强制。按服务质量决定即可。",
+  },
+];
+const NEARBY_PLACE_RADIUS_KM = 95;
+const GOOGLE_TAKEOUT_SAVED_PLACES = [
+  {
+    name: "Hertz Rent a Car - Chief Dawid Stuurman Airport (Port Elizabeth)",
+    address: "Airport, Gqeberha, 6070, South Africa",
+    url: "http://maps.google.com/?cid=1970331281978234947",
+    lat: -33.9840919,
+    lng: 25.6104333,
+    savedAt: "2026-02-06T15:14:11Z",
+  },
+  {
+    name: "Robberg Hiking Trail",
+    address: "S34 06.037 E23 22.652, South Africa",
+    url: "http://maps.google.com/?cid=9163711414511599635",
+    lat: -34.1004767,
+    lng: 23.3774233,
+    savedAt: "2025-11-27T03:51:30Z",
+  },
+  {
+    name: "Scarab Arts & Crafts Village",
+    address: "N2, The Island, Sedgefield, 6573, South Africa",
+    url: "http://maps.google.com/?cid=18226613165441435261",
+    lat: -34.010014,
+    lng: 22.7809859,
+    savedAt: "2025-11-27T03:46:32Z",
+  },
+  {
+    name: "Maboneng Precinct",
+    address: "Fox St &, Kruger St, City and Suburban, Johannesburg, 2094, South Africa",
+    url: "http://maps.google.com/?cid=8859798111929914625",
+    lat: -26.2041521,
+    lng: 28.0591712,
+    savedAt: "2025-09-10T09:43:47Z",
+  },
+  {
+    name: "Apartheid Museum",
+    address: "Northern Parkway, Gold Reef Rd, Ormonde, Johannesburg South, 2001, South Africa",
+    url: "http://maps.google.com/?cid=1813722651286021620",
+    lat: -26.2378709,
+    lng: 28.0083713,
+    savedAt: "2025-09-08T12:13:33Z",
+  },
+  {
+    name: "1000 Hills Tourism Information Office",
+    address: "47 Old Main Rd, Botha's Hill, Durban, 3610, South Africa",
+    url: "http://maps.google.com/?cid=9265799706843106987",
+    lat: -29.7520551,
+    lng: 30.7406927,
+    savedAt: "2025-05-25T02:20:34Z",
+  },
+  {
+    name: "City Sightseeing Johannesburg | Official Hop-On Hop-Off Tour",
+    address: "Shop K104, The Zone @ Rosebank, 31 Tyrwhitt Ave, Rosebank, Johannesburg, 2196, South Africa",
+    url: "http://maps.google.com/?cid=12483367854100792929",
+    lat: -26.1447448,
+    lng: 28.0433835,
+    savedAt: "2025-05-22T02:54:42Z",
+  },
+  {
+    name: "Addo Elephant National Park",
+    address: "South Africa",
+    url: "http://maps.google.com/?cid=11449037318074057738",
+    lat: -33.3084705,
+    lng: 25.5426543,
+    savedAt: "2025-05-12T06:54:34Z",
+  },
+  {
+    name: "Chapman's Peak Drive",
+    address: "Chapmans Peak Dr, Outside, Cape Town, 7806, South Africa",
+    url: "http://maps.google.com/?cid=7609213111948904876",
+    lat: -34.0848976,
+    lng: 18.3557865,
+    savedAt: "2025-05-09T03:27:49Z",
+  },
+  {
+    name: "Voortrekker Monument",
+    address: "Eeufees Rd, Groenkloof 358-Jr, Pretoria, 0027, South Africa",
+    url: "http://maps.google.com/?cid=14836595334762737812",
+    lat: -25.7762752,
+    lng: 28.1757609,
+    savedAt: "2025-05-09T03:27:06Z",
+  },
+  {
+    name: "The Company's Garden",
+    address: "12 Government Ave, Cape Town City Centre, Cape Town, 8000, South Africa",
+    url: "http://maps.google.com/?cid=6484376656097339826",
+    lat: -33.9252546,
+    lng: 18.4196523,
+    savedAt: "2025-05-09T03:26:43Z",
+  },
+  {
+    name: "Lion & Safari Park",
+    address: "R512 Pelindaba Rd, Broederstroom, 0240, South Africa",
+    url: "http://maps.google.com/?cid=16631248443427869304",
+    lat: -25.8324043,
+    lng: 27.8887837,
+    savedAt: "2025-05-09T03:25:29Z",
+  },
+  {
+    name: "Nelson Mandela Square",
+    address: "5th St, Sandown, Sandton, 2031, South Africa",
+    url: "http://maps.google.com/?cid=8851662515537966836",
+    lat: -26.1074091,
+    lng: 28.0547932,
+    savedAt: "2025-05-09T03:24:40Z",
+  },
+  {
+    name: "Iziko Bo-Kaap Museum",
+    address: "71 Wale St, Schotsche Kloof, Cape Town, 8001, South Africa",
+    url: "http://maps.google.com/?cid=4133758495088797417",
+    lat: -33.9215332,
+    lng: 18.4149866,
+    savedAt: "2025-05-09T03:24:18Z",
+  },
+  {
+    name: "Union Buildings",
+    address: "Government Ave, Pretoria, 0002, South Africa",
+    url: "http://maps.google.com/?cid=1566155852063515397",
+    lat: -25.7402069,
+    lng: 28.2119908,
+    savedAt: "2025-05-09T03:23:49Z",
+  },
+  {
+    name: "Kruger National Park",
+    address: "South Africa",
+    url: "http://maps.google.com/?cid=11119474148649695355",
+    lat: -23.9883848,
+    lng: 31.5547402,
+    savedAt: "2025-05-09T03:23:10Z",
+  },
+  {
+    name: "Gold Reef City Theme Park",
+    address: "Northern Pkwy & Data Cres, Johannesburg, 2159, South Africa",
+    url: "http://maps.google.com/?cid=13171219191411669935",
+    lat: -26.2360327,
+    lng: 28.0131667,
+    savedAt: "2025-05-09T03:21:41Z",
+  },
+  {
+    name: "Tsitsikamma National Park",
+    address: "South Africa",
+    url: "http://maps.google.com/?cid=15829833598962639174",
+    lat: -34.0117963,
+    lng: 24.0164525,
+    savedAt: "2025-05-09T03:21:17Z",
+  },
+  {
+    name: "Boulders Beach",
+    address: "Simon's Town, Cape Town, 7995, South Africa",
+    url: "http://maps.google.com/?cid=8988305253387741456",
+    lat: -34.1956153,
+    lng: 18.4503585,
+    savedAt: "2025-05-09T03:20:26Z",
+  },
+  {
+    name: "Table Mountain National Park",
+    address: "Cape Town, South Africa",
+    url: "http://maps.google.com/?cid=7215939022953360103",
+    lat: -34.2105673,
+    lng: 18.3917506,
+    savedAt: "2025-05-09T03:19:39Z",
+  },
+  {
+    name: "Cape of Good Hope",
+    address: "Cape Point Rd, Cape Town, 8001, South Africa",
+    url: "http://maps.google.com/?cid=3830413676313879273",
+    lat: -34.3568425,
+    lng: 18.4739882,
+    savedAt: "2025-05-09T03:19:01Z",
   },
 ];
 
@@ -2404,104 +2574,129 @@ function dedupeMapPlaces(places) {
   return output;
 }
 
-function parsePlacesFromText(text) {
-  const rows = String(text || "")
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter(Boolean);
+function toRadians(deg) {
+  return (deg * Math.PI) / 180;
+}
 
-  return rows.map((line) => {
-    const urlMatch = line.match(/https?:\/\/\S+/i);
-    const url = urlMatch ? urlMatch[0] : "";
-    const name = url ? line.replace(url, "").replace(/[-|：:]\s*$/, "").trim() : line;
-    const coords = parseCoordsFromUrl(url);
+function distanceKm(fromLat, fromLng, toLat, toLng) {
+  const earthRadiusKm = 6371;
+  const dLat = toRadians(toLat - fromLat);
+  const dLng = toRadians(toLng - fromLng);
+  const lat1 = toRadians(fromLat);
+  const lat2 = toRadians(toLat);
 
-    return {
-      name: name || "未命名地点",
-      address: line,
-      url,
-      lat: coords.lat,
-      lng: coords.lng,
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return earthRadiusKm * c;
+}
+
+function buildDateCoordsMap() {
+  const dateCoordsMap = {};
+  DATE_OPTIONS.forEach((dateStr) => {
+    const plan = getPlanForDate(dateStr);
+    dateCoordsMap[dateStr] = extractRouteCoords(plan).map((item) => parseCoordPair(item)).filter(Boolean);
+  });
+  return dateCoordsMap;
+}
+
+function classifyPlacesByDate(places) {
+  const byDate = {};
+  DATE_OPTIONS.forEach((dateStr) => {
+    byDate[dateStr] = [];
+  });
+
+  const uncategorized = [];
+  const dateCoordsMap = buildDateCoordsMap();
+
+  places.forEach((place) => {
+    if (!Number.isFinite(place.lat) || !Number.isFinite(place.lng)) {
+      uncategorized.push({ ...place, distanceKm: null, nearestDate: "" });
+      return;
+    }
+
+    let nearestDate = "";
+    let nearestDistance = Infinity;
+
+    DATE_OPTIONS.forEach((dateStr) => {
+      const points = dateCoordsMap[dateStr];
+      if (!Array.isArray(points) || points.length === 0) return;
+
+      points.forEach((point) => {
+        const km = distanceKm(place.lat, place.lng, point.lat, point.lng);
+        if (km < nearestDistance) {
+          nearestDistance = km;
+          nearestDate = dateStr;
+        }
+      });
+    });
+
+    const payload = {
+      ...place,
+      distanceKm: Number.isFinite(nearestDistance) ? nearestDistance : null,
+      nearestDate,
     };
-  });
-}
 
-function pickString(obj, keys) {
-  for (const key of keys) {
-    if (typeof obj[key] === "string" && obj[key].trim()) {
-      return obj[key].trim();
+    if (!nearestDate || !Number.isFinite(nearestDistance) || nearestDistance > NEARBY_PLACE_RADIUS_KM) {
+      uncategorized.push(payload);
+      return;
     }
-  }
-  return "";
-}
 
-function pickNumber(obj, keys) {
-  for (const key of keys) {
-    const n = normalizeNumber(obj[key]);
-    if (Number.isFinite(n)) return n;
-  }
-  return null;
-}
-
-function extractPlaceFromObject(obj) {
-  if (!obj || typeof obj !== "object" || Array.isArray(obj)) return null;
-
-  const name = pickString(obj, ["name", "title", "label", "placeName"]);
-  const address = pickString(obj, ["address", "formattedAddress", "vicinity", "description"]);
-  const url = pickString(obj, ["url", "mapsUrl", "googleMapsUri", "link"]);
-
-  let lat = pickNumber(obj, ["lat", "latitude"]);
-  let lng = pickNumber(obj, ["lng", "lon", "longitude"]);
-
-  if ((!Number.isFinite(lat) || !Number.isFinite(lng)) && obj.location && typeof obj.location === "object") {
-    lat = pickNumber(obj.location, ["lat", "latitude"]);
-    lng = pickNumber(obj.location, ["lng", "lon", "longitude"]);
-  }
-
-  if ((!Number.isFinite(lat) || !Number.isFinite(lng)) && obj.coordinates && typeof obj.coordinates === "object") {
-    lat = pickNumber(obj.coordinates, ["lat", "latitude"]);
-    lng = pickNumber(obj.coordinates, ["lng", "lon", "longitude"]);
-  }
-
-  if (!name && !address && !url && !Number.isFinite(lat) && !Number.isFinite(lng)) {
-    return null;
-  }
-
-  return {
-    name: name || "未命名地点",
-    address,
-    url,
-    lat,
-    lng,
-  };
-}
-
-function collectPlacesFromJson(value, collector) {
-  if (Array.isArray(value)) {
-    value.forEach((item) => collectPlacesFromJson(item, collector));
-    return;
-  }
-
-  if (!value || typeof value !== "object") return;
-
-  const place = extractPlaceFromObject(value);
-  if (place) collector.push(place);
-
-  Object.values(value).forEach((nested) => {
-    if (nested && typeof nested === "object") {
-      collectPlacesFromJson(nested, collector);
-    }
+    byDate[nearestDate].push(payload);
   });
+
+  DATE_OPTIONS.forEach((dateStr) => {
+    byDate[dateStr].sort((a, b) => {
+      const first = Number.isFinite(a.distanceKm) ? a.distanceKm : Infinity;
+      const second = Number.isFinite(b.distanceKm) ? b.distanceKm : Infinity;
+      if (first !== second) return first - second;
+      return a.name.localeCompare(b.name, "zh-Hans-CN");
+    });
+  });
+
+  uncategorized.sort((a, b) => a.name.localeCompare(b.name, "zh-Hans-CN"));
+  return { byDate, uncategorized };
 }
 
-function mergeMapPlaces(incomingPlaces) {
-  mapPlacesSouthAfrica = dedupeMapPlaces([...mapPlacesSouthAfrica, ...incomingPlaces]);
-  localStorage.setItem(STORAGE_KEYS.mapPlacesSouthAfrica, JSON.stringify(mapPlacesSouthAfrica));
-}
+function buildNearbyPlacesHtml(rows) {
+  if (!Array.isArray(rows) || rows.length === 0) {
+    return '<p class="summary-place-empty">附近收藏地点：暂无匹配</p>';
+  }
 
-function clearMapPlaces() {
-  mapPlacesSouthAfrica = [];
-  localStorage.removeItem(STORAGE_KEYS.mapPlacesSouthAfrica);
+  const items = rows
+    .map((place) => {
+      const mapUrl =
+        place.url ||
+        (Number.isFinite(place.lat) && Number.isFinite(place.lng)
+          ? mapsSearchUrl(`${place.lat},${place.lng}`, place.name)
+          : "");
+      const distanceLabel =
+        Number.isFinite(place.distanceKm) && place.distanceKm >= 1
+          ? `约 ${Math.round(place.distanceKm)} km`
+          : Number.isFinite(place.distanceKm)
+            ? "同区域"
+            : "未提供距离";
+
+      return `
+        <li class="summary-nearby-item">
+          <div class="summary-nearby-head">
+            <span class="summary-nearby-name">${escapeHtml(place.name)}</span>
+            <span class="summary-nearby-distance">${escapeHtml(distanceLabel)}</span>
+          </div>
+          <p class="summary-nearby-address">${escapeHtml(place.address || "地址未提供")}</p>
+          ${mapUrl ? `<a class="btn" href="${escapeHtml(mapUrl)}" target="_blank" rel="noopener">打开地图</a>` : ""}
+        </li>
+      `;
+    })
+    .join("");
+
+  return `
+    <div class="summary-nearby-wrap">
+      <div class="summary-nearby-title">附近收藏地点（${rows.length}）</div>
+      <ul class="summary-nearby-list">${items}</ul>
+    </div>
+  `;
 }
 
 let activeDate = DATE_OPTIONS.includes(DEFAULT_DATE) ? DEFAULT_DATE : DATE_OPTIONS[0];
@@ -2865,9 +3060,11 @@ function renderDocs(dateStr) {
 function renderSummaryItineraryCard() {
   const listEl = document.getElementById("summaryItineraryList");
   listEl.innerHTML = "";
+  const groupedPlaces = classifyPlacesByDate(mapPlacesSouthAfrica);
 
   DATE_OPTIONS.forEach((dateStr) => {
     const plan = getPlanForDate(dateStr);
+    const nearbyPlaces = groupedPlaces.byDate[dateStr] || [];
     const badgeHtml =
       typeof plan.summaryBadge === "string" && plan.summaryBadge.trim()
         ? `<div class="summary-row-badge">${escapeHtml(plan.summaryBadge.trim())}</div>`
@@ -2883,6 +3080,7 @@ function renderSummaryItineraryCard() {
       <div class="summary-row-title">${formatDateLabel(dateStr)}</div>
       <p class="summary-row-detail">${escapeHtml(getDailyHighlights(plan))}</p>
       ${focusHtml}
+      ${buildNearbyPlacesHtml(nearbyPlaces)}
     `;
     listEl.appendChild(li);
   });
@@ -3000,22 +3198,34 @@ function renderMapPlacesList() {
   const listEl = document.getElementById("mapPlacesList");
   if (!statusEl || !listEl) return;
 
+  const groupedPlaces = classifyPlacesByDate(mapPlacesSouthAfrica);
+  const rows = groupedPlaces.uncategorized;
+
   listEl.innerHTML = "";
   if (mapPlacesSouthAfrica.length === 0) {
-    statusEl.textContent = "尚未提取到南非地点";
+    statusEl.textContent = "未加载到南非收藏地点";
     return;
   }
 
-  statusEl.textContent = `已提取 ${mapPlacesSouthAfrica.length} 个南非地点`;
+  if (rows.length === 0) {
+    statusEl.textContent = `已加载 ${mapPlacesSouthAfrica.length} 个地点，全部已归类到每日行程`;
+    return;
+  }
 
-  mapPlacesSouthAfrica.forEach((place) => {
+  statusEl.textContent = `已加载 ${mapPlacesSouthAfrica.length} 个地点，其中 ${rows.length} 个无法归类到具体日期`;
+
+  rows.forEach((place) => {
     const location = Number.isFinite(place.lat) && Number.isFinite(place.lng) ? `${place.lat}, ${place.lng}` : "坐标未提供";
     const mapUrl = place.url || (Number.isFinite(place.lat) && Number.isFinite(place.lng) ? mapsSearchUrl(`${place.lat},${place.lng}`, place.name) : "");
+    const nearestHint =
+      place.nearestDate && Number.isFinite(place.distanceKm)
+        ? `最近日期：${formatDateLabel(place.nearestDate)}（约 ${Math.round(place.distanceKm)} km）`
+        : "未找到合适的行程区域";
 
     const li = document.createElement("li");
     li.innerHTML = `
       <div class="summary-row-title">${escapeHtml(place.name)}</div>
-      <p class="summary-row-detail">${escapeHtml(place.address || "")}<br/>${escapeHtml(location)}</p>
+      <p class="summary-row-detail">${escapeHtml(place.address || "")}<br/>${escapeHtml(location)}<br/>${escapeHtml(nearestHint)}</p>
       ${mapUrl ? `<a class="btn" href="${escapeHtml(mapUrl)}" target="_blank" rel="noopener">打开地图</a>` : ""}
     `;
     listEl.appendChild(li);
@@ -3178,22 +3388,7 @@ function loadItineraryDocs() {
 }
 
 function loadMapPlaces() {
-  const raw = localStorage.getItem(STORAGE_KEYS.mapPlacesSouthAfrica);
-  if (!raw) {
-    mapPlacesSouthAfrica = [];
-    return;
-  }
-
-  try {
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) {
-      mapPlacesSouthAfrica = [];
-      return;
-    }
-    mapPlacesSouthAfrica = dedupeMapPlaces(parsed);
-  } catch {
-    mapPlacesSouthAfrica = [];
-  }
+  mapPlacesSouthAfrica = dedupeMapPlaces(GOOGLE_TAKEOUT_SAVED_PLACES);
 }
 
 function bindInputs() {
@@ -3279,10 +3474,6 @@ function bindSummaryActions() {
   const previewEl = document.getElementById("summaryRemarkPreview");
   const summaryDocsDateSelect = document.getElementById("summaryDocsDate");
   const summaryDocsInput = document.getElementById("summaryItineraryDocsInput");
-  const placesFileInput = document.getElementById("mapPlacesJsonInput");
-  const placesTextInput = document.getElementById("mapPlacesTextInput");
-  const parseTextBtn = document.getElementById("parseMapPlacesTextBtn");
-  const clearPlacesBtn = document.getElementById("clearMapPlacesBtn");
 
   if (buildBtn && startDateSelect && previewEl) {
     buildBtn.addEventListener("click", () => {
@@ -3340,43 +3531,6 @@ function bindSummaryActions() {
         .finally(() => {
           event.target.value = "";
         });
-    });
-  }
-
-  if (placesFileInput) {
-    placesFileInput.addEventListener("change", async (event) => {
-      const file = event.target.files?.[0];
-      if (!file) return;
-
-      try {
-        const raw = await file.text();
-        const json = JSON.parse(raw);
-        const extracted = [];
-        collectPlacesFromJson(json, extracted);
-        mergeMapPlaces(extracted);
-        renderMapPlacesList();
-      } catch (error) {
-        console.error(error);
-        alert("JSON 解析失败，请确认是有效的 Google Takeout 导出文件。");
-      } finally {
-        event.target.value = "";
-      }
-    });
-  }
-
-  if (parseTextBtn && placesTextInput) {
-    parseTextBtn.addEventListener("click", () => {
-      const extracted = parsePlacesFromText(placesTextInput.value);
-      mergeMapPlaces(extracted);
-      renderMapPlacesList();
-    });
-  }
-
-  if (clearPlacesBtn && placesTextInput) {
-    clearPlacesBtn.addEventListener("click", () => {
-      clearMapPlaces();
-      placesTextInput.value = "";
-      renderMapPlacesList();
     });
   }
 }
