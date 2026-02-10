@@ -3384,18 +3384,35 @@ function renderMapPlacesList() {
   statusEl.textContent = `已加载 ${mapPlacesSouthAfrica.length} 个地点，其中 ${rows.length} 个无法归类到具体日期`;
 
   rows.forEach((place) => {
-    const location = Number.isFinite(place.lat) && Number.isFinite(place.lng) ? `${place.lat}, ${place.lng}` : "坐标未提供";
-    const mapUrl = place.url || (Number.isFinite(place.lat) && Number.isFinite(place.lng) ? mapsSearchUrl(`${place.lat},${place.lng}`, place.name) : "");
-    const addressText = place.address ? place.address : "地址未提供（可在提取区手动填写）";
-    const nearestHint =
-      place.nearestDate && Number.isFinite(place.distanceKm)
-        ? `最近日期：${formatDateLabel(place.nearestDate)}（约 ${Math.round(place.distanceKm)} km）`
-        : "未找到合适的行程区域";
+    const hasCoords = Number.isFinite(place.lat) && Number.isFinite(place.lng);
+    const isManualPlace = place.source === "manual";
+    const mapUrl = place.url || (hasCoords ? mapsSearchUrl(`${place.lat},${place.lng}`, place.name) : "");
+
+    const detailLines = [];
+    if (place.address) {
+      detailLines.push(place.address);
+    } else {
+      detailLines.push("地址未提供");
+    }
+
+    if (hasCoords) {
+      detailLines.push(`${place.lat}, ${place.lng}`);
+    } else if (!isManualPlace) {
+      detailLines.push("坐标未提供");
+    }
+
+    if (place.nearestDate && Number.isFinite(place.distanceKm)) {
+      detailLines.push(`最近日期：${formatDateLabel(place.nearestDate)}（约 ${Math.round(place.distanceKm)} km）`);
+    } else if (!isManualPlace) {
+      detailLines.push("未找到合适的行程区域");
+    }
+
+    const detailHtml = detailLines.map((line) => escapeHtml(line)).join("<br/>");
 
     const li = document.createElement("li");
     li.innerHTML = `
       <div class="summary-row-title">${escapeHtml(place.name)}</div>
-      <p class="summary-row-detail">${escapeHtml(addressText)}<br/>${escapeHtml(location)}<br/>${escapeHtml(nearestHint)}</p>
+      <p class="summary-row-detail">${detailHtml}</p>
       ${mapUrl ? `<a class="btn" href="${escapeHtml(mapUrl)}" target="_blank" rel="noopener">打开地图</a>` : ""}
     `;
     listEl.appendChild(li);
